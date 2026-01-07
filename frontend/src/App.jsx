@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import axios from "axios";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase';
+
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
+  //keeping track of email and password
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <input type="email" placeholder='email' onChange={e=>{setEmail(e.target.value)}}></input>
+    <input type="password" placeholder='password' onChange={e=>{setPassword(e.target.value)}}></input>
+     {/* login button */}
+     <button onClick={async ()=>{
+      //check if user ke credentials are correct, if they are log him in and re route to another page
+      console.log(email);
+      console.log(password);
+      //send this payload of email and pass to BE:
+      await signInWithEmailAndPassword(auth, email, password)
+      const token=await auth.currentUser.getIdToken();
+      
+     }}>Login</button>
+
+
+     {/* testing if firebase works or not */}
+     <button onClick={async () => {
+  try {
+    const res = await createUserWithEmailAndPassword(
+      auth,
+      "test123@gmail.com",
+      "password123"
+    );
+
+    console.log("Firebase working ✅");
+    console.log("UID:", res.user.uid);
+  } catch (err) {
+    console.error("Firebase NOT working ❌", err.code, err.message);
+  }
+}}>
+  Test Firebase
+</button>
     </>
   )
 }
 
-export default App
+
+
