@@ -23,6 +23,7 @@ function Signin({ email, password }){
       try {
       await signInWithEmailAndPassword(auth, email, password)
       const token=await auth.currentUser.getIdToken(); 
+      console.log(token);
     //   console.log(token);
 
       await axios.post("http://localhost:3000/test", {}, {headers:{ Authorization: `Bearer ${token}`}});

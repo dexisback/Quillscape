@@ -4,8 +4,10 @@ import axios from "axios";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import { verifyAuth } from "./middleware/auth.js";
+import { connectDB } from "./db.js";
+import blogRoutes from "./routes/blogRoutes.js"
 
-
+connectDB();
 dotenv.config();
 const app=express();
 
@@ -13,6 +15,10 @@ const app=express();
 
 app.use(cors());
 app.use(express.json());
+
+
+app.use("/blogs", blogRoutes);
+
 
 app.get("/", (req, res)=>{
     res.send("Hellow world first ecg");
