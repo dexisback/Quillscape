@@ -11,14 +11,3 @@ admin.initializeApp({
 export default admin;
 
 
-console.log(amaan);
-
-
-
-console.log(amaan);
-
-
-
-const name= "Amaan";
-const surname= "Siddiqui";
-console.log(name, surname);
