@@ -4,6 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { useState, useEffect } from 'react'
 import api from '../api/axios';
 import ShowPosts from '../components/ShowPosts';
+import { createBlog } from '../api/blogs.api';
 
 
 export default function Dashboard(){
@@ -19,16 +20,18 @@ export default function Dashboard(){
     <button onClick={
       async()=>{
         
-      const auth=getAuth();
-      const user=auth.currentUser; //defining user
-      const token= await user.getIdToken();
-        //on clicking this button, post request will be called
-        const response= axios.post("http://localhost:3000/blogs/post", {
-          title: title,
-          body: body,
-        },
-      {headers: {Authorization: `Bearer ${token}`}}
-    );
+    //   const auth=getAuth();
+    //   const user=auth.currentUser; //defining user
+    //   const token= await user.getIdToken();
+    //     //on clicking this button, post request will be called
+    //     const response= axios.post("http://localhost:3000/blogs/post", {
+    //       title: title,
+    //       body: body,
+    //     },
+    //   {headers: {Authorization: `Bearer ${token}`}}
+    // );
+    const data= {title: title, body: body}
+    const response = await createBlog(data);
     console.log("blog posted succesfully");
     //clear the vars:
     setTitle("");
