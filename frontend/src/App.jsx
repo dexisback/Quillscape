@@ -12,7 +12,8 @@ import './App.css'
 // import Signup from '../components/Signup';
 
 //refactored:
-import AuthComponent from '../components/AuthComponent';
+// import AuthComponent from '../components/AuthComponent';
+import Auth from './pages/Auth';
 
 
 export default function App() {
@@ -21,7 +22,7 @@ export default function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<AuthComponent></AuthComponent>}></Route>
+          <Route path="/" element={<Auth></Auth>}></Route>
           <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
           
 
