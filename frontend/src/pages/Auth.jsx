@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../src/firebase';
+import { auth } from "../firebase";
 import axios from "axios";
 
 function Signin({ email, password }){
@@ -23,7 +23,7 @@ function Signin({ email, password }){
       try {
       await signInWithEmailAndPassword(auth, email, password)
       const token=await auth.currentUser.getIdToken(); 
-      console.log(token);
+      console.log(token); //temp, remove this shiii ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     //   console.log(token);
 
       await axios.post("http://localhost:3000/test", {}, {headers:{ Authorization: `Bearer ${token}`}});
@@ -87,7 +87,7 @@ function Signup({email, password}) {
 
 
 //main component:
-export default function AuthComponent(){
+export default function Auth(){
     const [email, setEmail]= useState("");
     const [password, setPassword]= useState("");
     const navigate= useNavigate();
