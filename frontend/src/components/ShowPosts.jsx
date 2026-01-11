@@ -4,38 +4,58 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useState, useEffect } from 'react'
 import api from '../api/axios';
 import { deleteBlog, getMyBlogs, updateBlog } from '../api/blogs.api';
+import { useAuth } from '../context/AuthContext';
 
 
 
 
 
 export default function ShowPosts() {
- 
+    const { user, logout } = useAuth();
  //getting my blogs 
 const [blogs, setBlogs]=useState([]);
-  useEffect(() => {
-    const auth = getAuth();
+//   useEffect(() => {
+//     // const auth = getAuth();
     
-    // This listener waits for Firebase to "wake up"
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            try {
+//     // This listener waits for Firebase to "wake up"
+//     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+//         if (user) {
+//             try {
               
-                const response = await getMyBlogs();
+//                 const response = await getMyBlogs();
+//                 setBlogs(response.data);
+//             } catch (err) {
+//                 console.error("Fetch failed", err);
+//             }
+//         }
+//     });
+
+//     return () => unsubscribe(); // Cleanup the listener
+// }, []);
+
+
+//dont need unsubscrible since we have that logic written inside of authcontext and useAuth hook
+//refined get request:
+useEffect(()=>{
+    //we only run useEffect if "user" exists in the global state  
+    if(user){
+        const fetchBlogs= async ()=>{
+            try {
+                const response=await getMyBlogs();
+                console.log(response.data);
                 setBlogs(response.data);
+
             } catch (err) {
-                console.error("Fetch failed", err);
+                console.error("fetch failed and here is the error", err)
             }
         }
-    });
-
-    return () => unsubscribe(); // Cleanup the listener
-}, []);
-
-
+        fetchBlogs();
+    }
+}, [user])
 
 //dlt blogs
 const handleDelete=async (  )=>{
+    // You'll eventually pass the ID from a button click ⚠️
    const blog_id=prompt("enter blog id to be dlted");
    if(!blog_id){
     return
@@ -45,7 +65,7 @@ const handleDelete=async (  )=>{
     await deleteBlog(blog_id);
         alert("blog deleted");
     setBlogs(blogs.filter(blog => blog._id !== blog_id));
-        console.log(response.data, "delete request processed");
+        console.log("delete request processed");
 
    } catch (error) {
     console.error("delete failed", err)    
@@ -76,6 +96,7 @@ const handleUpdate = async(  )=>{
 
 
   return (
+    //eventually the delete and edit button pass the id along with them
    <>
    {JSON.stringify(blogs)}
    <button onClick={handleDelete}>Delete</button>
@@ -86,3 +107,8 @@ const handleUpdate = async(  )=>{
 
 }
 
+
+
+
+
+//handles (get, delete, update) logics 
