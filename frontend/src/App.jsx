@@ -15,19 +15,23 @@ import './App.css'
 // import AuthComponent from '../components/AuthComponent';
 import Auth from './pages/Auth';
 
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
 
 export default function App() {
  
   return(
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Auth></Auth>}></Route>
-          <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
-          
+      <AuthProvider>
+                <Router>
+                  <Routes>  
+                    <Route path="/" element={<Auth></Auth>}></Route>
 
-        </Routes>
-      </Router>
+                    <Route path="/dashboard" element={<ProtectedRoute>   <Dashboard></Dashboard>   </ProtectedRoute>}></Route>
+                  </Routes>
+                </Router>
+      </AuthProvider>
     </>
   )
 
