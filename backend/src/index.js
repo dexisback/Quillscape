@@ -6,7 +6,7 @@ import dotenv from "dotenv"
 import { verifyAuth } from "./middleware/auth.js";
 import { connectDB } from "./db.js";
 import blogRoutes from "./routes/blogRoutes.js"
-
+import userRoutes from "./routes/userRoutes.js"
 connectDB();
 dotenv.config();
 const app=express();
@@ -18,6 +18,7 @@ app.use(express.json());
 
 
 app.use("/blogs", blogRoutes);
+app.use("/blogs/users", userRoutes);
 
 
 app.get("/", (req, res)=>{
