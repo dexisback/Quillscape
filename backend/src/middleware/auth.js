@@ -2,13 +2,22 @@ import admin from "../firebase.js";
 
 
 export async function verifyAuth(req, res, next){
-    //logic
-    //get token access:
     const token= req.headers.authorization?.split("Bearer ")[1];
-    if(!token){res.status(404).send({msg: "sorry you are not authorised"}); return;}
+
+    if(!token){return res.status(401).send({msg :"sorry no token provided"})}
+    //else if token is received, we can move to decoding info from it:
+    
+    try {
+        //logic
+    //get token access:
     const decoded=await admin.auth().verifyIdToken(token);
     //attach it onto req 
     req.user=decoded;
     next();
-
+    
+    } catch (err) {
+        console.error("sorry token verification failed and here is the error", err);
+        res.status(403).send({msg:"invalid or expired token"})        
+    }
+    
 }
