@@ -7,6 +7,8 @@ import axios from "axios";
 import { getAuth } from "firebase/auth";
 const api = axios.create({baseURL: "http://localhost:3000/blogs"})
 
+
+
 //making the interceptor:
 api.interceptors.request.use(async (config) =>{
 const auth=getAuth();

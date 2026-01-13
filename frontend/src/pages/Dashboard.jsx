@@ -6,8 +6,9 @@ import api from '../api/axios';
 import ShowPosts from '../components/ShowPosts';
 import { createBlog } from '../api/blogs.api';
 import { useAuth } from '../context/AuthContext';
-
-
+import Settings from '../components/Settings';
+import { settings } from 'firebase/analytics';
+import UserProfile from '../components/UserProfile';
 export default function Dashboard(){
   const { user, logout }= useAuth();
   const [title, setTitle]=useState("")
@@ -40,6 +41,12 @@ export default function Dashboard(){
     }>Create Post</button>
     <br></br>
     {<ShowPosts></ShowPosts>}
+        <br></br>
+    <br></br>
+    {<Settings></Settings>}
+    <br></br>
+    <br></br>
+    {<UserProfile></UserProfile>}
     </>
   )
 }
