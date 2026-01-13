@@ -14,9 +14,7 @@ export default function UserProfile() {
   useEffect(()=>{
     const fetchProfile = async () => {
       try {
-        //no need to pass the token or anything since i have written the api file for getBlogs(); and getusers shii:
-        // const token = localStorage.getItem("token"); 
-        // const response = await axios.get("")
+        
         const response= await getUserProfile();
         setUser(response.data);
 

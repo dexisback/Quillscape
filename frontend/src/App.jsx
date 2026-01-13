@@ -4,15 +4,8 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import Dashboard from './pages/Dashboard';
 import axios from "axios";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-// signInWithEmailAndPassword for singin and createUserWithEmailAndPassword for signup 
 import { auth } from './firebase';
 import './App.css'
-//import InputBoxes from '../components/InputBoxes';
-// import Signin from '../components/Signin';
-// import Signup from '../components/Signup';
-
-//refactored:
-// import AuthComponent from '../components/AuthComponent';
 import Auth from './pages/Auth';
 
 import { AuthProvider } from './context/AuthContext';

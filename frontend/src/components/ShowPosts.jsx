@@ -12,32 +12,10 @@ import { useAuth } from '../context/AuthContext';
 
 export default function ShowPosts() {
     const { user, logout } = useAuth();
- //getting my blogs 
+ 
 const [blogs, setBlogs]=useState([]);
-//   useEffect(() => {
-//     // const auth = getAuth();
-    
-//     // This listener waits for Firebase to "wake up"
-//     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-//         if (user) {
-//             try {
-              
-//                 const response = await getMyBlogs();
-//                 setBlogs(response.data);
-//             } catch (err) {
-//                 console.error("Fetch failed", err);
-//             }
-//         }
-//     });
 
-//     return () => unsubscribe(); // Cleanup the listener
-// }, []);
-
-
-//dont need unsubscrible since we have that logic written inside of authcontext and useAuth hook
-//refined get request:
 useEffect(()=>{
-    //we only run useEffect if "user" exists in the global state  
     if(user){
         const fetchBlogs= async ()=>{
             try {
@@ -53,9 +31,7 @@ useEffect(()=>{
     }
 }, [user])
 
-//dlt blogs
 const handleDelete=async (  )=>{
-    // You'll eventually pass the ID from a button click ⚠️
    const blog_id=prompt("enter blog id to be dlted");
    if(!blog_id){
     return
@@ -96,7 +72,6 @@ const handleUpdate = async(  )=>{
 
 
   return (
-    //eventually the delete and edit button pass the id along with them
    <>
    {JSON.stringify(blogs)}
    <button onClick={handleDelete}>Delete</button>
@@ -111,4 +86,4 @@ const handleUpdate = async(  )=>{
 
 
 
-//handles (get, delete, update) logics 
+//handles (get, delete, update) logics ( for now )

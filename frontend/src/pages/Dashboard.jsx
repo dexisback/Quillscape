@@ -24,8 +24,7 @@ export default function Dashboard(){
     <button onClick={
       async()=>{
         
-    //simple validation check for now: change later ⚠️
-
+        //improve validation 
     const data= {title: title, body: body}
     const response = await createBlog(data);
     console.log("title and body filled")
@@ -34,7 +33,6 @@ export default function Dashboard(){
     }
     console.log("blog posted succesfully");
     window.location.reload();
-    //clear the vars:
     setTitle("");
     setBody("");
       }
@@ -50,5 +48,9 @@ export default function Dashboard(){
     </>
   )
 }
+
+
+
+
 
 //handles (create) logic

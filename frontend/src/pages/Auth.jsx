@@ -18,11 +18,9 @@ function Signin({ email, password }){
       try {
       const result = await signInWithEmailAndPassword(auth, email, password)
       const user= result.user;
-      // send to mongoDB (the syncing step)
     
       const token=await auth.currentUser.getIdToken(); 
-      // console.log(token); //temp, remove this shiii ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-      console.log(user);
+      // console.log(token); //temp
         await syncUserWithMongoDB({
         firebaseUid: user.uid,
         email: user.email
@@ -81,7 +79,6 @@ export default function Auth(){
   return (
     <>
 
-  {/* mount inputs once and pass values down */}
   <input type="email" placeholder='email' value={email} onChange={e=>{setEmail(e.target.value)}}></input>
   <input type="password" placeholder='password' value={password} onChange={e=>{setPassword(e.target.value)}}></input>
 

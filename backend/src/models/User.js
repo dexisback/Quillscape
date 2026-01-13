@@ -1,4 +1,5 @@
 //user has a bio, pfp, name, email(for finding username with email)
+//implement pfp later
 import mongoose from "mongoose";
 
 

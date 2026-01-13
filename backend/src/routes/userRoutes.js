@@ -1,6 +1,4 @@
-//this file handles all the routes related to blogs in my website:
 
-//gonna define all blog CRUD logic, blog get/blog create/blog edit/blog delete
 
 
 import express from "express";
@@ -41,36 +39,6 @@ router.delete("/me", verifyAuth, async (req, res)=>{
 
 
 
-//ye to latest news hai, 
-router.get("/profile", verifyAuth, async(req, res)=>{
-    try {
-        const firebaseUid= req.user.uid;
-        const user= await User.findOne({firebaseUid: firebaseUid})
-        if(!user){return res.status(404).json({msg: "sorry user not found in my db"})}
-        //but if user DOES exist:
-        res.json(user); //send the full user data object to the FE, i will parse it over there to get whatever i want
-    } catch (err) {
-        console.error("sorry some err happened in sending the req to /blogs/users/profile", err);
-    }
-})
-
-
-router.put("/update", verifyAuth, async (req, res)=>{
-    try {
-        const firebaseUid= req.user.uid;
-        const updates= req.body; 
-        const updatedUser = await User.findOneAndUpdate(
-            { firebaseUid : firebaseUid },
-            { $set: updates },
-            { new: true }
-        )
-        res.json(updatedUser);
-
-    } catch (err) {
-        console.error("error in the backend of updating the name, email (put route) ", err);
-        res.status(500).send({msg : "failed to update profile"})
-    }
-})
 export default router;
 
 

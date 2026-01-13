@@ -1,6 +1,4 @@
-//this file handles all the routes related to blogs in my website:
 
-//gonna define all blog CRUD logic, blog get/blog create/blog edit/blog delete
 
 
 import express from "express";
@@ -14,14 +12,14 @@ import Blog from "../models/Blog.js";
 const router= express.Router();
 
 
-//testing route
+//test:
 router.get("/", (req, res)=>{
     console.log("testing route works, this was only meant for the developer")
     res.send("hellow, youre in the /blog endpoint")
 })
 
 
-//getting ALL the blogs of a  single user:
+
 router.get("/me", verifyAuth, async (req, res)=>{
 try {
     const userBlogs= await Blog.find({author_uid : req.user.uid}); //finds all the blogs of the user

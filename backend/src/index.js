@@ -27,7 +27,6 @@ app.get("/", (req, res)=>{
 
 
 app.post("/test", verifyAuth, (req, res)=>{
-        //this route extracts uid from decoded in req, and then sends it to frontend
         res.send(req.user.uid);
 
 })
