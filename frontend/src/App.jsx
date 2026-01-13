@@ -9,6 +9,7 @@ import './App.css'
 import Auth from './pages/Auth';
 
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 
@@ -16,20 +17,25 @@ export default function App() {
  
   return(
     <>
-      <AuthProvider>
-                <Router>
-                  <Routes>  
-                    <Route path="/" element={<Auth></Auth>}></Route>
+      <ThemeProvider>
+        <AuthProvider>
+                  <Router>
+                    <Routes>  
+                      <Route path="/" element={<Auth></Auth>}></Route>
 
-                    <Route path="/dashboard" element={<ProtectedRoute>   <Dashboard></Dashboard>   </ProtectedRoute>}></Route>
-                  </Routes>
-                </Router>
-      </AuthProvider>
+                      <Route path="/dashboard" element={<ProtectedRoute>   <Dashboard></Dashboard>   </ProtectedRoute>}></Route>
+                    </Routes>
+                  </Router>
+        </AuthProvider>
+      </ThemeProvider>
     </>
   )
 
   
 }
+
+
+
 
 
 

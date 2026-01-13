@@ -28,12 +28,33 @@ export default function Settings() {
         }
     }
   return (
-    <>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '25px'}}>
         {/* show email */}
-        <p>email is -- {user.email}</p>
-        <button onClick={passwordResetter}>Change password</button>
-        <button onClick={accountDeleter}>Permanently dlt your account</button>
-    </>
+        <div style={{backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '15px'}}>
+          <p style={{color: '#666', fontSize: '14px', margin: '0 0 5px'}}>Current Email</p>
+          <p style={{color: '#333', margin: '0'}}>{user.email}</p>
+        </div>
+        
+        <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+          <button 
+            onClick={passwordResetter}
+            style={{width: '100%', padding: '12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', fontWeight: '600', fontSize: '16px', cursor: 'pointer'}}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+          >
+            Change Password
+          </button>
+          
+          <button 
+            onClick={accountDeleter}
+            style={{width: '100%', padding: '12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', fontWeight: '600', fontSize: '16px', cursor: 'pointer'}}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#c82333'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#dc3545'}
+          >
+            Delete Account Permanently
+          </button>
+        </div>
+    </div>
 
 )
 }

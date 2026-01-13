@@ -29,6 +29,41 @@ router.post('/sync', async (req, res)=>{
 })
 
 
+// Get user profile
+router.get('/profile', verifyAuth, async (req, res) => {
+    try {
+        const user = await User.findOne({ firebaseUid: req.user.uid });
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+        res.status(200).json(user);
+    } catch (err) {
+        console.error("Error fetching profile:", err);
+        res.status(500).json({ msg: "Server error fetching profile" });
+    }
+});
+
+
+// Update user profile
+router.put('/update', verifyAuth, async (req, res) => {
+    try {
+        const { username, bio } = req.body;
+        const user = await User.findOneAndUpdate(
+            { firebaseUid: req.user.uid },
+            { username, bio },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+        res.status(200).json(user);
+    } catch (err) {
+        console.error("Error updating profile:", err);
+        res.status(500).json({ msg: "Server error updating profile" });
+    }
+});
+
+
 router.delete("/me", verifyAuth, async (req, res)=>{
     const uid = req.user.uid;
     await Blog.deleteMany({author_uid : uid});
