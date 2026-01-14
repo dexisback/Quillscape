@@ -3,25 +3,34 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import Navbar from '../components/Navbar';
+import FloatingWriteButton from '../components/FloatingWriteButton';
+import BlogEditorOverlay from '../components/BlogEditorOverlay';
 
 export default function Home (){
   const  { user } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+
+  const fetchPublicBlogs = async () => {
+    try {
+      const response = await api.get('/public');
+      setBlogs(response.data);
+    } catch (err) {
+      console.error("Failed to fetch public blogs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPublicBlogs = async () => {
-      try {
-        const response = await api.get('/public');
-        setBlogs(response.data);
-      } catch (err) {
-        console.error("Failed to fetch public blogs:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPublicBlogs();
   }, []);
+
+  const handleBlogCreated = (newBlog) => {
+    // Refresh the feed to show new published posts
+    fetchPublicBlogs();
+  };
 
   const calculateReadTime = (body) => {
     const wordsPerMinute = 200;
@@ -87,6 +96,16 @@ export default function Home (){
           </div>
         )}
       </div>
+
+      {/* Floating Write Button */}
+      <FloatingWriteButton onClick={() => setIsEditorOpen(true)} />
+
+      {/* Blog Editor Overlay */}
+      <BlogEditorOverlay 
+        isOpen={isEditorOpen} 
+        onClose={() => setIsEditorOpen(false)} 
+        onBlogCreated={handleBlogCreated}
+      />
     </div>
   );
 }
