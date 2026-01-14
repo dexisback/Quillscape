@@ -15,14 +15,14 @@ export default function Create(){
   };
 
   return(
-    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div style={{maxWidth: '1200px', margin: '0 auto', padding: '20px'}}>
-        <CreateBlog onBlogCreated={handleBlogCreated} />
+      <div className="max-w-6xl mx-auto p-5">
+        <BlogWritingForm onBlogCreated={handleBlogCreated} />
 
-        <div style={{backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '8px', padding: '25px'}}>
-          <h2 style={{fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '20px'}}>Your Posts</h2>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Your Posts</h2>
           <ShowPosts key={refreshPosts} />
         </div>
       </div>

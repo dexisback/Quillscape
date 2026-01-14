@@ -47,57 +47,29 @@ function BlogWritingForm({ onBlogCreated }) {
   };
 
   return (
-    <div style={{backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '8px', padding: '25px', marginBottom: '30px'}}>
-      <h2 style={{fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '20px'}}>Create New Post</h2>
-      <div style={{marginBottom: '15px'}}>
+    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">Create New Post</h2>
+      <div className="mb-4">
         <input 
           type="text" 
           placeholder="Blog title" 
           onChange={(e) => setTitle(e.target.value)} 
           value={title}
           disabled={loading}
-          style={{
-            width: '100%', 
-            padding: '12px', 
-            border: '1px solid #ddd', 
-            borderRadius: '4px', 
-            fontSize: '16px', 
-            marginBottom: '15px', 
-            boxSizing: 'border-box',
-            backgroundColor: loading ? '#f5f5f5' : 'white'
-          }}
+          className={`w-full p-3 border border-gray-200 rounded-md mb-4 box-border ${loading ? 'bg-gray-100' : 'bg-white'}`}
         />
         <textarea 
           placeholder="Write your blog content here..." 
           onChange={(e) => setBody(e.target.value)} 
           value={body}
           disabled={loading}
-          style={{
-            width: '100%', 
-            padding: '12px', 
-            border: '1px solid #ddd', 
-            borderRadius: '4px', 
-            fontSize: '16px', 
-            minHeight: '120px', 
-            boxSizing: 'border-box', 
-            resize: 'vertical',
-            backgroundColor: loading ? '#f5f5f5' : 'white'
-          }}
+          className={`w-full p-3 border border-gray-200 rounded-md text-base min-h-[120px] box-border resize-y ${loading ? 'bg-gray-100' : 'bg-white'}`}
         />
       </div>
       <button 
         onClick={handleSubmit}
         disabled={loading}
-        style={{
-          padding: '12px 24px', 
-          backgroundColor: loading ? '#6c757d' : '#007bff', 
-          color: 'white', 
-          border: 'none', 
-          borderRadius: '4px', 
-          cursor: loading ? 'not-allowed' : 'pointer', 
-          fontSize: '16px', 
-          fontWeight: '600'
-        }}
+        className={`${loading ? 'px-4 py-2 bg-gray-500 cursor-not-allowed' : 'px-4 py-2 bg-blue-600 hover:bg-blue-700'} text-white rounded-md font-semibold`}
       >
         {loading ? 'Creating...' : 'Create Post'}
       </button>

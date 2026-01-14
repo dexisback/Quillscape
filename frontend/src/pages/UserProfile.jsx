@@ -35,82 +35,82 @@ export default function UserProfile() {
   }
 
   if (loading) return (
-    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px', color: '#333'}}>Loading...</div>
+      <div className="max-w-2xl mx-auto p-5 text-gray-800">Loading...</div>
     </div>
   );
   
   if (!user) return (
-    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px', color: '#333'}}>User not found</div>
+      <div className="max-w-2xl mx-auto p-5 text-gray-800">User not found</div>
     </div>
   );
 
   return (
-    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px'}}>
-        <div style={{backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '8px', padding: '25px'}}>
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '25px'}}>
-            <h2 style={{fontSize: '20px', fontWeight: '600', color: '#333', margin: '0'}}>User Profile</h2>
+      <div className="max-w-2xl mx-auto p-5">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 m-0">User Profile</h2>
             <button 
               onClick={() => setIsEditing(!isEditing)}
-              style={{padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
+              className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               {isEditing ? 'Cancel' : 'Edit Profile'}
             </button>
           </div>
           <div>
             {isEditing ? (
-          <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
+          <div className="flex flex-col gap-4">
             <div>
-              <label style={{display: 'block', color: '#333', fontSize: '14px', marginBottom: '5px'}}>Username</label>
+              <label className="block text-gray-800 text-sm mb-1">Username</label>
               <input 
                 value={formData.username} 
                 onChange={(e) => setFormData({...formData, username: e.target.value})}
-                style={{width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px', boxSizing: 'border-box'}}
+                className="w-full p-3 border border-gray-200 rounded-md text-base box-border"
                 placeholder="Enter username"
               />
             </div>
             <div>
-              <label style={{display: 'block', color: '#333', fontSize: '14px', marginBottom: '5px'}}>Bio</label>
+              <label className="block text-gray-800 text-sm mb-1">Bio</label>
               <textarea 
                 value={formData.bio} 
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                style={{width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px', minHeight: '100px', boxSizing: 'border-box', resize: 'vertical'}}
+                className="w-full p-3 border border-gray-200 rounded-md text-base min-h-[100px] box-border resize-y"
                 placeholder="Tell us about yourself"
               />
             </div>
-            <div style={{display: 'flex', gap: '10px'}}>
+            <div className="flex gap-3">
               <button 
                 onClick={handleUpdate}
-                style={{padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: '600'}}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-semibold"
               >
                 Save Changes
               </button>
               <button 
                 onClick={() => setIsEditing(false)}
-                style={{padding: '10px 20px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: '600'}}
+                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold"
               >
                 Cancel
               </button>
             </div>
           </div>
         ) : (
-          <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
-            <div style={{backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '15px'}}>
-              <p style={{color: '#666', fontSize: '14px', margin: '0 0 5px'}}>Username</p>
-              <p style={{color: '#333', margin: '0'}}>{user.username || 'Not set'}</p>
+          <div className="flex flex-col gap-4">
+            <div className="bg-white border border-gray-200 rounded-md p-4">
+              <p className="text-gray-500 text-sm mb-1">Username</p>
+              <p className="text-gray-800 m-0">{user.username || 'Not set'}</p>
             </div>
-            <div style={{backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '15px'}}>
-              <p style={{color: '#666', fontSize: '14px', margin: '0 0 5px'}}>Bio</p>
-              <p style={{color: '#333', margin: '0'}}>{user.bio || 'No bio yet'}</p>
+            <div className="bg-white border border-gray-200 rounded-md p-4">
+              <p className="text-gray-500 text-sm mb-1">Bio</p>
+              <p className="text-gray-800 m-0">{user.bio || 'No bio yet'}</p>
             </div>
-            <div style={{backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '15px'}}>
-              <p style={{color: '#666', fontSize: '14px', margin: '0 0 5px'}}>Email</p>
-              <p style={{color: '#333', margin: '0'}}>{user.email} <span style={{color: '#666'}}>(Not editable)</span></p>
+            <div className="bg-white border border-gray-200 rounded-md p-4">
+              <p className="text-gray-500 text-sm mb-1">Email</p>
+              <p className="text-gray-800 m-0">{user.email} <span className="text-gray-500">(Not editable)</span></p>
             </div>
           </div>
         )}

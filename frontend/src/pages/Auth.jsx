@@ -12,7 +12,7 @@ function Signin({ email, password }){
   return (
     <>
      <button 
-       style={{padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%', marginBottom: '10px'}}
+       className="w-full py-3 bg-blue-600 text-white rounded-md mb-2 hover:bg-blue-700"
        onClick={async ()=>{
       console.log(email);
       console.log(password);
@@ -48,7 +48,7 @@ function Signup({email, password}) {
     return (
     <>
     <button 
-      style={{padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%'}}
+      className="w-full py-3 bg-green-600 text-white rounded-md hover:bg-green-700"
       onClick={async ()=>{
         try {
         const res=await createUserWithEmailAndPassword(auth, email, password);
@@ -81,42 +81,40 @@ export default function Auth(){
 
 
   return (
-    <div style={{minHeight: '100vh', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'}}>
-      <div style={{width: '100%', maxWidth: '400px', padding: '30px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: 'white', boxShadow: '0 2px 10px rgba(0,0,0,0.1)'}}>
+    <div className="min-h-screen bg-white flex items-center justify-center p-5">
+      <div className="w-full max-w-md p-8 border border-gray-200 rounded-lg bg-white shadow-sm">
         {/* Logo and Title */}
-        <div style={{textAlign: 'center', marginBottom: '30px'}}>
-          <div style={{width: '60px', height: '60px', backgroundColor: '#007bff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: 'white', margin: '0 auto 15px'}}>
-            Q
-          </div>
-          <h1 style={{fontSize: '28px', fontWeight: 'bold', color: '#333', margin: '0 0 10px'}}>Quillscape</h1>
-          <p style={{color: '#666', margin: '0'}}>Your thoughts, your space</p>
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 bg-blue-600 rounded-md flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4">Q</div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">Quillscape</h1>
+          <p className="text-gray-500">Your thoughts, your space</p>
         </div>
 
         {/* Form fields */}
-        <div style={{marginBottom: '20px'}}>
-          <label style={{display: 'block', color: '#333', fontSize: '14px', marginBottom: '5px'}}>Email</label>
+        <div className="mb-5">
+          <label className="block text-gray-800 text-sm mb-1">Email</label>
           <input 
             type="email" 
             placeholder='Enter your email' 
             value={email} 
             onChange={e=>{setEmail(e.target.value)}}
-            style={{width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px', marginBottom: '15px', boxSizing: 'border-box'}}
+            className="w-full p-3 border border-gray-200 rounded-md text-base mb-4 box-border"
           />
           
-          <label style={{display: 'block', color: '#333', fontSize: '14px', marginBottom: '5px'}}>Password</label>
+          <label className="block text-gray-800 text-sm mb-1">Password</label>
           <input 
             type="password" 
             placeholder='Enter your password' 
             value={password} 
             onChange={e=>{setPassword(e.target.value)}}
-            style={{width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px', boxSizing: 'border-box'}}
+            className="w-full p-3 border border-gray-200 rounded-md text-base box-border"
           />
         </div>
 
         {/* Buttons */}
-        <div style={{marginTop: '20px'}}>
+        <div className="mt-5">
           <Signin email={email} password={password} />
-          <div style={{textAlign: 'center', color: '#666', margin: '10px 0'}}>or</div>
+          <div className="text-center text-gray-500 my-3">or</div>
           <Signup email={email} password={password} />
         </div>
       </div>

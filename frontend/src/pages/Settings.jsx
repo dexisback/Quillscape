@@ -28,32 +28,28 @@ export default function Settings() {
         }
     }
   return (
-    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px'}}>
-        <div style={{backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '8px', padding: '25px'}}>
-          <h2 style={{fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '20px'}}>Settings</h2>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '25px'}}>
-            <div style={{backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '15px'}}>
-              <p style={{color: '#666', fontSize: '14px', margin: '0 0 5px'}}>Current Email</p>
-              <p style={{color: '#333', margin: '0'}}>{user.email}</p>
+      <div className="max-w-2xl mx-auto p-5">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Settings</h2>
+          <div className="flex flex-col gap-6">
+            <div className="bg-white border border-gray-200 rounded-md p-4">
+              <p className="text-gray-500 text-sm mb-1">Current Email</p>
+              <p className="text-gray-800 m-0">{user.email}</p>
             </div>
             
-            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+            <div className="flex flex-col gap-3">
               <button 
                 onClick={passwordResetter}
-                style={{width: '100%', padding: '12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', fontWeight: '600', fontSize: '16px', cursor: 'pointer'}}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+                className="w-full py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700"
               >
                 Change Password
               </button>
               
               <button 
                 onClick={accountDeleter}
-                style={{width: '100%', padding: '12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', fontWeight: '600', fontSize: '16px', cursor: 'pointer'}}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#c82333'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#dc3545'}
+                className="w-full py-3 bg-red-600 text-white rounded-md font-semibold hover:bg-red-700"
               >
                 Delete Account Permanently
               </button>

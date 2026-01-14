@@ -78,38 +78,38 @@ const handleUpdate = async( blog_id )=>{
 
 
   return (
-   <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
+   <div className="flex flex-col gap-4">
      {blogs.length === 0 ? (
-       <p style={{color: '#666', textAlign: 'center', padding: '30px 0'}}>No blogs yet. Create your first post!</p>
+       <p className="text-gray-500 text-center py-8">No blogs yet. Create your first post!</p>
      ) : (
        blogs.map(blog => (
-         <div key={blog._id} style={{backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '4px', padding: '15px'}}>
+         <div key={blog._id} className="bg-white border border-gray-200 rounded-md p-4">
            {editingId === blog._id ? (
              // Edit mode
-             <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+             <div className="flex flex-col gap-3">
                <input
                  type="text"
                  value={editForm.title}
                  onChange={(e) => setEditForm({...editForm, title: e.target.value})}
-                 style={{width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px', boxSizing: 'border-box'}}
+                 className="w-full p-3 border border-gray-200 rounded-md text-base box-border"
                  placeholder="Blog title"
                />
                <textarea
                  value={editForm.body}
                  onChange={(e) => setEditForm({...editForm, body: e.target.value})}
-                 style={{width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px', minHeight: '100px', boxSizing: 'border-box', resize: 'vertical'}}
+                 className="w-full p-3 border border-gray-200 rounded-md text-base min-h-[100px] box-border resize-y"
                  placeholder="Blog content"
                />
-               <div style={{display: 'flex', gap: '8px'}}>
+               <div className="flex gap-2">
                  <button
                    onClick={() => handleUpdate(blog._id)}
-                   style={{padding: '8px 16px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
+                   className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                  >
                    Save
                  </button>
                  <button
                    onClick={cancelEditing}
-                   style={{padding: '8px 16px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
+                   className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
                  >
                    Cancel
                  </button>
@@ -117,24 +117,22 @@ const handleUpdate = async( blog_id )=>{
              </div>
            ) : (
              // View mode
-             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-               <div style={{flex: '1'}}>
-                 <h3 style={{fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '8px', margin: '0 0 8px'}}>{blog.title}</h3>
-                 <p style={{color: '#555', marginBottom: '8px', margin: '0 0 8px'}}>{blog.body}</p>
-                 <p style={{color: '#999', fontSize: '14px', margin: '0'}}>
-                   {new Date(blog.createdAt).toLocaleDateString()}
-                 </p>
+             <div className="flex justify-between items-start">
+               <div className="flex-1">
+                 <h3 className="text-lg font-semibold text-gray-800 mb-2">{blog.title}</h3>
+                 <p className="text-gray-600 mb-2">{blog.body}</p>
+                 <p className="text-sm text-gray-400">{new Date(blog.createdAt).toLocaleDateString()}</p>
                </div>
-               <div style={{display: 'flex', gap: '8px', marginLeft: '15px'}}>
+               <div className="flex gap-2 ml-4">
                  <button
                    onClick={() => startEditing(blog)}
-                   style={{padding: '6px 12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', fontSize: '14px', cursor: 'pointer'}}
+                   className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
                  >
                    Edit
                  </button>
                  <button
                    onClick={() => handleDelete(blog._id)}
-                   style={{padding: '6px 12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', fontSize: '14px', cursor: 'pointer'}}
+                   className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
                  >
                    Delete
                  </button>
