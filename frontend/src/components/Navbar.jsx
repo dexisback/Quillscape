@@ -18,15 +18,15 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Link to="/feed">
-          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/feed') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
-            Feed
+        <Link to="/home">
+          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/home') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
+            Home
           </button>
         </Link>
 
-        <Link to="/dashboard">
-          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/dashboard') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
-            Dashboard
+        <Link to="/post-blogs">
+          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/post-blogs') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
+            Post
           </button>
         </Link>
 

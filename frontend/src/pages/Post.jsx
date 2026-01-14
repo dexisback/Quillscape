@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import BlogWritingForm from './BlogWritingForm';
 
 
-export default function Create(){
+export default function Post(){
   const { user } = useAuth();
   const [refreshPosts, setRefreshPosts] = useState(0);
 

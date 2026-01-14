@@ -28,7 +28,7 @@ function Signin({ email, password }){
         email: user.email
 
       })
-        navigate("/feed");
+        navigate("/home");
       } catch (error) {
         alert("invalid credentials");
         console.log(error);
@@ -57,7 +57,7 @@ function Signup({email, password}) {
       firebaseUid: res.user.uid,
       email: res.user.email
     });
-        navigate("/feed");
+        navigate("/home");
 
         } catch (error) {
             alert("Signup failed, user exists already")

@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import Navbar from '../components/Navbar';
 
-export default function Feed() {
-  const { user } = useAuth();
+export default function Home (){
+  const  { user } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,7 @@ export default function Feed() {
 
       <div className="max-w-3xl mx-auto p-5">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Feed</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Home</h1>
           <p className="text-gray-500 text-base">Discover stories from writers across Quillscape</p>
         </div>
 
