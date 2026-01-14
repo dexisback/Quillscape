@@ -12,7 +12,7 @@ export default function Home (){
   useEffect(() => {
     const fetchPublicBlogs = async () => {
       try {
-        const response = await api.get('/blogs/public');
+        const response = await api.get('/public');
         setBlogs(response.data);
       } catch (err) {
         console.error("Failed to fetch public blogs:", err);

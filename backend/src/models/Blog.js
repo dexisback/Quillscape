@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const blogSchema=mongoose.Schema({
     title: {type: String, required:true},
     body: {type: String, required: true},
-    author_uid: {type: String, required: true}
+    author_uid: {type: String, required: true},
+    status: {type: String, enum: ['draft', 'published'], default: 'draft'},
+    publishedAt: {type: Date, default: null}
 },
 {
     timestamps: true

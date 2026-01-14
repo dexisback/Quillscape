@@ -20,10 +20,10 @@ router.get("/", (req, res)=>{
 })
 
 
-//get all public blogs with author info
+//get all public blogs with author info (only published blogs)
 router.get("/public", async (req, res) => {
     try {
-        const blogs = await Blog.find({}).sort({ createdAt: -1 }).limit(50);
+        const blogs = await Blog.find({ status: 'published' }).sort({ publishedAt: -1 }).limit(50);
         
         //get author emails for each blog
         const blogsWithAuthors = await Promise.all(
@@ -57,20 +57,25 @@ try {
 })
 
 
-//creating a blog:
+//creating a blog (supports status: 'draft' or 'published')
 router.post("/post", verifyAuth, async (req, res)=>{
     try {
-    const { title, body } = req.body;
+    const { title, body, status } = req.body;
+    const blogStatus = status === 'published' ? 'published' : 'draft';
+    
     const newBlog= new Blog({
         title,
         body,
-        author_uid : req.user.uid
+        author_uid : req.user.uid,
+        status: blogStatus,
+        publishedAt: blogStatus === 'published' ? new Date() : null
     })
     await newBlog.save();
-    res.status(201).send({msg: "your blog has been posted"});
-    console.log("blog has been created");
+    res.status(201).json({ msg: `Blog ${blogStatus === 'published' ? 'published' : 'saved as draft'}`, blog: newBlog });
+    console.log(`blog has been created as ${blogStatus}`);
 } catch (error) {
-        console.error("sorry nigga you are either not authenticated or some shi")
+        console.error("error creating blog:", error);
+        res.status(500).send({ msg: "Failed to create blog" });
     }
 })
 
@@ -114,19 +119,31 @@ router.get("/:id", async(req, res)=>{
 
 
 
-//put blogs by id
+//put blogs by id (supports updating status to publish a draft)
 router.put("/:id", verifyAuth, async(req, res)=>{
     try {
-        const { title, body }= req.body;
+        const { title, body, status }= req.body;
         const blogId= req.params.id;
+        
+        const updateData = { title, body };
+        
+        // If status is being changed to published, set publishedAt
+        if (status === 'published') {
+            updateData.status = 'published';
+            updateData.publishedAt = new Date();
+        } else if (status === 'draft') {
+            updateData.status = 'draft';
+            updateData.publishedAt = null;
+        }
+        
         const updatedBlog = await Blog.findOneAndUpdate(
             {_id: blogId, author_uid: req.user.uid },
-            { title, body },
+            updateData,
             { new: true }
         ) 
 
-        if(!updatedBlog){res.status(404).send({msg: "sorry the blog doesnt exist"})}
-        res.status(200).send({msg: "blog updated succesfully"}, {updatedBlog})
+        if(!updatedBlog){return res.status(404).send({msg: "sorry the blog doesnt exist"})}
+        res.status(200).json({msg: "blog updated successfully", blog: updatedBlog})
     } catch (error) {
         console.error("sorry blog not found w the given id");
         res.status(404).send({msg: "sorry blog not found w the given id"})        

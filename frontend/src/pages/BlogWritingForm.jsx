@@ -12,7 +12,7 @@ function BlogWritingForm({ onBlogCreated }) {
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (status) => {
     // Validation BEFORE creating data and calling API
     if (!title.trim() || !body.trim()) {
       return alert("Please fill both title and body before submitting.");
@@ -24,20 +24,21 @@ function BlogWritingForm({ onBlogCreated }) {
 
     setLoading(true);
     try {
-      const data = { title: title.trim(), body: body.trim() };
+      const data = { title: title.trim(), body: body.trim(), status };
       const response = await createBlog(data);
       
       // Clear form on success
       setTitle("");
       setBody("");
       
-      // Notify parent component (Dashboard) that a blog was created
-      // This allows updating the blog list without page reload
+      // Notify parent component that a blog was created
       if (onBlogCreated && response.data) {
-        onBlogCreated(response.data);
+        onBlogCreated(response.data.blog);
       }
       
-      console.log("Blog posted successfully");
+      const actionText = status === 'published' ? 'published' : 'saved as draft';
+      alert(`Blog ${actionText} successfully!`);
+      console.log(`Blog ${actionText} successfully`);
     } catch (err) {
       console.error("Failed to create blog:", err);
       alert("Failed to create post. Please try again.");
@@ -66,13 +67,22 @@ function BlogWritingForm({ onBlogCreated }) {
           className={`w-full p-3 border border-gray-200 rounded-md text-base min-h-[120px] box-border resize-y ${loading ? 'bg-gray-100' : 'bg-white'}`}
         />
       </div>
-      <button 
-        onClick={handleSubmit}
-        disabled={loading}
-        className={`${loading ? 'px-4 py-2 bg-gray-500 cursor-not-allowed' : 'px-4 py-2 bg-blue-600 hover:bg-blue-700'} text-white rounded-md font-semibold`}
-      >
-        {loading ? 'Creating...' : 'Create Post'}
-      </button>
+      <div className="flex gap-3">
+        <button 
+          onClick={() => handleSubmit('draft')}
+          disabled={loading}
+          className={`px-4 py-2 rounded-md font-semibold ${loading ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}
+        >
+          {loading ? 'Saving...' : 'Save Draft'}
+        </button>
+        <button 
+          onClick={() => handleSubmit('published')}
+          disabled={loading}
+          className={`px-4 py-2 rounded-md font-semibold text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+        >
+          {loading ? 'Publishing...' : 'Publish'}
+        </button>
+      </div>
     </div>
   );
 }

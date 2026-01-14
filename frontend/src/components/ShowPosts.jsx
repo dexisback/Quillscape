@@ -74,6 +74,32 @@ const handleUpdate = async( blog_id )=>{
 
   }
 
+const handlePublish = async (blog_id) => {
+  try {
+    const response = await updateBlog(blog_id, { status: 'published' });
+    setBlogs(blogs.map(blog => 
+      blog._id === blog_id ? { ...blog, status: 'published', publishedAt: new Date() } : blog
+    ));
+    alert('Blog published successfully!');
+  } catch (err) {
+    console.error("publish failed", err);
+    alert('Failed to publish blog.');
+  }
+};
+
+const handleUnpublish = async (blog_id) => {
+  try {
+    await updateBlog(blog_id, { status: 'draft' });
+    setBlogs(blogs.map(blog => 
+      blog._id === blog_id ? { ...blog, status: 'draft', publishedAt: null } : blog
+    ));
+    alert('Blog reverted to draft.');
+  } catch (err) {
+    console.error("unpublish failed", err);
+    alert('Failed to unpublish blog.');
+  }
+};
+
 
 
 
@@ -119,11 +145,36 @@ const handleUpdate = async( blog_id )=>{
              // View mode
              <div className="flex justify-between items-start">
                <div className="flex-1">
-                 <h3 className="text-lg font-semibold text-gray-800 mb-2">{blog.title}</h3>
+                 <div className="flex items-center gap-2 mb-2">
+                   <h3 className="text-lg font-semibold text-gray-800">{blog.title}</h3>
+                   <span className={`px-2 py-0.5 text-xs rounded-full ${blog.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                     {blog.status === 'published' ? 'Published' : 'Draft'}
+                   </span>
+                 </div>
                  <p className="text-gray-600 mb-2">{blog.body}</p>
-                 <p className="text-sm text-gray-400">{new Date(blog.createdAt).toLocaleDateString()}</p>
+                 <p className="text-sm text-gray-400">
+                   {blog.status === 'published' && blog.publishedAt 
+                     ? `Published ${new Date(blog.publishedAt).toLocaleDateString()}`
+                     : `Created ${new Date(blog.createdAt).toLocaleDateString()}`
+                   }
+                 </p>
                </div>
                <div className="flex gap-2 ml-4">
+                 {blog.status === 'draft' ? (
+                   <button
+                     onClick={() => handlePublish(blog._id)}
+                     className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+                   >
+                     Publish
+                   </button>
+                 ) : (
+                   <button
+                     onClick={() => handleUnpublish(blog._id)}
+                     className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 text-sm"
+                   >
+                     Unpublish
+                   </button>
+                 )}
                  <button
                    onClick={() => startEditing(blog)}
                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
