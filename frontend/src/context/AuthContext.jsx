@@ -19,8 +19,9 @@ import Auth from "../pages/Auth";
         const unsubscribe = onAuthStateChanged(auth, (currentUser)=>{setUser(currentUser); setLoading(false);})
         return () => unsubscribe()
     },[auth])  
-//2: listening for logout:
+            //2: listening for logout:
             const logout = ()=>{signOut(auth)}
+
 
 return(<>
     <AuthContext.Provider value={{ user, loading, logout }}>

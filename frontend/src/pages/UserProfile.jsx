@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { getUserProfile, updateUserProfile } from '../api/user.api';
+import Navbar from '../components/Navbar';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
@@ -33,22 +34,36 @@ export default function UserProfile() {
     }
   }
 
-  if (loading) return (<div style={{color: '#333'}}>Loading...</div>);
-  if (!user) return (<div style={{color: '#333'}}>User not found</div>);
+  if (loading) return (
+    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+      <Navbar />
+      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px', color: '#333'}}>Loading...</div>
+    </div>
+  );
+  
+  if (!user) return (
+    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+      <Navbar />
+      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px', color: '#333'}}>User not found</div>
+    </div>
+  );
 
   return (
-    <div>
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '25px'}}>
-        <h2 style={{fontSize: '20px', fontWeight: '600', color: '#333', margin: '0'}}>User Profile</h2>
-        <button 
-          onClick={() => setIsEditing(!isEditing)}
-          style={{padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
-        >
-          {isEditing ? 'Cancel' : 'Edit Profile'}
-        </button>
-      </div>
-      <div>
-        {isEditing ? (
+    <div style={{minHeight: '100vh', backgroundColor: 'white'}}>
+      <Navbar />
+      <div style={{maxWidth: '800px', margin: '0 auto', padding: '20px'}}>
+        <div style={{backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '8px', padding: '25px'}}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '25px'}}>
+            <h2 style={{fontSize: '20px', fontWeight: '600', color: '#333', margin: '0'}}>User Profile</h2>
+            <button 
+              onClick={() => setIsEditing(!isEditing)}
+              style={{padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
+            >
+              {isEditing ? 'Cancel' : 'Edit Profile'}
+            </button>
+          </div>
+          <div>
+            {isEditing ? (
           <div style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
             <div>
               <label style={{display: 'block', color: '#333', fontSize: '14px', marginBottom: '5px'}}>Username</label>
@@ -99,6 +114,8 @@ export default function UserProfile() {
             </div>
           </div>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );

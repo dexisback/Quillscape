@@ -5,6 +5,7 @@ import express from "express";
 import axios from "axios";
 import { verifyAuth } from "../middleware/auth.js";
 import Blog from "../models/Blog.js";
+import User from "../models/User.js";
 
 
 
@@ -17,6 +18,31 @@ router.get("/", (req, res)=>{
     console.log("testing route works, this was only meant for the developer")
     res.send("hellow, youre in the /blog endpoint")
 })
+
+
+//get all public blogs with author info
+router.get("/public", async (req, res) => {
+    try {
+        const blogs = await Blog.find({}).sort({ createdAt: -1 }).limit(50);
+        
+        //get author emails for each blog
+        const blogsWithAuthors = await Promise.all(
+            blogs.map(async (blog) => {
+                const author = await User.findOne({ firebaseUid: blog.author_uid });
+                return {
+                    ...blog.toObject(),
+                    author_email: author ? author.email : 'Anonymous'
+                };
+            })
+        );
+        
+        res.status(200).json(blogsWithAuthors);
+    } catch (err) {
+        console.error("failed to fetch public blogs", err);
+        res.status(500).send({ msg: "server error fetching public blogs" });
+    }
+});
+
 
 
 

@@ -1,77 +1,50 @@
 import React from 'react'
 import { useAuth } from '../context/AuthContext'
+import { Link, useLocation } from 'react-router-dom'
 
-export default function Navbar({ setActiveTab, activeTab }) {
+export default function Navbar() {
   const { user, logout } = useAuth();
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <nav style={{width: '100%', backgroundColor: '#f8f9fa', borderBottom: '1px solid #ddd', padding: '15px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      {/* Left side - Logo and App name */}
-      <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-        <div style={{width: '40px', height: '40px', backgroundColor: '#007bff', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px', color: 'white'}}>
+    <nav className="w-full bg-gray-100 border-b border-gray-300 px-5 py-4 flex justify-between items-center">
+      <div className="flex items-center gap-2.5">
+        <div className="w-10 h-10 bg-blue-500 rounded-md flex items-center justify-center font-bold text-lg text-white">
           Q
         </div>
-        <span style={{fontSize: '20px', fontWeight: '600', color: '#333'}}>Quillscape</span>
+        <span className="text-xl font-semibold text-gray-800">Quillscape</span>
       </div>
 
-      {/* Right side - Navigation items */}
-      <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-        {/* Settings tab */}
-        <button
-          onClick={() => setActiveTab('settings')}
-          style={{
-            padding: '8px 16px', 
-            borderRadius: '4px', 
-            border: 'none', 
-            cursor: 'pointer',
-            backgroundColor: activeTab === 'settings' ? '#007bff' : '#e9ecef',
-            color: activeTab === 'settings' ? 'white' : '#333'
-          }}
-        >
-          Settings
-        </button>
+      <div className="flex items-center gap-4">
+        <Link to="/feed">
+          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/feed') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
+            Feed
+          </button>
+        </Link>
 
-        {/* User profile tab */}
-        <button
-          onClick={() => setActiveTab('profile')}
-          style={{
-            padding: '8px 16px', 
-            borderRadius: '4px', 
-            border: 'none', 
-            cursor: 'pointer',
-            backgroundColor: activeTab === 'profile' ? '#007bff' : '#e9ecef',
-            color: activeTab === 'profile' ? 'white' : '#333'
-          }}
-        >
-          Profile
-        </button>
+        <Link to="/dashboard">
+          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/dashboard') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
+            Dashboard
+          </button>
+        </Link>
 
-        {/* Blogs tab */}
-        <button
-          onClick={() => setActiveTab('blogs')}
-          style={{
-            padding: '8px 16px', 
-            borderRadius: '4px', 
-            border: 'none', 
-            cursor: 'pointer',
-            backgroundColor: activeTab === 'blogs' ? '#007bff' : '#e9ecef',
-            color: activeTab === 'blogs' ? 'white' : '#333'
-          }}
-        >
-          Blogs
-        </button>
+        <Link to="/user-settings">
+          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/user-settings') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
+            Settings
+          </button>
+        </Link>
 
-        {/* Signout button */}
+        <Link to="/user-profile">
+          <button className={`px-4 py-2 rounded border-none cursor-pointer ${isActive('/user-profile') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}>
+            Profile
+          </button>
+        </Link>
+
         <button
           onClick={logout}
-          style={{
-            padding: '8px 16px', 
-            borderRadius: '4px', 
-            border: 'none', 
-            cursor: 'pointer',
-            backgroundColor: '#dc3545',
-            color: 'white'
-          }}
+          className="px-4 py-2 rounded border-none cursor-pointer bg-red-500 text-white hover:bg-red-600"
         >
           Sign Out
         </button>
