@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "dotenv": "^17.2.3",
+    "framer-motion": "^12.26.2",
+    "gsap": "^3.14.2",
     "react-router-dom": "^7.12.0"
   }
 }
