@@ -24,6 +24,7 @@ export default function ShowPosts() {
     }
   }, [user])
 
+  
   const handleDelete = async (blog_id) => {
     if (!blog_id) return
     if (!confirm('Are you sure you want to delete this post?')) return
