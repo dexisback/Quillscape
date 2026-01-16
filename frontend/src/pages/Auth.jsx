@@ -1,124 +1,270 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import axios from "axios";
-import { syncUserWithMongoDB } from "../api/user.api";
+import { useNavigate, Link } from "react-router-dom"
+import { useState, useEffect, useRef } from "react"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "../firebase"
+import { syncUserWithMongoDB } from "../api/user.api"
+import { Mail, Lock, ArrowLeft } from "lucide-react"
+import gsap from "gsap"
 
-function Signin({ email, password }){
+function Signin({ email, password, loading, setLoading }) {
+  const navigate = useNavigate()
 
-   //keeping track of email and password
-  const navigate=useNavigate();
-  return (
-    <>
-     <button 
-       className="w-full py-3 bg-blue-600 text-white rounded-md mb-2 hover:bg-blue-700"
-       onClick={async ()=>{
-      console.log(email);
-      console.log(password);
-     
-      try {
+  const handleSignIn = async () => {
+    if (!email || !password) {
+      alert("Please enter both email and password")
+      return
+    }
+
+    setLoading(true)
+    try {
       const result = await signInWithEmailAndPassword(auth, email, password)
-      const user= result.user;
-    
-      const token=await auth.currentUser.getIdToken(); 
-      // console.log(token); //temp
-        await syncUserWithMongoDB({
+      const user = result.user
+      await auth.currentUser.getIdToken()
+      await syncUserWithMongoDB({
         firebaseUid: user.uid,
         email: user.email
-
       })
-        navigate("/home");
-      } catch (error) {
-        alert("invalid credentials");
-        console.log(error);
-      }
-     
-     
-     }}>Sign In</button>
+      navigate("/home")
+    } catch (error) {
+      alert("Invalid credentials. Please try again.")
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-</>
-)
-}
-
-
-function Signup({email, password}) {
-  const navigate=useNavigate();
-  
-    return (
-    <>
-    <button 
-      className="w-full py-3 bg-green-600 text-white rounded-md hover:bg-green-700"
-      onClick={async ()=>{
-        try {
-        const res=await createUserWithEmailAndPassword(auth, email, password);
-        const token= await res.user.getIdToken();
-        await syncUserWithMongoDB({
-      firebaseUid: res.user.uid,
-      email: res.user.email
-    });
-        navigate("/home");
-
-        } catch (error) {
-            alert("Signup failed, user exists already")
-            console.log(error);
-        }
-
-
-    }}>Sign Up</button>
-    {/* <InputBoxes email={email} setEmail={setEmail} password={password} setPassword={setPassword}></InputBoxes> */}
-    
-    </>
+  return (
+    <button
+      onClick={handleSignIn}
+      disabled={loading}
+      className="w-full py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+      style={{
+        backgroundColor: 'oklch(0.35 0.1 35)',
+        color: 'oklch(0.96 0.025 75)'
+      }}
+    >
+      {loading ? 'Signing in...' : 'Sign In'}
+    </button>
   )
 }
 
+function Signup({ email, password, loading, setLoading }) {
+  const navigate = useNavigate()
 
-//main component:
-export default function Auth(){
-    const [email, setEmail]= useState("");
-    const [password, setPassword]= useState("");
-    const navigate= useNavigate();
+  const handleSignUp = async () => {
+    if (!email || !password) {
+      alert("Please enter both email and password")
+      return
+    }
 
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters")
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password)
+      await res.user.getIdToken()
+      await syncUserWithMongoDB({
+        firebaseUid: res.user.uid,
+        email: res.user.email
+      })
+      navigate("/home")
+    } catch (error) {
+      alert("Signup failed. User may already exist.")
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-5">
-      <div className="w-full max-w-md p-8 border border-gray-200 rounded-lg bg-white shadow-sm">
+    <button
+      onClick={handleSignUp}
+      disabled={loading}
+      className="w-full py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+      style={{
+        backgroundColor: 'oklch(0.82 0.06 45)',
+        color: 'oklch(0.35 0.1 35)'
+      }}
+    >
+      {loading ? 'Creating account...' : 'Create Account'}
+    </button>
+  )
+}
+
+export default function Auth() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const cardRef = useRef(null)
+  const logoRef = useRef(null)
+
+  useEffect(() => {
+    // Entrance animation
+    if (cardRef.current) {
+      gsap.fromTo(
+        cardRef.current,
+        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power3.out" }
+      )
+    }
+    if (logoRef.current) {
+      gsap.fromTo(
+        logoRef.current,
+        { opacity: 0, scale: 0.5, rotation: -10 },
+        { opacity: 1, scale: 1, rotation: 0, duration: 0.6, delay: 0.3, ease: "back.out(1.7)" }
+      )
+    }
+  }, [])
+
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center p-6"
+      style={{
+        backgroundColor: 'oklch(0.96 0.025 75)',
+        backgroundImage: `
+          repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 3px,
+            rgba(139, 115, 85, 0.03) 3px,
+            rgba(139, 115, 85, 0.03) 6px
+          ),
+          repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 3px,
+            rgba(139, 115, 85, 0.02) 3px,
+            rgba(139, 115, 85, 0.02) 6px
+          ),
+          radial-gradient(ellipse at 30% 20%, rgba(139, 115, 85, 0.05) 0%, transparent 50%),
+          radial-gradient(ellipse at 70% 80%, rgba(139, 115, 85, 0.04) 0%, transparent 50%)
+        `
+      }}
+    >
+      {/* Back to Landing Link */}
+      <Link
+        to="/"
+        className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:scale-105"
+        style={{
+          backgroundColor: 'rgba(139, 115, 85, 0.1)',
+          color: 'oklch(0.35 0.1 35)',
+          backdropFilter: 'blur(10px)'
+        }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back
+      </Link>
+
+      {/* Auth Card - Glass Effect */}
+      <div
+        ref={cardRef}
+        className="w-full max-w-md p-8 rounded-3xl shadow-2xl"
+        style={{
+          backgroundColor: 'rgba(255, 253, 250, 0.85)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(139, 115, 85, 0.2)'
+        }}
+      >
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 bg-blue-600 rounded-md flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4">Q</div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">Quillscape</h1>
-          <p className="text-gray-500">Your thoughts, your space</p>
+        <div className="text-center mb-10">
+          <div
+            ref={logoRef}
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-5 shadow-lg"
+            style={{
+              backgroundColor: 'oklch(0.35 0.1 35)',
+              color: 'oklch(0.96 0.025 75)'
+            }}
+          >
+            Q
+          </div>
+          <h1
+            className="text-3xl font-bold mb-2"
+            style={{ color: 'oklch(0.25 0.05 40)' }}
+          >
+            Quillscape
+          </h1>
+          <p style={{ color: 'oklch(0.48 0.03 40)' }}>
+            Your thoughts, your space
+          </p>
         </div>
 
-        {/* Form fields */}
-        <div className="mb-5">
-          <label className="block text-gray-800 text-sm mb-1">Email</label>
-          <input 
-            type="email" 
-            placeholder='Enter your email' 
-            value={email} 
-            onChange={e=>{setEmail(e.target.value)}}
-            className="w-full p-3 border border-gray-200 rounded-md text-base mb-4 box-border"
-          />
-          
-          <label className="block text-gray-800 text-sm mb-1">Password</label>
-          <input 
-            type="password" 
-            placeholder='Enter your password' 
-            value={password} 
-            onChange={e=>{setPassword(e.target.value)}}
-            className="w-full p-3 border border-gray-200 rounded-md text-base box-border"
-          />
+        {/* Form Fields */}
+        <div className="space-y-5 mb-8">
+          {/* Email Field */}
+          <div>
+            <label
+              className="flex items-center gap-2 text-sm font-medium mb-2"
+              style={{ color: 'oklch(0.35 0.1 35)' }}
+            >
+              <Mail className="w-4 h-4" />
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              disabled={loading}
+              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2 disabled:opacity-50"
+              style={{
+                backgroundColor: 'rgba(139, 115, 85, 0.08)',
+                border: '1px solid rgba(139, 115, 85, 0.2)',
+                color: 'oklch(0.25 0.05 40)',
+                '--tw-ring-color': 'oklch(0.35 0.1 35)'
+              }}
+            />
+          </div>
+
+          {/* Password Field */}
+          <div>
+            <label
+              className="flex items-center gap-2 text-sm font-medium mb-2"
+              style={{ color: 'oklch(0.35 0.1 35)' }}
+            >
+              <Lock className="w-4 h-4" />
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              disabled={loading}
+              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2 disabled:opacity-50"
+              style={{
+                backgroundColor: 'rgba(139, 115, 85, 0.08)',
+                border: '1px solid rgba(139, 115, 85, 0.2)',
+                color: 'oklch(0.25 0.05 40)',
+                '--tw-ring-color': 'oklch(0.35 0.1 35)'
+              }}
+            />
+          </div>
         </div>
 
         {/* Buttons */}
-        <div className="mt-5">
-          <Signin email={email} password={password} />
-          <div className="text-center text-gray-500 my-3">or</div>
-          <Signup email={email} password={password} />
+        <div className="space-y-4">
+          <Signin email={email} password={password} loading={loading} setLoading={setLoading} />
+
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
+            <span className="text-sm" style={{ color: 'oklch(0.48 0.03 40)' }}>or</span>
+            <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
+          </div>
+
+          <Signup email={email} password={password} loading={loading} setLoading={setLoading} />
         </div>
+
+        {/* Footer Note */}
+        <p
+          className="text-center text-xs mt-8"
+          style={{ color: 'oklch(0.55 0.03 40)' }}
+        >
+          By continuing, you agree to write thoughtfully ✍️
+        </p>
       </div>
     </div>
   )
 }
-
