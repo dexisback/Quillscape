@@ -36,7 +36,7 @@ export default function Settings() {
       return
     }
     try {
-      await api.delete("/users/me")
+      await api.delete("/blogs/users/me")
       await deleteUser(user)
       alert("Account deleted successfully.")
       logout()

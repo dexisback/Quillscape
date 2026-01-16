@@ -2,18 +2,18 @@ import api from "./axios";
 
 export const syncUserWithMongoDB = (userData)=>{
     //userdata contains firebaseuid, and email
-    return api.post("/users/sync", userData)
+    return api.post("/blogs/users/sync", userData)
 }
 
 
 export const getUserProfile = () =>{
-    return api.get("/users/profile");
+    return api.get("/blogs/users/profile");
 
 }
 
 
 export const updateUserProfile = (userData) => {
-    return api.put("/users/update", userData);
+    return api.put("/blogs/users/update", userData);
 }
 
  
