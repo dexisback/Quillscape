@@ -2,11 +2,19 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
+const THEME_VERSION = 'v2'; // Bump this to reset user preferences
 
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
+    const version = localStorage.getItem('themeVersion');
+    // Reset preferences if version changed (migrating users to light default)
+    if (version !== THEME_VERSION) {
+      localStorage.removeItem('darkMode');
+      localStorage.setItem('themeVersion', THEME_VERSION);
+      return false; // Default to light mode
+    }
     const saved = localStorage.getItem('darkMode');
-    return saved ? JSON.parse(saved) : true;
+    return saved !== null ? JSON.parse(saved) : false;
   });
 
   useEffect(() => {
