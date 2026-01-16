@@ -6,8 +6,9 @@ import { syncUserWithMongoDB } from "../api/user.api"
 import { Mail, Lock, ArrowLeft } from "lucide-react"
 import gsap from "gsap"
 
-function Signin({ email, password, loading, setLoading }) {
+function Signin({ email, password }) {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -19,15 +20,15 @@ function Signin({ email, password, loading, setLoading }) {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
       const user = result.user
-      await auth.currentUser.getIdToken()
+      const token = await auth.currentUser.getIdToken()
       await syncUserWithMongoDB({
         firebaseUid: user.uid,
         email: user.email
       })
       navigate("/home")
     } catch (error) {
+      console.error("Sign in error:", error)
       alert("Invalid credentials. Please try again.")
-      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -48,8 +49,9 @@ function Signin({ email, password, loading, setLoading }) {
   )
 }
 
-function Signup({ email, password, loading, setLoading }) {
+function Signup({ email, password }) {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   const handleSignUp = async () => {
     if (!email || !password) {
@@ -65,15 +67,15 @@ function Signup({ email, password, loading, setLoading }) {
     setLoading(true)
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password)
-      await res.user.getIdToken()
+      const token = await res.user.getIdToken()
       await syncUserWithMongoDB({
         firebaseUid: res.user.uid,
         email: res.user.email
       })
       navigate("/home")
     } catch (error) {
+      console.error("Sign up error:", error)
       alert("Signup failed. User may already exist.")
-      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -97,7 +99,6 @@ function Signup({ email, password, loading, setLoading }) {
 export default function Auth() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
   const cardRef = useRef(null)
   const logoRef = useRef(null)
 
@@ -207,13 +208,11 @@ export default function Auth() {
               placeholder="Enter your email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              disabled={loading}
-              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2 disabled:opacity-50"
+              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2"
               style={{
                 backgroundColor: 'rgba(139, 115, 85, 0.08)',
                 border: '1px solid rgba(139, 115, 85, 0.2)',
-                color: 'oklch(0.25 0.05 40)',
-                '--tw-ring-color': 'oklch(0.35 0.1 35)'
+                color: 'oklch(0.25 0.05 40)'
               }}
             />
           </div>
@@ -232,13 +231,11 @@ export default function Auth() {
               placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              disabled={loading}
-              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2 disabled:opacity-50"
+              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2"
               style={{
                 backgroundColor: 'rgba(139, 115, 85, 0.08)',
                 border: '1px solid rgba(139, 115, 85, 0.2)',
-                color: 'oklch(0.25 0.05 40)',
-                '--tw-ring-color': 'oklch(0.35 0.1 35)'
+                color: 'oklch(0.25 0.05 40)'
               }}
             />
           </div>
@@ -246,7 +243,7 @@ export default function Auth() {
 
         {/* Buttons */}
         <div className="space-y-4">
-          <Signin email={email} password={password} loading={loading} setLoading={setLoading} />
+          <Signin email={email} password={password} />
 
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
@@ -254,7 +251,7 @@ export default function Auth() {
             <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
           </div>
 
-          <Signup email={email} password={password} loading={loading} setLoading={setLoading} />
+          <Signup email={email} password={password} />
         </div>
 
         {/* Footer Note */}
