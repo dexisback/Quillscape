@@ -1,14 +1,14 @@
+import 'dotenv/config';  //stupid mistake, wasnt calling dotenv sabse pehle, shouldve dont that 
+
 import express from "express";
 import cors from "cors";
 import axios from "axios";
 import jwt from "jsonwebtoken"
-import dotenv from "dotenv"
 import { verifyAuth } from "./middleware/auth.js";
 import { connectDB } from "./db.js";
 import blogRoutes from "./routes/blogRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 connectDB();
-dotenv.config();
 const app=express();
 
 
