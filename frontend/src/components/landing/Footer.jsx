@@ -23,7 +23,7 @@ export default function Footer() {
     return (
         <footer
             ref={footerRef}
-            className="border-t border-border/30 py-16 px-6 mt-24 bg-gradient-to-b from-transparent to-muted/20"
+            className="py-16 px-6 mt-24 bg-gradient-to-b from-transparent to-muted/20"
         >
             <div className="max-w-5xl mx-auto">
                 <div className="flex flex-col gap-12">
@@ -36,7 +36,7 @@ export default function Footer() {
                     </div>
 
                     {/* Bottom Section - Links and Social */}
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pt-8 border-t border-border/20">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pt-8">
                         <div className="flex flex-col gap-4">
                             {/* Developer Link */}
                             <a

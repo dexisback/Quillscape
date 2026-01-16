@@ -6,18 +6,18 @@ import gsap from "gsap"
 export default function Navbar() {
     const navigate = useNavigate()
     const navRef = useRef(null)
+    const navContainerRef = useRef(null)
     const themeSwitchRef = useRef(null)
     const overlayRef = useRef(null)
-    const [isScrolled, setIsScrolled] = useState(false)
+    const [scrollProgress, setScrollProgress] = useState(0)
     const [isDark, setIsDark] = useState(false)
     const [isAnimating, setIsAnimating] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
-            const scrolled = window.scrollY > 50
-            if (scrolled !== isScrolled) {
-                setIsScrolled(scrolled)
-            }
+            // Calculate scroll progress from 0 to 1 over 150px of scrolling
+            const progress = Math.min(window.scrollY / 150, 1)
+            setScrollProgress(progress)
         }
 
         const handleThemeChange = () => {
@@ -28,10 +28,24 @@ export default function Navbar() {
         handleThemeChange()
 
         return () => window.removeEventListener("scroll", handleScroll)
-    }, [isScrolled])
+    }, [])
+
+    // Use GSAP for smooth navbar animation based on scroll progress
+    useEffect(() => {
+        if (!navContainerRef.current) return
+
+        // Interpolate values based on scroll progress
+        const maxWidth = 100 - (scrollProgress * 20) // 100% to 80%
+
+        gsap.to(navContainerRef.current, {
+            maxWidth: `${maxWidth}%`,
+            duration: 0.1,
+            ease: "none"
+        })
+    }, [scrollProgress])
 
     const toggleTheme = () => {
-        if (isAnimating) return // Prevent multiple clicks during animation
+        if (isAnimating) return
 
         const isDarkNow = document.documentElement.classList.contains("dark")
         const newIsDark = !isDarkNow
@@ -89,34 +103,31 @@ export default function Navbar() {
     return (
         <nav
             ref={navRef}
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? "py-3 px-6" : "py-6 px-8"
-                }`}
+            className="fixed top-0 left-0 right-0 z-50 py-6 px-8 transition-all duration-500 ease-in-out"
         >
             <div
-                className={`glass-nav rounded-3xl px-6 py-4 flex items-center justify-between transition-all duration-500 ease-in-out ${isScrolled ? "max-w-fit" : "max-w-full"
-                    } ${isScrolled ? "mx-auto" : ""}`}
+                ref={navContainerRef}
+                className="glass-nav rounded-3xl px-6 py-4 flex items-center justify-between mx-auto transition-all duration-500 ease-in-out"
+                style={{ maxWidth: '100%' }}
             >
-                {/* Logo and Name */}
+                {/* Logo and Name - Always visible */}
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center transition-all duration-500">
                         <span className="text-primary-foreground font-bold text-lg">Q</span>
                     </div>
-                    {!isScrolled && (
-                        <span className="font-semibold text-foreground text-lg transition-all duration-500">Quillscape</span>
-                    )}
+                    <span className="font-semibold text-foreground text-lg transition-all duration-500">Quillscape</span>
                 </div>
 
-                {!isScrolled && <div className="flex-1" />}
+                <div className="flex-1" />
 
+                {/* Actions - Always visible */}
                 <div className="flex items-center gap-4">
-                    {!isScrolled && (
-                        <button
-                            onClick={handleGetStarted}
-                            className="px-5 py-2 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
-                        >
-                            Get Started
-                        </button>
-                    )}
+                    <button
+                        onClick={handleGetStarted}
+                        className="px-5 py-2 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    >
+                        Get Started
+                    </button>
 
                     <button
                         ref={themeSwitchRef}

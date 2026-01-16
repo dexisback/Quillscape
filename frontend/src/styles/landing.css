@@ -99,6 +99,14 @@
     border-color: var(--color-border);
 }
 
+.bg-card {
+    background-color: var(--color-card);
+}
+
+.text-card-foreground {
+    color: var(--color-card-foreground);
+}
+
 /* Crumbled Paper Texture Background */
 body {
     background-color: var(--color-background);

@@ -1,111 +1,121 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import api from '../api/axios';
-import Navbar from '../components/Navbar';
-import FloatingWriteButton from '../components/FloatingWriteButton';
-import BlogEditorOverlay from '../components/BlogEditorOverlay';
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import api from '../api/axios'
+import HomeNavbar from '../components/home/HomeNavbar'
+import BlogCard from '../components/home/BlogCard'
+import FloatingActionButton from '../components/home/FloatingActionButton'
+import BlogEditorOverlay from '../components/BlogEditorOverlay'
 
-export default function Home (){
-  const  { user } = useAuth();
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
+export default function Home() {
+  const { user } = useAuth()
+  const [blogs, setBlogs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [isEditorOpen, setIsEditorOpen] = useState(false)
 
   const fetchPublicBlogs = async () => {
     try {
-      const response = await api.get('/public');
-      setBlogs(response.data);
+      const response = await api.get('/public')
+      setBlogs(response.data)
     } catch (err) {
-      console.error("Failed to fetch public blogs:", err);
+      console.error("Failed to fetch public blogs:", err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchPublicBlogs();
-  }, []);
+    fetchPublicBlogs()
+  }, [])
 
   const handleBlogCreated = (newBlog) => {
-    // Refresh the feed to show new published posts
-    fetchPublicBlogs();
-  };
+    fetchPublicBlogs()
+  }
 
   const calculateReadTime = (body) => {
-    const wordsPerMinute = 200;
-    const wordCount = body.trim().split(/\s+/).length;
-    const readTime = Math.ceil(wordCount / wordsPerMinute);
-    return readTime;
-  };
+    const wordsPerMinute = 200
+    const wordCount = body.trim().split(/\s+/).length
+    const readTime = Math.ceil(wordCount / wordsPerMinute)
+    return readTime
+  }
 
   const formatTimeAgo = (timestamp) => {
-    const now = new Date();
-    const posted = new Date(timestamp);
-    const diffMs = now - posted;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    const now = new Date()
+    const posted = new Date(timestamp)
+    const diffMs = now - posted
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
 
-    if (diffMins < 1) return 'just now';
-    if (diffMins < 60) return `${diffMins} min ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-  };
+    if (diffMins < 1) return 'just now'
+    if (diffMins < 60) return `${diffMins} min ago`
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+  }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
+    <div className="min-h-screen bg-background">
+      <HomeNavbar />
 
-      <div className="max-w-3xl mx-auto p-5">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Home</h1>
-          <p className="text-gray-500 text-base">Discover stories from writers across Quillscape</p>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-10 text-gray-500">Loading posts...</div>
-        ) : blogs.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">No posts yet. Be the first to write!</div>
-        ) : (
-          <div className="flex flex-col gap-5">
-            {blogs.map(blog => (
-              <div 
-                key={blog._id} 
-                className="bg-white border border-gray-300 rounded-lg p-5 cursor-pointer hover:shadow-md transition-shadow"
-              >
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                  {blog.title}
-                </h2>
-                
-                <p className="text-gray-600 text-base leading-relaxed mb-4">
-                  {blog.body.length > 200 ? `${blog.body.substring(0, 200)}...` : blog.body}
-                </p>
-
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span className="font-medium">
-                    {blog.author_email || 'Anonymous'}
-                  </span>
-                  <span>•</span>
-                  <span>{formatTimeAgo(blog.createdAt)}</span>
-                  <span>•</span>
-                  <span>{calculateReadTime(blog.body)} min read</span>
-                </div>
-              </div>
-            ))}
+      <main className="pt-24 pb-12 px-6">
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="mb-12 text-left">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Home</h1>
+            <p className="text-lg text-muted-foreground">Discover stories from writers across Quillscape</p>
           </div>
-        )}
-      </div>
 
-      {/* Floating Write Button */}
-      <FloatingWriteButton onClick={() => setIsEditorOpen(true)} />
+          {/* Blog Feed */}
+          {loading ? (
+            <div className="text-center py-10 text-muted-foreground">
+              <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p>Loading posts...</p>
+            </div>
+          ) : blogs.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">📝</span>
+              </div>
+              <p className="text-muted-foreground text-lg">No posts yet. Be the first to write!</p>
+              <button
+                onClick={() => setIsEditorOpen(true)}
+                className="mt-4 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+              >
+                Create Your First Post
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {blogs.map(blog => (
+                <BlogCard
+                  key={blog._id}
+                  blog={blog}
+                  calculateReadTime={calculateReadTime}
+                  formatTimeAgo={formatTimeAgo}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Load More Button */}
+          {blogs.length > 0 && (
+            <div className="mt-12 text-center">
+              <button className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:shadow-lg transition-all duration-300 hover:scale-105">
+                Load More Stories
+              </button>
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton onClick={() => setIsEditorOpen(true)} />
 
       {/* Blog Editor Overlay */}
-      <BlogEditorOverlay 
-        isOpen={isEditorOpen} 
-        onClose={() => setIsEditorOpen(false)} 
+      <BlogEditorOverlay
+        isOpen={isEditorOpen}
+        onClose={() => setIsEditorOpen(false)}
         onBlogCreated={handleBlogCreated}
       />
     </div>
-  );
+  )
 }
