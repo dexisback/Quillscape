@@ -1,122 +1,237 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { getUserProfile, updateUserProfile } from '../api/user.api';
-import Navbar from '../components/Navbar';
+import { useState, useEffect, useRef } from 'react'
+import { getUserProfile, updateUserProfile } from '../api/user.api'
+import HomeNavbar from '../components/home/HomeNavbar'
+import { User, Mail, FileText, Pencil, Check, X } from 'lucide-react'
+import gsap from 'gsap'
 
 export default function UserProfile() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ username: '', bio: '' });
-  
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [isEditing, setIsEditing] = useState(false)
+  const [formData, setFormData] = useState({ username: '', bio: '' })
+  const [saving, setSaving] = useState(false)
+  const pageRef = useRef(null)
+  const avatarRef = useRef(null)
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await getUserProfile();
-        setUser(response.data);
+        const response = await getUserProfile()
+        setUser(response.data)
+        setFormData({
+          username: response.data.username || '',
+          bio: response.data.bio || ''
+        })
       } catch (err) {
-        console.error('Error fetching profile:', err);
+        console.error('Error fetching profile:', err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchProfile();
-  }, []);
+    fetchProfile()
+  }, [])
+
+  useEffect(() => {
+    if (!loading && pageRef.current) {
+      gsap.fromTo(
+        pageRef.current.children,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }
+      )
+    }
+  }, [loading])
 
   const handleUpdate = async () => {
+    setSaving(true)
     try {
-      const response = await updateUserProfile(formData);
-      setUser(response.data);
-      setIsEditing(false);
+      const response = await updateUserProfile(formData)
+      setUser(response.data)
+      setIsEditing(false)
+
+      // Success animation
+      if (avatarRef.current) {
+        gsap.to(avatarRef.current, {
+          scale: 1.1,
+          duration: 0.2,
+          yoyo: true,
+          repeat: 1
+        })
+      }
     } catch (err) {
-      console.error('Update failed:', err);
-      alert('Update failed!');
+      console.error('Update failed:', err)
+      alert('Update failed! Please try again.')
+    } finally {
+      setSaving(false)
     }
   }
 
+  const cancelEdit = () => {
+    setFormData({
+      username: user?.username || '',
+      bio: user?.bio || ''
+    })
+    setIsEditing(false)
+  }
+
+  // Generate avatar from email
+  const avatarUrl = user?.email
+    ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.email)}`
+    : null
+
   if (loading) return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <div className="max-w-2xl mx-auto p-5 text-gray-800">Loading...</div>
+    <div className="min-h-screen bg-background">
+      <HomeNavbar />
+      <main className="pt-24 pb-12 px-6">
+        <div className="max-w-2xl mx-auto text-center py-16">
+          <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </main>
     </div>
-  );
-  
+  )
+
   if (!user) return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <div className="max-w-2xl mx-auto p-5 text-gray-800">User not found</div>
+    <div className="min-h-screen bg-background">
+      <HomeNavbar />
+      <main className="pt-24 pb-12 px-6">
+        <div className="max-w-2xl mx-auto text-center py-16">
+          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+            <User className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <p className="text-muted-foreground text-lg">User not found</p>
+        </div>
+      </main>
     </div>
-  );
+  )
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <div className="max-w-2xl mx-auto p-5">
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 m-0">User Profile</h2>
-            <button 
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              {isEditing ? 'Cancel' : 'Edit Profile'}
-            </button>
+    <div className="min-h-screen bg-background">
+      <HomeNavbar />
+
+      <main className="pt-24 pb-12 px-6">
+        <div className="max-w-2xl mx-auto" ref={pageRef}>
+          {/* Header */}
+          <div className="mb-12 text-left">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Profile</h1>
+            <p className="text-lg text-muted-foreground">Your public presence on Quillscape</p>
           </div>
-          <div>
-            {isEditing ? (
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-gray-800 text-sm mb-1">Username</label>
-              <input 
-                value={formData.username} 
-                onChange={(e) => setFormData({...formData, username: e.target.value})}
-                className="w-full p-3 border border-gray-200 rounded-md text-base box-border"
-                placeholder="Enter username"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-800 text-sm mb-1">Bio</label>
-              <textarea 
-                value={formData.bio} 
-                onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                className="w-full p-3 border border-gray-200 rounded-md text-base min-h-[100px] box-border resize-y"
-                placeholder="Tell us about yourself"
-              />
-            </div>
-            <div className="flex gap-3">
-              <button 
-                onClick={handleUpdate}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-semibold"
+
+          {/* Profile Card */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            {/* Avatar Section */}
+            <div className="bg-muted/30 p-8 flex flex-col items-center border-b border-border">
+              <div
+                ref={avatarRef}
+                className="w-24 h-24 rounded-full overflow-hidden border-4 border-card shadow-lg mb-4"
               >
-                Save Changes
-              </button>
-              <button 
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold"
-              >
-                Cancel
-              </button>
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={user.username || 'User'}
+                    className="w-full h-full object-cover bg-muted"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-primary flex items-center justify-center">
+                    <User className="w-12 h-12 text-primary-foreground" />
+                  </div>
+                )}
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">
+                {user.username || 'Anonymous Writer'}
+              </h2>
+              <p className="text-muted-foreground text-sm">{user.email}</p>
             </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            <div className="bg-white border border-gray-200 rounded-md p-4">
-              <p className="text-gray-500 text-sm mb-1">Username</p>
-              <p className="text-gray-800 m-0">{user.username || 'Not set'}</p>
+
+            {/* Profile Details */}
+            <div className="p-6">
+              {/* Edit Toggle Button */}
+              <div className="flex justify-end mb-6">
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleUpdate}
+                      disabled={saving}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg bg-primary text-primary-foreground disabled:opacity-50"
+                    >
+                      <Check className="w-4 h-4" />
+                      {saving ? 'Saving...' : 'Save'}
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      disabled={saving}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 bg-muted text-muted-foreground hover:bg-muted/80"
+                    >
+                      <X className="w-4 h-4" />
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg bg-secondary text-secondary-foreground"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Edit Profile
+                  </button>
+                )}
+              </div>
+
+              {/* Fields */}
+              <div className="space-y-6">
+                {/* Username */}
+                <div className="bg-muted/20 rounded-xl p-5 border border-border">
+                  <div className="flex items-center gap-3 mb-3">
+                    <User className="w-5 h-5 text-primary" />
+                    <label className="text-sm font-medium text-muted-foreground">Username</label>
+                  </div>
+                  {isEditing ? (
+                    <input
+                      value={formData.username}
+                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                      className="w-full p-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your username"
+                    />
+                  ) : (
+                    <p className="text-foreground text-lg font-medium">
+                      {user.username || <span className="text-muted-foreground italic">Not set</span>}
+                    </p>
+                  )}
+                </div>
+
+                {/* Bio */}
+                <div className="bg-muted/20 rounded-xl p-5 border border-border">
+                  <div className="flex items-center gap-3 mb-3">
+                    <FileText className="w-5 h-5 text-primary" />
+                    <label className="text-sm font-medium text-muted-foreground">Bio</label>
+                  </div>
+                  {isEditing ? (
+                    <textarea
+                      value={formData.bio}
+                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                      className="w-full p-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground min-h-[120px] resize-y focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Tell us about yourself..."
+                    />
+                  ) : (
+                    <p className="text-foreground leading-relaxed">
+                      {user.bio || <span className="text-muted-foreground italic">No bio yet. Tell the world about yourself!</span>}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email (Read-only) */}
+                <div className="bg-muted/20 rounded-xl p-5 border border-border">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Mail className="w-5 h-5 text-primary" />
+                    <label className="text-sm font-medium text-muted-foreground">Email</label>
+                    <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
+                  </div>
+                  <p className="text-foreground text-lg">{user.email}</p>
+                </div>
+              </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-md p-4">
-              <p className="text-gray-500 text-sm mb-1">Bio</p>
-              <p className="text-gray-800 m-0">{user.bio || 'No bio yet'}</p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-md p-4">
-              <p className="text-gray-500 text-sm mb-1">Email</p>
-              <p className="text-gray-800 m-0">{user.email} <span className="text-gray-500">(Not editable)</span></p>
-            </div>
-          </div>
-        )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
-  );
+  )
 }
