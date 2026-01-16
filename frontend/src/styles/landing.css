@@ -1,0 +1,218 @@
+/* Landing Page - Vintage Aged Paper Aesthetic */
+
+:root {
+    /* Enhanced vintage aged paper aesthetic with stronger neutral base and crumbled texture effect */
+    --color-background: oklch(0.96 0.025 75);
+    --color-foreground: oklch(0.18 0.01 40);
+    --color-card: oklch(0.94 0.03 80);
+    --color-card-foreground: oklch(0.15 0.01 40);
+    --color-popover: oklch(0.95 0.025 75);
+    --color-popover-foreground: oklch(0.15 0.01 40);
+    --color-primary: oklch(0.35 0.1 35);
+    --color-primary-foreground: oklch(0.97 0.02 75);
+    --color-secondary: oklch(0.82 0.06 45);
+    --color-secondary-foreground: oklch(0.2 0.01 40);
+    --color-muted: oklch(0.86 0.05 70);
+    --color-muted-foreground: oklch(0.48 0.03 40);
+    --color-accent: oklch(0.62 0.18 25);
+    --color-accent-foreground: oklch(0.98 0.02 75);
+    --color-destructive: oklch(0.577 0.245 27.325);
+    --color-destructive-foreground: oklch(0.577 0.245 27.325);
+    --color-border: oklch(0.9 0.025 70);
+    --color-input: oklch(0.9 0.025 70);
+    --color-ring: oklch(0.62 0.18 25);
+    --radius: 1.25rem;
+}
+
+.dark {
+    --color-background: oklch(0.16 0.01 40);
+    --color-foreground: oklch(0.94 0.02 75);
+    --color-card: oklch(0.2 0.01 40);
+    --color-card-foreground: oklch(0.92 0.02 75);
+    --color-popover: oklch(0.18 0.01 40);
+    --color-popover-foreground: oklch(0.92 0.02 75);
+    --color-primary: oklch(0.85 0.08 70);
+    --color-primary-foreground: oklch(0.16 0.01 40);
+    --color-secondary: oklch(0.38 0.06 45);
+    --color-secondary-foreground: oklch(0.92 0.02 75);
+    --color-muted: oklch(0.32 0.05 70);
+    --color-muted-foreground: oklch(0.65 0.03 70);
+    --color-accent: oklch(0.72 0.2 25);
+    --color-accent-foreground: oklch(0.16 0.01 40);
+    --color-destructive: oklch(0.396 0.141 25.723);
+    --color-destructive-foreground: oklch(0.637 0.237 25.331);
+    --color-border: oklch(0.32 0.01 70);
+    --color-input: oklch(0.32 0.01 70);
+    --color-ring: oklch(0.72 0.2 25);
+}
+
+/* Utility Classes */
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.text-primary-foreground {
+    color: var(--color-primary-foreground);
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary);
+}
+
+.text-secondary-foreground {
+    color: var(--color-secondary-foreground);
+}
+
+.bg-accent {
+    background-color: var(--color-accent);
+}
+
+.text-accent {
+    color: var(--color-accent);
+}
+
+.text-accent-foreground {
+    color: var(--color-accent-foreground);
+}
+
+.bg-muted {
+    background-color: var(--color-muted);
+}
+
+.text-muted-foreground {
+    color: var(--color-muted-foreground);
+}
+
+.text-foreground {
+    color: var(--color-foreground);
+}
+
+.bg-background {
+    background-color: var(--color-background);
+}
+
+.border-border {
+    border-color: var(--color-border);
+}
+
+/* Crumbled Paper Texture Background */
+body {
+    background-color: var(--color-background);
+    background-image: repeating-linear-gradient(45deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 4px),
+        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px),
+        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.015) 1px, rgba(0, 0, 0, 0.015) 2px);
+    background-size: 100% 100%, 100% 100%, 1px 2px;
+    min-height: 100vh;
+}
+
+/* Glassmorphism Effect for Navbar */
+.glass-nav {
+    background: color-mix(in oklch, var(--color-background) 40%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in oklch, var(--color-border) 20%, transparent);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass-nav {
+    background: color-mix(in oklch, var(--color-background) 40%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-border) 20%, transparent);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Sticky Note Styles */
+.sticky-note {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--color-card);
+}
+
+.sticky-note:hover {
+    transform: translateY(-8px) rotate(0deg) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 6px 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+.sticky-pin {
+    position: absolute;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sticky-pin::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+}
+
+/* Smooth Transitions */
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+/* Animations */
+@keyframes swipe-in {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes theme-switch {
+    0% {
+        clip-path: circle(0% at 100% 0%);
+    }
+
+    100% {
+        clip-path: circle(150% at 0% 0%);
+    }
+}
+
+.animate-theme-switch {
+    animation: theme-switch 0.6s ease-in-out forwards;
+}
+
+.animate-swipe-in {
+    animation: swipe-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+}
