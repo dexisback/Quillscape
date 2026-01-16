@@ -2,7 +2,7 @@
 //interceptor and handles reptitive token attachment
 import axios from "axios";
 import { getAuth } from "firebase/auth";
-const api = axios.create({baseURL: "http://localhost:3000/blogs"})
+const api = axios.create({baseURL: import.meta.env.VITE_API_BASE_URL})
 
 
 
