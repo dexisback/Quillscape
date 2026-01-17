@@ -20,16 +20,34 @@ function Signin({ email, password }) {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
       const user = result.user
-      const token = await auth.currentUser.getIdToken()
-      await syncUserWithMongoDB({
-        firebaseUid: user.uid,
-        email: user.email
-      })
-      navigate("/home")
+      
+      // Wait for auth state to be fully ready
+      await user.getIdToken(true) // force refresh token
+      
+      // Small delay to ensure Firebase auth state is propagated
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      // Sync with MongoDB (in case user data needs updating)
+      try {
+        await syncUserWithMongoDB({
+          firebaseUid: user.uid,
+          email: user.email
+        })
+      } catch (syncError) {
+        console.error("MongoDB sync error:", syncError)
+        // Don't block navigation - user is authenticated
+      }
+      
+      navigate("/home", { replace: true })
     } catch (error) {
       console.error("Sign in error:", error)
-      alert("Invalid credentials. Please try again.")
-    } finally {
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+        alert("Invalid email or password. Please try again.")
+      } else if (error.code === 'auth/user-not-found') {
+        alert("No account found with this email. Please sign up first.")
+      } else {
+        alert("Sign in failed. Please try again.")
+      }
       setLoading(false)
     }
   }
@@ -67,16 +85,32 @@ function Signup({ email, password }) {
     setLoading(true)
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password)
-      const token = await res.user.getIdToken()
-      await syncUserWithMongoDB({
-        firebaseUid: res.user.uid,
-        email: res.user.email
-      })
-      navigate("/home")
+      
+      // Wait for auth state to be fully ready
+      await res.user.getIdToken(true) // force refresh token
+      
+      // Small delay to ensure Firebase auth state is propagated
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      // Sync with MongoDB
+      try {
+        await syncUserWithMongoDB({
+          firebaseUid: res.user.uid,
+          email: res.user.email
+        })
+      } catch (syncError) {
+        console.error("MongoDB sync error (user still created in Firebase):", syncError)
+        // Don't block navigation - user is authenticated
+      }
+      
+      navigate("/home", { replace: true })
     } catch (error) {
       console.error("Sign up error:", error)
-      alert("Signup failed. User may already exist.")
-    } finally {
+      if (error.code === 'auth/email-already-in-use') {
+        alert("This email is already registered. Try signing in instead.")
+      } else {
+        alert("Signup failed. Please try again.")
+      }
       setLoading(false)
     }
   }
