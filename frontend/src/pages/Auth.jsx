@@ -3,52 +3,47 @@ import { useState, useEffect, useRef } from "react"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase"
 import { syncUserWithMongoDB } from "../api/user.api"
+import { useAuth } from "../context/AuthContext"
 import { Mail, Lock, ArrowLeft } from "lucide-react"
 import gsap from "gsap"
 
-function Signin({ email, password }) {
-  const navigate = useNavigate()
+function Signin({ email, password, setError, setAuthLoading }) {
   const [loading, setLoading] = useState(false)
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      alert("Please enter both email and password")
+      setError("Please enter both email and password")
       return
     }
 
     setLoading(true)
+    setAuthLoading(true)
+    setError("")
+    
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
-      const user = result.user
       
-      // Wait for auth state to be fully ready
-      await user.getIdToken(true) // force refresh token
+      // Sync with MongoDB in background (don't await)
+      syncUserWithMongoDB({
+        firebaseUid: result.user.uid,
+        email: result.user.email
+      }).catch(err => console.error("MongoDB sync error:", err))
       
-      // Small delay to ensure Firebase auth state is propagated
-      await new Promise(resolve => setTimeout(resolve, 300))
-      
-      // Sync with MongoDB (in case user data needs updating)
-      try {
-        await syncUserWithMongoDB({
-          firebaseUid: user.uid,
-          email: user.email
-        })
-      } catch (syncError) {
-        console.error("MongoDB sync error:", syncError)
-        // Don't block navigation - user is authenticated
-      }
-      
-      navigate("/home", { replace: true })
+      // Navigation will happen automatically via useEffect in parent
     } catch (error) {
       console.error("Sign in error:", error)
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-        alert("Invalid email or password. Please try again.")
-      } else if (error.code === 'auth/user-not-found') {
-        alert("No account found with this email. Please sign up first.")
-      } else {
-        alert("Sign in failed. Please try again.")
-      }
+      setAuthLoading(false)
       setLoading(false)
+      
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+        setError("Invalid email or password. Please try again.")
+      } else if (error.code === 'auth/user-not-found') {
+        setError("No account found with this email. Please sign up first.")
+      } else if (error.code === 'auth/too-many-requests') {
+        setError("Too many failed attempts. Please try again later.")
+      } else {
+        setError("Sign in failed. Please try again.")
+      }
     }
   }
 
@@ -67,51 +62,48 @@ function Signin({ email, password }) {
   )
 }
 
-function Signup({ email, password }) {
-  const navigate = useNavigate()
+function Signup({ email, password, setError, setAuthLoading }) {
   const [loading, setLoading] = useState(false)
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      alert("Please enter both email and password")
+      setError("Please enter both email and password")
       return
     }
 
     if (password.length < 6) {
-      alert("Password must be at least 6 characters")
+      setError("Password must be at least 6 characters")
       return
     }
 
     setLoading(true)
+    setAuthLoading(true)
+    setError("")
+    
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password)
       
-      // Wait for auth state to be fully ready
-      await res.user.getIdToken(true) // force refresh token
+      // Sync with MongoDB in background (don't await)
+      syncUserWithMongoDB({
+        firebaseUid: res.user.uid,
+        email: res.user.email
+      }).catch(err => console.error("MongoDB sync error:", err))
       
-      // Small delay to ensure Firebase auth state is propagated
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Sync with MongoDB
-      try {
-        await syncUserWithMongoDB({
-          firebaseUid: res.user.uid,
-          email: res.user.email
-        })
-      } catch (syncError) {
-        console.error("MongoDB sync error (user still created in Firebase):", syncError)
-        // Don't block navigation - user is authenticated
-      }
-      
-      navigate("/home", { replace: true })
+      // Navigation will happen automatically via useEffect in parent
     } catch (error) {
       console.error("Sign up error:", error)
-      if (error.code === 'auth/email-already-in-use') {
-        alert("This email is already registered. Try signing in instead.")
-      } else {
-        alert("Signup failed. Please try again.")
-      }
+      setAuthLoading(false)
       setLoading(false)
+      
+      if (error.code === 'auth/email-already-in-use') {
+        setError("This email is already registered. Try signing in instead.")
+      } else if (error.code === 'auth/weak-password') {
+        setError("Password is too weak. Please use a stronger password.")
+      } else if (error.code === 'auth/invalid-email') {
+        setError("Invalid email address.")
+      } else {
+        setError("Signup failed. Please try again.")
+      }
     }
   }
 
@@ -131,10 +123,21 @@ function Signup({ email, password }) {
 }
 
 export default function Auth() {
+  const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
   const cardRef = useRef(null)
   const logoRef = useRef(null)
+
+  // Redirect to home if user is already logged in
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate("/home", { replace: true })
+    }
+  }, [user, authLoading, navigate])
 
   useEffect(() => {
     // Entrance animation
@@ -153,6 +156,26 @@ export default function Auth() {
       )
     }
   }, [])
+
+  // Show loading while checking auth state or authenticating
+  if (authLoading || isAuthenticating) {
+    return (
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: 'oklch(0.96 0.025 75)' }}
+      >
+        <div className="flex flex-col items-center gap-4">
+          <div 
+            className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin"
+            style={{ borderColor: 'oklch(0.35 0.1 35)', borderTopColor: 'transparent' }}
+          />
+          <p style={{ color: 'oklch(0.35 0.1 35)' }} className="font-medium">
+            {isAuthenticating ? 'Authenticating...' : 'Loading...'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -277,7 +300,21 @@ export default function Auth() {
 
         {/* Buttons */}
         <div className="space-y-4">
-          <Signin email={email} password={password} />
+          {/* Error Message */}
+          {error && (
+            <div 
+              className="p-3 rounded-xl text-sm text-center"
+              style={{ 
+                backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                color: 'rgb(185, 28, 28)',
+                border: '1px solid rgba(220, 38, 38, 0.2)'
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          <Signin email={email} password={password} setError={setError} setAuthLoading={setIsAuthenticating} />
 
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
@@ -285,7 +322,7 @@ export default function Auth() {
             <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
           </div>
 
-          <Signup email={email} password={password} />
+          <Signup email={email} password={password} setError={setError} setAuthLoading={setIsAuthenticating} />
         </div>
 
         {/* Footer Note */}
