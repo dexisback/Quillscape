@@ -25,12 +25,9 @@ app.get("/", (req, res)=>{
     res.send("Hellow world first ecg");
 })
 
-
-app.post("/test", verifyAuth, (req, res)=>{
-        res.send(req.user.uid);
-
+app.get("/health", (req, res)=>{
+    res.status(200).send("alive and runnnin")
 })
-
 
 const PORT= process.env.port || 3000 ;
 app.listen(PORT, ()=>{console.log("Up and runnin' ✅")})
