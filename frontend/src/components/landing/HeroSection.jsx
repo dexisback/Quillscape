@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import StickyNotes from "./StickyNotes"
 import gsap from "gsap"
-
+import { auth } from "../../firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 export default function HeroSection() {
     const navigate = useNavigate()
     const headlineRef = useRef(null)
@@ -18,9 +19,20 @@ export default function HeroSection() {
         navigate("/auth")
     }
 
-    const handleSignInWithGoogle = () => {
-        // Placeholder - will be implemented later
-        console.log("Google sign-in not yet implemented")
+    const handleSignInWithGoogle = async() => {
+        //ima do this now:
+        try {
+            const provider=new GoogleAuthProvider()
+            const result = await signInWithPopup(auth,provider)
+
+            console.log("signed in with google, the user is:", result.user);
+            //navigate to home
+            navigate("/home")
+            return result.user;
+        } catch (err) {
+            console.log("sign in w google failed", err);
+        }
+        
     }
 
     return (

@@ -8,7 +8,7 @@ export const syncUserWithMongoDB = (userData)=>{
 
 export const getUserProfile = () =>{
     return api.get("/blogs/users/profile");
-
+    
 }
 
 

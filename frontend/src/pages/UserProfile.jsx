@@ -3,8 +3,24 @@ import { getUserProfile, updateUserProfile } from '../api/user.api'
 import HomeNavbar from '../components/home/HomeNavbar'
 import { User, Mail, FileText, Pencil, Check, X } from 'lucide-react'
 import gsap from 'gsap'
+import { auth } from '../firebase';
 
+//this page fetches the user data from the backend for native Quillscape loggers.
+//someone signs up with google, the page checks here-on and implements the required (google data/pfp) for the google loggers
 export default function UserProfile() {
+  
+  const firebaseUser=auth.currentUser;
+  const providers=firebaseUser?firebaseUser.providerData : []
+
+  
+  let isGoogleUser = false;
+  for(const provider of providers){
+    if(provider.providerId==="google.com"){
+      isGoogleUser=true;
+      break;
+    }
+  }
+
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
@@ -12,7 +28,7 @@ export default function UserProfile() {
   const [saving, setSaving] = useState(false)
   const pageRef = useRef(null)
   const avatarRef = useRef(null)
-
+  
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -72,12 +88,17 @@ export default function UserProfile() {
     })
     setIsEditing(false)
   }
-
-  // Generate avatar from email
-  const avatarUrl = user?.email
-    ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.email)}`
-    : null
-
+  let avatarUrl=null;
+  // pfp: google pfp if google user, dicebear if custom quillscape user:
+  if(isGoogleUser && firebaseUser.photoURL){
+    avatarUrl=firebaseUser.photoURL;
+  }else if(user && user.email){
+    avatarUrl= `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.email)}`
+  }
+  else{
+    console.log("user not found")
+  }
+  
   if (loading) return (
     <div className="min-h-screen bg-background">
       <HomeNavbar />
@@ -89,7 +110,7 @@ export default function UserProfile() {
       </main>
     </div>
   )
-
+  console.log(user)
   if (!user) return (
     <div className="min-h-screen bg-background">
       <HomeNavbar />

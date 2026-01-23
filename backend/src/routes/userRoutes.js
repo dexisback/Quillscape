@@ -32,9 +32,16 @@ router.post('/sync', async (req, res)=>{
 // Get user profile
 router.get('/profile', verifyAuth, async (req, res) => {
     try {
-        const user = await User.findOne({ firebaseUid: req.user.uid });
+        let user = await User.findOne({ firebaseUid: req.user.uid });
         if (!user) {
-            return res.status(404).json({ msg: "User not found" });
+            // return res.status(404).json({ msg: "User not found" });
+            //since we also have google users, if user does not exist, prob means they are a google user
+            user=new User({
+                firebaseUid: req.user.uid,
+                email: req.user.email
+            })
+            await user.save();
+            console.log("auto created user from firebase token")
         }
         res.status(200).json(user);
     } catch (err) {
