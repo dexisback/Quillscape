@@ -31,7 +31,7 @@ export default function Footer() {
                     <div className="space-y-3">
                         <h3 className="text-lg font-semibold text-foreground">Quillscape</h3>
                         <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-                            A minimal, thoughtful space to capture your creativity. Open source, community-driven.
+                            A minimal, thoughtful space to write your thoughts. Open source.
                         </p>
                     </div>
 

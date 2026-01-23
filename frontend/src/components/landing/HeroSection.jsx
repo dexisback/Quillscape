@@ -47,14 +47,14 @@ export default function HeroSection() {
             </div>
 
             {/* Main Grid */}
-            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 {/* Left Grid - Sticky Notes */}
                 <motion.div
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8 }}
                     viewport={{ once: true }}
-                    className="h-72"
+                    className="h-72 mt-8"
                 >
                     <StickyNotes />
                 </motion.div>

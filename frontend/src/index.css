@@ -36,16 +36,20 @@ body {
   transition: background-color 0.6s ease-in-out;
 }
 
-/* Dark mode body - deep brown/black background */
+/* Dark mode body - refined charcoal with subtle polka dot pattern */
 .dark body {
-  background-color: oklch(0.16 0.01 40);
-  background-image: repeating-linear-gradient(45deg,
+  background-color: oklch(0.14 0.008 60);
+  background-image:
+    /* Subtle polka dots */
+    radial-gradient(circle, rgba(255, 248, 240, 0.07) 1.5px, transparent 1.5px),
+    /* Very subtle texture overlay */
+    repeating-linear-gradient(45deg,
       transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.01) 2px,
-      rgba(255, 255, 255, 0.01) 4px),
-    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255, 255, 255, 0.005) 2px, rgba(255, 255, 255, 0.005) 4px),
-    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255, 255, 255, 0.008) 1px, rgba(255, 255, 255, 0.008) 2px);
+      transparent 4px,
+      rgba(255, 255, 255, 0.008) 4px,
+      rgba(255, 255, 255, 0.008) 8px);
+  background-size: 24px 24px, 100% 100%;
+  background-position: 0 0, 0 0;
 }
 
 /* Theme transition overlay for animated theme switch */
@@ -100,4 +104,13 @@ select {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(156, 163, 175, 0.8);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 248, 240, 0.15);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 248, 240, 0.25);
 }
