@@ -66,13 +66,12 @@ export default function HomeNavbar() {
         document.body.appendChild(overlay)
         overlayRef.current = overlay
 
-        // Animate icon
+        // Animate icon - full spin that ends at starting position
         if (themeSwitchRef.current) {
-            gsap.to(themeSwitchRef.current, {
-                rotation: newIsDark ? 180 : -180,
-                duration: 0.6,
-                ease: "power2.inOut",
-            })
+            gsap.fromTo(themeSwitchRef.current,
+                { rotation: 0 },
+                { rotation: 360, duration: 0.6, ease: "power2.inOut" }
+            )
         }
 
         // Animate overlay
@@ -113,19 +112,19 @@ export default function HomeNavbar() {
         >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-3xl px-6 py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out"
+                className="glass-nav rounded-3xl px-6 py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
                 style={{ maxWidth: '100%' }}
             >
                 {/* Logo Only - No text */}
-                <Link to="/home" className="flex items-center">
+                <Link to="/home" className="flex items-center z-10">
                     <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                         <span className="text-primary-foreground font-bold text-lg">Q</span>
                     </div>
                 </Link>
 
-                {/* Navigation Links - Always visible, spacing adjusts with scroll */}
+                {/* Navigation Links - Absolutely centered */}
                 <div
-                    className="flex items-center transition-all duration-300 ease-out"
+                    className="absolute left-1/2 -translate-x-1/2 flex items-center transition-all duration-300 ease-out"
                     style={{ gap: `${28 - (scrollProgress * 12)}px` }} // gap from 28px to 16px
                 >
                     <Link

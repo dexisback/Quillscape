@@ -132,18 +132,50 @@ export default function UserProfile() {
       <main className="pt-24 pb-12 px-6">
         <div className="max-w-2xl mx-auto" ref={pageRef}>
           {/* Header */}
-          <div className="mb-12 text-left">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Profile</h1>
-            <p className="text-lg text-muted-foreground">Your public presence on Quillscape</p>
+          <div className="mb-10 text-left">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Profile</h1>
+            <p className="text-sm text-muted-foreground">Your public presence on Quillscape</p>
           </div>
 
           {/* Profile Card */}
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="bg-card border border-border rounded-xl overflow-hidden relative">
+            {/* Edit Toggle Button - Top Right */}
+            <div className="absolute top-4 right-4 z-10">
+              {isEditing ? (
+                <div className="flex gap-1">
+                  <button
+                    onClick={handleUpdate}
+                    disabled={saving}
+                    className="p-2 rounded-lg transition-all duration-200 hover:bg-primary/20 text-primary disabled:opacity-50"
+                    title="Save"
+                  >
+                    <Check className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={cancelEdit}
+                    disabled={saving}
+                    className="p-2 rounded-lg transition-all duration-200 hover:bg-muted text-muted-foreground"
+                    title="Cancel"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="p-2 rounded-lg transition-all duration-200 hover:bg-muted/50 text-muted-foreground hover:text-primary"
+                  title="Edit Profile"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
             {/* Avatar Section */}
-            <div className="bg-muted/30 p-8 flex flex-col items-center border-b border-border">
+            <div className="bg-muted/30 p-6 flex flex-col items-center border-b border-border">
               <div
                 ref={avatarRef}
-                className="w-24 h-24 rounded-full overflow-hidden border-4 border-card shadow-lg mb-4"
+                className="w-20 h-20 rounded-full overflow-hidden border-4 border-card shadow-lg mb-3"
               >
                 {avatarUrl ? (
                   <img
@@ -153,100 +185,69 @@ export default function UserProfile() {
                   />
                 ) : (
                   <div className="w-full h-full bg-primary flex items-center justify-center">
-                    <User className="w-12 h-12 text-primary-foreground" />
+                    <User className="w-10 h-10 text-primary-foreground" />
                   </div>
                 )}
               </div>
-              <h2 className="text-2xl font-bold text-foreground">
+              <h2 className="text-lg font-semibold text-foreground">
                 {user.username || 'Anonymous Writer'}
               </h2>
-              <p className="text-muted-foreground text-sm">{user.email}</p>
+              <p className="text-muted-foreground text-xs">{user.email}</p>
             </div>
 
             {/* Profile Details */}
             <div className="p-6">
-              {/* Edit Toggle Button */}
-              <div className="flex justify-end mb-6">
-                {isEditing ? (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleUpdate}
-                      disabled={saving}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg bg-primary text-primary-foreground disabled:opacity-50"
-                    >
-                      <Check className="w-4 h-4" />
-                      {saving ? 'Saving...' : 'Save'}
-                    </button>
-                    <button
-                      onClick={cancelEdit}
-                      disabled={saving}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 bg-muted text-muted-foreground hover:bg-muted/80"
-                    >
-                      <X className="w-4 h-4" />
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg bg-secondary text-secondary-foreground"
-                  >
-                    <Pencil className="w-4 h-4" />
-                    Edit Profile
-                  </button>
-                )}
-              </div>
 
               {/* Fields */}
               <div className="space-y-6">
                 {/* Username */}
-                <div className="bg-muted/20 rounded-xl p-5 border border-border">
-                  <div className="flex items-center gap-3 mb-3">
-                    <User className="w-5 h-5 text-primary" />
-                    <label className="text-sm font-medium text-muted-foreground">Username</label>
+                <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="w-4 h-4 text-primary" />
+                    <label className="text-xs font-medium text-muted-foreground">Username</label>
                   </div>
                   {isEditing ? (
                     <input
                       value={formData.username}
                       onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                      className="w-full p-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Enter your username"
                     />
                   ) : (
-                    <p className="text-foreground text-lg font-medium text-left">
+                    <p className="text-foreground text-sm font-medium text-left">
                       {user.username || <span className="text-muted-foreground italic">Not set</span>}
                     </p>
                   )}
                 </div>
 
                 {/* Bio */}
-                <div className="bg-muted/20 rounded-xl p-5 border border-border">
-                  <div className="flex items-center gap-3 mb-3">
-                    <FileText className="w-5 h-5 text-primary" />
-                    <label className="text-sm font-medium text-muted-foreground">Bio</label>
+                <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="w-4 h-4 text-primary" />
+                    <label className="text-xs font-medium text-muted-foreground">Bio</label>
                   </div>
                   {isEditing ? (
                     <textarea
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                      className="w-full p-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground min-h-[120px] resize-y focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground min-h-[100px] resize-y focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Tell us about yourself..."
                     />
                   ) : (
-                    <p className="text-foreground leading-relaxed text-left">
+                    <p className="text-foreground text-sm leading-relaxed text-left">
                       {user.bio || <span className="text-muted-foreground italic">No bio yet. Tell the world about yourself!</span>}
                     </p>
                   )}
                 </div>
 
                 {/* Email (Read-only) */}
-                <div className="bg-muted/20 rounded-xl p-5 border border-border">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Mail className="w-5 h-5 text-primary" />
-                    <label className="text-sm font-medium text-muted-foreground">Email</label>
+                <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Mail className="w-4 h-4 text-primary" />
+                    <label className="text-xs font-medium text-muted-foreground">Email</label>
                     <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
                   </div>
-                  <p className="text-foreground text-lg text-left">{user.email}</p>
+                  <p className="text-foreground text-sm text-left">{user.email}</p>
                 </div>
               </div>
             </div>

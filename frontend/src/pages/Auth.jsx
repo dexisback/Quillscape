@@ -19,31 +19,29 @@ function Signin({ email, password, setError, setAuthLoading }) {
     setLoading(true)
     setAuthLoading(true)
     setError("")
-    
+
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
-      
+
       // Sync with MongoDB in background (don't await)
       syncUserWithMongoDB({
         firebaseUid: result.user.uid,
         email: result.user.email
       }).catch(err => console.error("MongoDB sync error:", err))
-      
+
       // Navigation will happen automatically via useEffect in parent
     } catch (error) {
       console.error("Sign in error:", error)
       setAuthLoading(false)
       setLoading(false)
-      
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-        setError("Invalid email or password. Please try again.")
-      } else if (error.code === 'auth/user-not-found') {
-        setError("No account found with this email. Please sign up first.")
-      } else if (error.code === 'auth/too-many-requests') {
-        setError("Too many failed attempts. Please try again later.")
-      } else {
-        setError("Sign in failed. Please try again.")
+
+      const errorMessages = {
+        'auth/invalid-credential': "Invalid email or password. Please try again.",
+        'auth/wrong-password': "Invalid email or password. Please try again.",
+        'auth/user-not-found': "No account found with this email. Please sign up first.",
+        'auth/too-many-requests': "Too many failed attempts. Please try again later."
       }
+      setError(errorMessages[error.code] || "Sign in failed. Please try again.")
     }
   }
 
@@ -51,11 +49,7 @@ function Signin({ email, password, setError, setAuthLoading }) {
     <button
       onClick={handleSignIn}
       disabled={loading}
-      className="w-full py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-      style={{
-        backgroundColor: 'oklch(0.35 0.1 35)',
-        color: 'oklch(0.96 0.025 75)'
-      }}
+      className="w-full py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-primary-foreground"
     >
       {loading ? 'Signing in...' : 'Sign In'}
     </button>
@@ -79,31 +73,28 @@ function Signup({ email, password, setError, setAuthLoading }) {
     setLoading(true)
     setAuthLoading(true)
     setError("")
-    
+
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password)
-      
+
       // Sync with MongoDB in background (don't await)
       syncUserWithMongoDB({
         firebaseUid: res.user.uid,
         email: res.user.email
       }).catch(err => console.error("MongoDB sync error:", err))
-      
+
       // Navigation will happen automatically via useEffect in parent
     } catch (error) {
       console.error("Sign up error:", error)
       setAuthLoading(false)
       setLoading(false)
-      
-      if (error.code === 'auth/email-already-in-use') {
-        setError("This email is already registered. Try signing in instead.")
-      } else if (error.code === 'auth/weak-password') {
-        setError("Password is too weak. Please use a stronger password.")
-      } else if (error.code === 'auth/invalid-email') {
-        setError("Invalid email address.")
-      } else {
-        setError("Signup failed. Please try again.")
+
+      const errorMessages = {
+        'auth/email-already-in-use': "This email is already registered. Try signing in instead.",
+        'auth/weak-password': "Password is too weak. Please use a stronger password.",
+        'auth/invalid-email': "Invalid email address."
       }
+      setError(errorMessages[error.code] || "Signup failed. Please try again.")
     }
   }
 
@@ -111,11 +102,7 @@ function Signup({ email, password, setError, setAuthLoading }) {
     <button
       onClick={handleSignUp}
       disabled={loading}
-      className="w-full py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-      style={{
-        backgroundColor: 'oklch(0.82 0.06 45)',
-        color: 'oklch(0.35 0.1 35)'
-      }}
+      className="w-full py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed bg-secondary text-secondary-foreground"
     >
       {loading ? 'Creating account...' : 'Create Account'}
     </button>
@@ -160,16 +147,10 @@ export default function Auth() {
   // Show loading while checking auth state or authenticating
   if (authLoading || isAuthenticating) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: 'oklch(0.96 0.025 75)' }}
-      >
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <div 
-            className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin"
-            style={{ borderColor: 'oklch(0.35 0.1 35)', borderTopColor: 'transparent' }}
-          />
-          <p style={{ color: 'oklch(0.35 0.1 35)' }} className="font-medium">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="font-medium text-foreground">
             {isAuthenticating ? 'Authenticating...' : 'Loading...'}
           </p>
         </div>
@@ -178,39 +159,11 @@ export default function Auth() {
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-6"
-      style={{
-        backgroundColor: 'oklch(0.96 0.025 75)',
-        backgroundImage: `
-          repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 3px,
-            rgba(139, 115, 85, 0.03) 3px,
-            rgba(139, 115, 85, 0.03) 6px
-          ),
-          repeating-linear-gradient(
-            -45deg,
-            transparent,
-            transparent 3px,
-            rgba(139, 115, 85, 0.02) 3px,
-            rgba(139, 115, 85, 0.02) 6px
-          ),
-          radial-gradient(ellipse at 30% 20%, rgba(139, 115, 85, 0.05) 0%, transparent 50%),
-          radial-gradient(ellipse at 70% 80%, rgba(139, 115, 85, 0.04) 0%, transparent 50%)
-        `
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       {/* Back to Landing Link */}
       <Link
         to="/"
-        className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:scale-105"
-        style={{
-          backgroundColor: 'rgba(139, 115, 85, 0.1)',
-          color: 'oklch(0.35 0.1 35)',
-          backdropFilter: 'blur(10px)'
-        }}
+        className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:scale-105 bg-muted/50 text-primary backdrop-blur-md border border-border"
       >
         <ArrowLeft className="w-4 h-4" />
         Back
@@ -219,32 +172,20 @@ export default function Auth() {
       {/* Auth Card - Glass Effect */}
       <div
         ref={cardRef}
-        className="w-full max-w-md p-8 rounded-3xl shadow-2xl"
-        style={{
-          backgroundColor: 'rgba(255, 253, 250, 0.85)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(139, 115, 85, 0.2)'
-        }}
+        className="w-full max-w-md p-8 rounded-3xl shadow-2xl bg-card/85 backdrop-blur-xl border border-border"
       >
         {/* Logo and Title */}
         <div className="text-center mb-10">
           <div
             ref={logoRef}
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-5 shadow-lg"
-            style={{
-              backgroundColor: 'oklch(0.35 0.1 35)',
-              color: 'oklch(0.96 0.025 75)'
-            }}
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-5 shadow-lg bg-primary text-primary-foreground"
           >
             Q
           </div>
-          <h1
-            className="text-3xl font-bold mb-2"
-            style={{ color: 'oklch(0.25 0.05 40)' }}
-          >
+          <h1 className="text-3xl font-bold mb-2 text-foreground">
             Quillscape
           </h1>
-          <p style={{ color: 'oklch(0.48 0.03 40)' }}>
+          <p className="text-muted-foreground">
             Your thoughts, your space
           </p>
         </div>
@@ -253,10 +194,7 @@ export default function Auth() {
         <div className="space-y-5 mb-8">
           {/* Email Field */}
           <div>
-            <label
-              className="flex items-center gap-2 text-sm font-medium mb-2"
-              style={{ color: 'oklch(0.35 0.1 35)' }}
-            >
+            <label className="flex items-center gap-2 text-sm font-medium mb-2 text-primary">
               <Mail className="w-4 h-4" />
               Email
             </label>
@@ -265,21 +203,13 @@ export default function Auth() {
               placeholder="Enter your email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2"
-              style={{
-                backgroundColor: 'rgba(139, 115, 85, 0.08)',
-                border: '1px solid rgba(139, 115, 85, 0.2)',
-                color: 'oklch(0.25 0.05 40)'
-              }}
+              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground"
             />
           </div>
 
           {/* Password Field */}
           <div>
-            <label
-              className="flex items-center gap-2 text-sm font-medium mb-2"
-              style={{ color: 'oklch(0.35 0.1 35)' }}
-            >
+            <label className="flex items-center gap-2 text-sm font-medium mb-2 text-primary">
               <Lock className="w-4 h-4" />
               Password
             </label>
@@ -288,12 +218,7 @@ export default function Auth() {
               placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2"
-              style={{
-                backgroundColor: 'rgba(139, 115, 85, 0.08)',
-                border: '1px solid rgba(139, 115, 85, 0.2)',
-                color: 'oklch(0.25 0.05 40)'
-              }}
+              className="w-full p-4 rounded-xl text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground"
             />
           </div>
         </div>
@@ -302,14 +227,7 @@ export default function Auth() {
         <div className="space-y-4">
           {/* Error Message */}
           {error && (
-            <div 
-              className="p-3 rounded-xl text-sm text-center"
-              style={{ 
-                backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                color: 'rgb(185, 28, 28)',
-                border: '1px solid rgba(220, 38, 38, 0.2)'
-              }}
-            >
+            <div className="p-3 rounded-xl text-sm text-center bg-destructive/10 text-destructive border border-destructive/20">
               {error}
             </div>
           )}
@@ -317,20 +235,17 @@ export default function Auth() {
           <Signin email={email} password={password} setError={setError} setAuthLoading={setIsAuthenticating} />
 
           <div className="flex items-center gap-4">
-            <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
-            <span className="text-sm" style={{ color: 'oklch(0.48 0.03 40)' }}>or</span>
-            <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(139, 115, 85, 0.2)' }} />
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-sm text-muted-foreground">or</span>
+            <div className="flex-1 h-px bg-border" />
           </div>
 
           <Signup email={email} password={password} setError={setError} setAuthLoading={setIsAuthenticating} />
         </div>
 
         {/* Footer Note */}
-        <p
-          className="text-center text-xs mt-8"
-          style={{ color: 'oklch(0.55 0.03 40)' }}
-        >
-          By continuing, you agree to write thoughtfully ✍️
+        <p className="text-center text-xs mt-8 text-muted-foreground">
+          Sign in or create your account
         </p>
       </div>
     </div>

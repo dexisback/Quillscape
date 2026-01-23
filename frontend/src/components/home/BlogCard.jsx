@@ -39,7 +39,7 @@ export default function BlogCard({ blog, calculateReadTime, formatTimeAgo }) {
     return (
         <div
             ref={cardRef}
-            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-accent/30 cursor-pointer opacity-0 text-left"
+            className="bg-card border border-border rounded-xl p-5 hover:shadow-[0_4px_20px_rgba(180,150,90,0.15)] dark:hover:shadow-[0_4px_24px_rgba(200,170,100,0.12)] transition-all duration-300 hover:border-accent/40 cursor-pointer opacity-0 text-left"
         >
             {/* Author at top - username not email */}
             <div className="flex items-center gap-2 mb-3">

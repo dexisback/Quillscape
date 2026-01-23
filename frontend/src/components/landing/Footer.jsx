@@ -30,17 +30,17 @@ export default function Footer() {
                     {/* Top Section - Brand and Tagline */}
                     <div className="space-y-3">
                         <h3 className="text-lg font-semibold text-foreground">Quillscape</h3>
-                        <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-                            A minimal, thoughtful space to write your thoughts. Open source.
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            A minimal space to write and craft your thoughts. Open source. Anonymous.
                         </p>
                     </div>
 
                     {/* Bottom Section - Links and Social */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pt-8">
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-4 items-start">
                             {/* Developer Link */}
                             <a
-                                href="#"
+                                href="https://github.com/dexisback"
                                 className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors duration-200 group"
                             >
                                 Know more about the developer
@@ -48,12 +48,12 @@ export default function Footer() {
                             </a>
 
                             {/* Copyright */}
-                            <p className="text-xs text-muted-foreground">© 2026 Quillscape. Open source project.</p>
+                            <p className="text-xs text-muted-foreground">© 2026 Quillscape.</p>
                         </div>
 
                         {/* GitHub Link */}
                         <a
-                            href="https://github.com"
+                            href="https://github.com/dexisback/Quillscape"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-muted hover:bg-muted/80 transition-all duration-300 group"

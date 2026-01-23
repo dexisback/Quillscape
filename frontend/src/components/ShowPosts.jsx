@@ -24,7 +24,7 @@ export default function ShowPosts() {
     }
   }, [user])
 
-  
+
   const handleDelete = async (blog_id) => {
     if (!blog_id) return
     if (!confirm('Are you sure you want to delete this post?')) return
@@ -94,66 +94,87 @@ export default function ShowPosts() {
       return () => observer.disconnect()
     }, [])
 
+    const isPublished = blog.status === 'published'
+
     return (
       <div
         ref={cardRef}
-        className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-accent/30 opacity-0 text-left"
+        className="bg-card border border-border rounded-xl p-5 hover:shadow-lg transition-all duration-300 hover:border-accent/30 opacity-0 text-left relative"
       >
-        <div className="flex flex-col gap-4">
-          {/* Header: Title + Status */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h3 className="text-xl font-bold text-foreground">{blog.title}</h3>
-              <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${blog.status === 'published'
-                  ? 'bg-primary/20 text-primary'
-                  : 'bg-accent/20 text-accent'
-                }`}>
-                {blog.status === 'published' ? 'Published' : 'Draft'}
-              </span>
-            </div>
-          </div>
+        {/* Status Indicator - Top Right */}
+        <div className="absolute top-4 right-4 flex items-center gap-1.5">
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${isPublished
+              ? 'bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.6)]'
+              : 'bg-red-400 shadow-[0_0_8px_2px_rgba(248,113,113,0.5)]'
+              }`}
+          />
+          <span className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
+            {isPublished ? 'Live' : 'Draft'}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {/* Title */}
+          <h3 className="text-base font-semibold text-foreground pr-20">{blog.title}</h3>
 
           {/* Content */}
-          <p className="text-muted-foreground text-sm leading-relaxed bg-muted/30 rounded-lg p-3">
-            {blog.body.length > 200 ? `${blog.body.substring(0, 200)}...` : blog.body}
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {blog.body.length > 150 ? `${blog.body.substring(0, 150)}...` : blog.body}
           </p>
 
+
           {/* Footer: Date + Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-border">
-            <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-              {blog.status === 'published' && blog.publishedAt
-                ? `Published ${new Date(blog.publishedAt).toLocaleDateString()}`
-                : `Created ${new Date(blog.createdAt).toLocaleDateString()}`
+          <div className="flex items-center justify-between pt-3 border-t border-border">
+            <span className="text-xs text-muted-foreground">
+              {isPublished && blog.publishedAt
+                ? new Date(blog.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
               }
             </span>
 
-            <div className="flex gap-2">
-              {blog.status === 'draft' ? (
-                <button
-                  onClick={() => handlePublish(blog._id)}
-                  className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300"
-                >
-                  Publish
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleUnpublish(blog._id)}
-                  className="px-3 py-1.5 bg-accent text-accent-foreground rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300"
-                >
-                  Unpublish
-                </button>
-              )}
+            <div className="flex items-center gap-1">
+              {/* Publish/Unpublish */}
+              <button
+                onClick={() => isPublished ? handleUnpublish(blog._id) : handlePublish(blog._id)}
+                className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200"
+                title={isPublished ? 'Unpublish' : 'Publish'}
+              >
+                {isPublished ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Edit */}
               <button
                 onClick={() => startEditing(blog)}
-                className="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300"
+                className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200"
+                title="Edit"
               >
-                Edit
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                </svg>
               </button>
+
+              {/* Delete */}
               <button
                 onClick={() => handleDelete(blog._id)}
-                className="px-3 py-1.5 bg-muted text-muted-foreground rounded-lg text-sm font-medium hover:bg-muted/80 transition-all duration-300"
+                className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
+                title="Delete"
               >
-                Delete
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
               </button>
             </div>
           </div>

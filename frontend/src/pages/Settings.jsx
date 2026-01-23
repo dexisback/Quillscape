@@ -21,15 +21,15 @@ export default function Settings() {
     }
   }, [])
 
-  const passwordResetter = async () => {
-    try {
-      await sendPasswordResetEmail(auth, user.email)
-      alert("Password reset email sent! Check your inbox.")
-    } catch (err) {
-      alert("Couldn't send reset email. Please try again.")
-      console.error("Error resetting password:", err)
-    }
-  }
+  // const passwordResetter = async () => {
+  //   try {
+  //     await sendPasswordResetEmail(auth, user.email)
+  //     alert("Password reset email sent! Check your inbox.")
+  //   } catch (err) {
+  //     alert("Couldn't send reset email. Please try again.")
+  //     console.error("Error resetting password:", err)
+  //   }
+  // }
 
   const accountDeleter = async () => {
     if (!confirm('⚠️ This action is permanent and cannot be undone. Are you absolutely sure you want to delete your account and all your data?')) {
@@ -53,68 +53,41 @@ export default function Settings() {
       <main className="pt-24 pb-12 px-6">
         <div className="max-w-2xl mx-auto" ref={pageRef}>
           {/* Header */}
-          <div className="mb-12 text-left">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Settings</h1>
-            <p className="text-lg text-muted-foreground">Manage your account preferences</p>
+          <div className="mb-10 text-left">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Settings</h1>
+            <p className="text-sm text-muted-foreground">Manage your account preferences</p>
           </div>
 
-          {/* Settings Cards */}
-          <div className="space-y-6">
-            {/* Account Email Card */}
-            <div className="bg-card border border-border rounded-xl p-6">
-              {/* Row 1: Label pill on left, Icon square on right */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="px-4 py-1.5 bg-muted/50 border border-border rounded-full text-sm font-medium text-foreground">
-                  Account Email
-                </span>
-                <div className="w-9 h-9 border border-border rounded-lg flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-foreground" />
+          {/* Settings Card */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            {/* Fields */}
+            <div className="p-6 space-y-4">
+              {/* Account Email */}
+              <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <Mail className="w-4 h-4 text-primary" />
+                  <label className="text-xs font-medium text-muted-foreground">Account Email</label>
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
                 </div>
+                <p className="text-foreground text-sm text-left">{user?.email}</p>
               </div>
-              {/* Row 2: Value box */}
-              <div className="bg-muted/30 border border-border rounded-xl p-4">
-                <p className="text-foreground font-medium text-left">{user?.email}</p>
-              </div>
-            </div>
 
-            {/* Password Card */}
-            <div className="bg-card border border-border rounded-xl p-6">
-              {/* Row 1: Label pill on left, Icon square on right */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="px-4 py-1.5 bg-muted/50 border border-border rounded-full text-sm font-medium text-foreground">
-                  Password
-                </span>
-                <div className="w-9 h-9 border border-border rounded-lg flex items-center justify-center">
-                  <KeyRound className="w-4 h-4 text-foreground" />
+              {/* Danger Zone */}
+              <div className="bg-destructive/5 rounded-xl p-4 border border-destructive/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                  <label className="text-xs font-medium text-destructive">Permanently Delete Your Account</label>
                 </div>
-              </div>
-              {/* Row 2: Action button */}
-              <button
-                onClick={passwordResetter}
-                className="w-full py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg bg-secondary text-secondary-foreground"
-              >
-                Send Password Reset Email
-              </button>
-            </div>
-
-            {/* Delete Account Card */}
-            <div className="bg-card border border-border rounded-xl p-6">
-              {/* Row 1: Label pill on left, Icon square on right */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="px-4 py-1.5 bg-muted/50 border border-border rounded-full text-sm font-medium text-foreground">
+                <p className="text-muted-foreground text-xs mb-3 text-left">
+                  This action is permanent.
+                </p>
+                <button
+                  onClick={accountDeleter}
+                  className="w-full py-2.5 rounded-lg text-sm font-medium transition-all duration-300 hover:shadow-md bg-red-500 text-white hover:bg-red-600"
+                >
                   Delete Account
-                </span>
-                <div className="w-9 h-9 border border-border rounded-lg flex items-center justify-center">
-                  <Trash2 className="w-4 h-4 text-foreground" />
-                </div>
+                </button>
               </div>
-              {/* Row 2: Action button */}
-              <button
-                onClick={accountDeleter}
-                className="w-full py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg bg-accent text-accent-foreground"
-              >
-                Delete Account Permanently
-              </button>
             </div>
           </div>
         </div>
