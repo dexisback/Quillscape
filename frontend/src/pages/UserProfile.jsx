@@ -8,15 +8,15 @@ import { auth } from '../firebase';
 //this page fetches the user data from the backend for native Quillscape loggers.
 //someone signs up with google, the page checks here-on and implements the required (google data/pfp) for the google loggers
 export default function UserProfile() {
-  
-  const firebaseUser=auth.currentUser;
-  const providers=firebaseUser?firebaseUser.providerData : []
 
-  
+  const firebaseUser = auth.currentUser;
+  const providers = firebaseUser ? firebaseUser.providerData : []
+
+
   let isGoogleUser = false;
-  for(const provider of providers){
-    if(provider.providerId==="google.com"){
-      isGoogleUser=true;
+  for (const provider of providers) {
+    if (provider.providerId === "google.com") {
+      isGoogleUser = true;
       break;
     }
   }
@@ -28,7 +28,7 @@ export default function UserProfile() {
   const [saving, setSaving] = useState(false)
   const pageRef = useRef(null)
   const avatarRef = useRef(null)
-  
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -88,17 +88,17 @@ export default function UserProfile() {
     })
     setIsEditing(false)
   }
-  let avatarUrl=null;
+  let avatarUrl = null;
   // pfp: google pfp if google user, dicebear if custom quillscape user:
-  if(isGoogleUser && firebaseUser.photoURL){
-    avatarUrl=firebaseUser.photoURL;
-  }else if(user && user.email){
-    avatarUrl= `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.email)}`
+  if (isGoogleUser && firebaseUser.photoURL) {
+    avatarUrl = firebaseUser.photoURL;
+  } else if (user && user.email) {
+    avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.email)}`
   }
-  else{
+  else {
     console.log("user not found")
   }
-  
+
   if (loading) return (
     <div className="min-h-screen bg-background">
       <HomeNavbar />
@@ -213,7 +213,7 @@ export default function UserProfile() {
                       placeholder="Enter your username"
                     />
                   ) : (
-                    <p className="text-foreground text-lg font-medium">
+                    <p className="text-foreground text-lg font-medium text-left">
                       {user.username || <span className="text-muted-foreground italic">Not set</span>}
                     </p>
                   )}
@@ -233,7 +233,7 @@ export default function UserProfile() {
                       placeholder="Tell us about yourself..."
                     />
                   ) : (
-                    <p className="text-foreground leading-relaxed">
+                    <p className="text-foreground leading-relaxed text-left">
                       {user.bio || <span className="text-muted-foreground italic">No bio yet. Tell the world about yourself!</span>}
                     </p>
                   )}
@@ -246,7 +246,7 @@ export default function UserProfile() {
                     <label className="text-sm font-medium text-muted-foreground">Email</label>
                     <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
                   </div>
-                  <p className="text-foreground text-lg">{user.email}</p>
+                  <p className="text-foreground text-lg text-left">{user.email}</p>
                 </div>
               </div>
             </div>

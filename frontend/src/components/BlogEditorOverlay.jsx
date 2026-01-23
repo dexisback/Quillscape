@@ -207,6 +207,9 @@ export default function BlogEditorOverlay({
         const response = await createBlog(data)
         setTitle('')
         setBody('')
+        //setting slate values to empty:
+        setTitleSlateValue([{type: "paragraph", children: [{text: ""}]}]);
+        setBodySlateValue([{type: "paragraph", children: [{text: ""}]}]);
 
         if (onBlogCreated && response.data) {
           onBlogCreated(response.data.blog)
