@@ -19,7 +19,7 @@ export default function Post() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="pt-24 pb-12 px-6">
+            <main className="pt-24 pb-12 px-6 paper-main">
                 <div className="max-w-3xl mx-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-10">

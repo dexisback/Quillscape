@@ -95,11 +95,14 @@
 
 .bg-background {
     background-color: var(--color-background);
+    background-image: radial-gradient(circle, rgba(139, 90, 43, 0.12) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
 }
 
 /* In dark mode, make bg-background transparent so body polka dots show through */
 .dark .bg-background {
     background-color: transparent;
+    background-image: none;
 }
 
 .border-border {
@@ -235,4 +238,34 @@ body {
 
 .animate-fade-in-up {
     animation: fade-in-up 0.8s ease-out forwards;
+}
+
+/* Paper Main - Sticky note yellow with subtle shading */
+.paper-main {
+    background-color: #fef08a;
+    background-image:
+        /* Subtle shading for paper feel */
+        radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 80%, rgba(253, 224, 71, 0.15) 0%, transparent 50%);
+    background-size: 100% 100%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0.75rem;
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.dark .paper-main {
+    background-color: rgba(253, 249, 231, 0.06);
+    background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.01) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.01) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.01) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.01) 75%);
+    background-size: 10px 10px;
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }

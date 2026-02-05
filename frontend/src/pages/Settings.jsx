@@ -55,7 +55,7 @@ export default function Settings() {
     <div className="min-h-screen bg-background">
       <HomeNavbar />
 
-      <main className="pt-24 pb-12 px-6">
+      <main className="pt-24 pb-12 px-6 paper-main">
         <div className="max-w-2xl mx-auto" ref={pageRef}>
           {/* Header */}
           <div className="mb-10 text-left">
