@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth"
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
-    timeout: 15000,
+    timeout: 60000,
 })
 
 api.interceptors.request.use(async (config) => {
@@ -24,7 +24,15 @@ api.interceptors.request.use(async (config) => {
 
 api.interceptors.response.use(
     (response) => response,
-    (error) => Promise.reject(error)
+    async (error) => {
+        const config = error.config
+        if (error.code === 'ECONNABORTED' && !config._retry) {
+            config._retry = true
+            config.timeout = 90000
+            return api(config)
+        }
+        return Promise.reject(error)
+    }
 )
 
 export default api
