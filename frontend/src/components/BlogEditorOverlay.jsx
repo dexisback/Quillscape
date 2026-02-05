@@ -2,8 +2,10 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { createBlog, updateBlog } from '../api/blogs.api'
 import { useAuth } from '../context/AuthContext'
 import { X, Maximize2, Minimize2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import gsap from 'gsap'
 
-import { createEditor, Transforms } from 'slate'
+import { createEditor, Transforms, Editor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 
@@ -14,8 +16,8 @@ import DoodleCanvas from './DoodleCanvas'
 import {
   withMarkdownShortcuts,
   withImages,
-  renderElement,
-  renderLeaf,
+  renderElement as baseRenderElement,
+  renderLeaf as baseRenderLeaf,
   slateToMarkdown,
   markdownToSlate
 } from '../lib/slate'
@@ -38,7 +40,9 @@ export default function BlogEditorOverlay({
   const [loading, setLoading] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isDoodleOpen, setIsDoodleOpen] = useState(false)
+  const [isToolbarHovered, setIsToolbarHovered] = useState(false)
   const bodyEditorRef = useRef(null)
+  const toolbarRef = useRef(null)
 
 
   const titleEditor = useMemo(() => withHistory(withReact(createEditor())), [])
@@ -72,6 +76,32 @@ export default function BlogEditorOverlay({
       console.log("nothing, ignoring selection errors on init load")
     }
   }, [initialTitle, initialBody, bodyEditor, titleEditor, getInitialSlateValue])
+
+  useEffect(() => {
+    if (toolbarRef.current && !isFullscreen) {
+      if (isToolbarHovered) {
+        gsap.to(toolbarRef.current, {
+          x: 0,
+          opacity: 1,
+          duration: 0.25,
+          ease: 'power2.out'
+        })
+      } else {
+        gsap.to(toolbarRef.current, {
+          x: 30,
+          opacity: 0.4,
+          duration: 0.25,
+          ease: 'power2.in'
+        })
+      }
+    } else if (toolbarRef.current && isFullscreen) {
+      gsap.to(toolbarRef.current, {
+        x: 0,
+        opacity: 1,
+        duration: 0.2
+      })
+    }
+  }, [isToolbarHovered, isFullscreen])
 
 
   const handleBodyKeyDown = useCallback((event) => {
@@ -168,8 +198,232 @@ export default function BlogEditorOverlay({
     }
   }, [bodyEditor])
 
-  const handleRenderElement = useCallback((props) => renderElement(props), [])
-  const handleRenderLeaf = useCallback((props) => renderLeaf(props), [])
+  const handleRenderElement = useCallback((props) => {
+    const { attributes, children, element } = props
+
+    switch (element.type) {
+      case 'heading-one':
+        return (
+          <h1
+            {...attributes}
+            style={{
+              fontSize: '2rem',
+              fontWeight: 700,
+              marginBottom: '0.5rem',
+              marginTop: '1rem',
+              fontFamily: 'Inter, sans-serif',
+              letterSpacing: '-0.02em',
+              color: '#262626'
+            }}
+          >
+            {children}
+          </h1>
+        )
+
+      case 'heading-two':
+        return (
+          <h2
+            {...attributes}
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 600,
+              marginBottom: '0.5rem',
+              marginTop: '0.75rem',
+              fontFamily: 'Inter, sans-serif',
+              letterSpacing: '-0.02em',
+              color: '#262626'
+            }}
+          >
+            {children}
+          </h2>
+        )
+
+      case 'heading-three':
+        return (
+          <h3
+            {...attributes}
+            style={{
+              fontSize: '1.25rem',
+              fontWeight: 600,
+              marginBottom: '0.5rem',
+              marginTop: '0.5rem',
+              fontFamily: 'Inter, sans-serif',
+              letterSpacing: '-0.01em',
+              color: '#262626'
+            }}
+          >
+            {children}
+          </h3>
+        )
+
+      case 'block-quote':
+        return (
+          <blockquote
+            {...attributes}
+            style={{
+              borderLeft: '3px solid #d4a574',
+              paddingLeft: '1rem',
+              marginLeft: 0,
+              marginTop: '0.5rem',
+              marginBottom: '0.5rem',
+              color: '#525252',
+              fontStyle: 'italic'
+            }}
+          >
+            {children}
+          </blockquote>
+        )
+
+      case 'bulleted-list':
+        return (
+          <ul
+            {...attributes}
+            style={{
+              marginLeft: '1.5rem',
+              marginTop: '0.5rem',
+              marginBottom: '0.5rem',
+              listStyleType: 'disc',
+              paddingLeft: '0.5rem'
+            }}
+          >
+            {children}
+          </ul>
+        )
+
+      case 'numbered-list':
+        return (
+          <ol
+            {...attributes}
+            style={{
+              marginLeft: '1.5rem',
+              marginTop: '0.5rem',
+              marginBottom: '0.5rem',
+              listStyleType: 'decimal',
+              paddingLeft: '0.5rem'
+            }}
+          >
+            {children}
+          </ol>
+        )
+
+      case 'list-item':
+        return (
+          <li
+            {...attributes}
+            style={{
+              marginBottom: '0.25rem',
+              display: 'list-item'
+            }}
+          >
+            {children}
+          </li>
+        )
+
+      case 'code-block':
+        return (
+          <pre
+            {...attributes}
+            style={{
+              backgroundColor: 'rgba(38, 38, 38, 0.06)',
+              padding: '1rem',
+              borderRadius: '0.5rem',
+              fontFamily: 'monospace',
+              fontSize: '0.875rem',
+              overflow: 'auto',
+              marginTop: '0.5rem',
+              marginBottom: '0.5rem'
+            }}
+          >
+            <code>{children}</code>
+          </pre>
+        )
+
+      case 'image':
+        return (
+          <div {...attributes} contentEditable={false} style={{ margin: '1rem 0' }}>
+            <img
+              src={element.url}
+              alt={element.alt || 'Image'}
+              style={{
+                maxWidth: '100%',
+                borderRadius: '8px',
+                border: '1px solid rgba(38, 38, 38, 0.1)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
+              }}
+            />
+            {children}
+          </div>
+        )
+
+      case 'link':
+        return (
+          <a
+            {...attributes}
+            href={element.url}
+            style={{
+              color: '#d4a574',
+              textDecoration: 'underline',
+              textUnderlineOffset: '2px'
+            }}
+          >
+            {children}
+          </a>
+        )
+
+      case 'paragraph':
+      default:
+        return <p {...attributes} style={{ marginBottom: '0.5rem' }}>{children}</p>
+    }
+  }, [])
+
+  const handleRenderLeaf = useCallback((props) => {
+    const { attributes, leaf } = props
+    let { children } = props
+
+    if (leaf.bold) {
+      children = <strong style={{ fontWeight: 700 }}>{children}</strong>
+    }
+
+    if (leaf.italic) {
+      children = <em style={{ fontStyle: 'italic' }}>{children}</em>
+    }
+
+    if (leaf.code) {
+      children = (
+        <code
+          style={{
+            backgroundColor: 'rgba(38, 38, 38, 0.08)',
+            padding: '0.15rem 0.3rem',
+            borderRadius: '3px',
+            fontFamily: 'monospace',
+            fontSize: '0.9em'
+          }}
+        >
+          {children}
+        </code>
+      )
+    }
+
+    if (leaf.strikethrough) {
+      children = <s>{children}</s>
+    }
+
+    if (leaf.highlight) {
+      children = (
+        <mark
+          style={{
+            backgroundColor: 'oklch(0.88 0.12 80)',
+            padding: '0.1em 0.2em',
+            borderRadius: '2px',
+          }}
+        >
+          {children}
+        </mark>
+      )
+    }
+
+    return <span {...attributes}>{children}</span>
+  }, [])
 
   if (!isOpen) { return null }
 
@@ -199,7 +453,6 @@ export default function BlogEditorOverlay({
         {/* Minimal Header - just the controls */}
         <div className="flex items-center justify-end px-6 py-4">
           <div className="flex items-center gap-2">
-            {/* Fullscreen toggle */}
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="p-2.5 rounded-full transition-all duration-200 hover:scale-105"
@@ -211,7 +464,6 @@ export default function BlogEditorOverlay({
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" strokeWidth={1.5} /> : <Maximize2 className="w-4 h-4" strokeWidth={1.5} />}
             </button>
-            {/* Close button */}
             <button
               onClick={handleClose}
               className="p-2.5 rounded-full transition-all duration-200 hover:scale-105"
@@ -294,8 +546,22 @@ export default function BlogEditorOverlay({
                   />
                 </div>
 
-                <div className="sticky top-0 self-start">
-                  <EditorToolbar onDoodleClick={openDoodle} />
+                {/* Toolbar - slides in/out on hover when not fullscreen */}
+                <div
+                  className="sticky top-0 self-start"
+                  onMouseEnter={() => setIsToolbarHovered(true)}
+                  onMouseLeave={() => setIsToolbarHovered(false)}
+                  style={{
+                    position: 'relative',
+                    zIndex: 10
+                  }}
+                >
+                  <motion.div
+                    ref={toolbarRef}
+                    initial={{ x: isFullscreen ? 0 : 30, opacity: isFullscreen ? 1 : 0.4 }}
+                  >
+                    <EditorToolbar onDoodleClick={openDoodle} />
+                  </motion.div>
                 </div>
               </div>
             </Slate>
