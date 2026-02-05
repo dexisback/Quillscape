@@ -5,12 +5,14 @@ import HomeNavbar from '../components/home/HomeNavbar'
 import BlogCard from '../components/home/BlogCard'
 import FloatingActionButton from '../components/home/FloatingActionButton'
 import BlogEditorOverlay from '../components/BlogEditorOverlay'
+import { motion } from 'framer-motion'
 
 export default function Home() {
   const { user } = useAuth()
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const [endOfPosts, setEndOfPosts] = useState(false)
 
   const fetchPublicBlogs = async () => {
     try {
@@ -29,6 +31,10 @@ export default function Home() {
 
   const handleBlogCreated = (newBlog) => {
     fetchPublicBlogs()
+  }
+
+  const handleLoadMore = () => {
+    setEndOfPosts(true)
   }
 
   const calculateReadTime = (body) => {
@@ -60,8 +66,29 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-12 text-left">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Home</h1>
-            <p className="text-lg text-muted-foreground">Discover stories from writers across Quillscape</p>
+            <p className="text-lg text-muted-foreground" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
+              <span className="relative inline-block" style={{ isolation: 'isolate' }}>
+                <motion.span
+                  className="absolute rounded-sm"
+                  style={{
+                    backgroundColor: '#fde047',
+                    zIndex: 0,
+                    transform: 'skewY(-2deg) rotate(-0.5deg)',
+                    top: '2px',
+                    bottom: '2px',
+                    left: '-3px',
+                    right: '-3px',
+                    borderRadius: '2px 8px 4px 6px'
+                  }}
+                  initial={{ scaleX: 0, originX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                />
+                <span className="relative font-medium text-neutral-800" style={{ zIndex: 1 }}>Discover stories</span>
+              </span>
+              {" "}from writers across{" "}
+              <span className="font-semibold text-primary">Quillscape</span>
+            </p>
           </div>
 
           {/* Blog Feed */}
@@ -78,7 +105,8 @@ export default function Home() {
               <p className="text-muted-foreground text-lg">No posts yet. Be the first to write!</p>
               <button
                 onClick={() => setIsEditorOpen(true)}
-                className="mt-4 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="mt-4 px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
               >
                 Create Your First Post
               </button>
@@ -99,9 +127,19 @@ export default function Home() {
           {/* Load More Button */}
           {blogs.length > 0 && (
             <div className="mt-12 text-center">
-              <button className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:shadow-lg transition-all duration-300 hover:scale-105">
-                Load More Stories
-              </button>
+              {!endOfPosts ? (
+                <button
+                  onClick={handleLoadMore}
+                  className="px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
+                >
+                  Load More Stories
+                </button>
+              ) : (
+                <p className="text-xs text-red-500">
+                  That's it for now — start writing to publish notes on the fyp page
+                </p>
+              )}
             </div>
           )}
         </div>
