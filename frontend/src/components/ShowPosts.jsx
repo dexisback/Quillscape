@@ -18,7 +18,6 @@ export default function ShowPosts() {
           const sorted = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           setBlogs(sorted)
         } catch (err) {
-          console.error("fetch failed:", err)
         }
       }
       fetchBlogs()
@@ -33,7 +32,6 @@ export default function ShowPosts() {
       await deleteBlog(blog_id)
       setBlogs(blogs.filter(blog => blog._id !== blog_id))
     } catch (error) {
-      console.error("delete failed", error)
     }
   }
 
@@ -55,7 +53,6 @@ export default function ShowPosts() {
         blog._id === blog_id ? { ...blog, status: 'published', publishedAt: new Date() } : blog
       ))
     } catch (err) {
-      console.error("publish failed", err)
     }
   }
 
@@ -66,7 +63,6 @@ export default function ShowPosts() {
         blog._id === blog_id ? { ...blog, status: 'draft', publishedAt: null } : blog
       ))
     } catch (err) {
-      console.error("unpublish failed", err)
     }
   }
 

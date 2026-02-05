@@ -38,7 +38,6 @@ export default function Settings() {
       logout()
     } catch (err) {
       alert("Couldn't delete account. Please try again.")
-      console.error("Error deleting account:", err)
     }
   }
 

@@ -73,7 +73,6 @@ export default function BlogEditorOverlay({
     try {
       Transforms.select(bodyEditor, { path: [0, 0], offset: 0 })
     } catch (e) {
-      console.log("nothing, ignoring selection errors on init load")
     }
   }, [initialTitle, initialBody, bodyEditor, titleEditor, getInitialSlateValue])
 
@@ -165,7 +164,6 @@ export default function BlogEditorOverlay({
         onClose()
       }
     } catch (err) {
-      console.error('failed to submit and heres the error', err)
       alert('Failed to save. Please try again.')
     } finally {
       setLoading(false)
@@ -193,7 +191,6 @@ export default function BlogEditorOverlay({
         Transforms.select(bodyEditor, { path: [0, 0], offset: 0 })
         bodyEditorRef.current?.focus()
       } catch (e) {
-        console.log("focus error")
       }
     }
   }, [bodyEditor])

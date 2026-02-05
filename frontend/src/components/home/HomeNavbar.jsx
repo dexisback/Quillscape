@@ -117,7 +117,7 @@ export default function HomeNavbar() {
             >
                 {/* Logo Only - SVG */}
                 <Link to="/home" className="flex items-center z-10">
-                    <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center overflow-hidden">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                             <defs>
                                 <mask id="home-cut">
@@ -126,7 +126,7 @@ export default function HomeNavbar() {
                                     <circle cx="65" cy="65" r="10" fill="black" />
                                 </mask>
                             </defs>
-                            <circle cx="50" cy="50" r="40" fill="currentColor" mask="url(#home-cut)" className="text-primary-foreground" />
+                            <circle cx="50" cy="50" r="40" fill="#262626" mask="url(#home-cut)" />
                         </svg>
                     </div>
                 </Link>

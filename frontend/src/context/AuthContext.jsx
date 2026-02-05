@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     // Listening for login/logout changes
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            console.log("Auth state changed:", currentUser ? currentUser.email : "logged out");
             setUser(currentUser);
             setLoading(false);
         });
@@ -25,7 +24,6 @@ export const AuthProvider = ({ children }) => {
         try {
             await signOut(auth);
         } catch (error) {
-            console.error("Logout error:", error);
         }
     };
 

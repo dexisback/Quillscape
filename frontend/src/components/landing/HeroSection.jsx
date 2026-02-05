@@ -25,11 +25,9 @@ export default function HeroSection() {
         try {
             const provider = new GoogleAuthProvider()
             const result = await signInWithPopup(auth, provider)
-            console.log("signed in with google, the user is:", result.user);
             navigate("/home")
-            return result.user;
+            return result.user
         } catch (err) {
-            console.log("sign in w google failed", err);
         }
     }
 

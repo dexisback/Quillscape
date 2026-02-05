@@ -18,7 +18,6 @@ export function markdownToSlate(markdown) {
 
         return slateNodes
     } catch (error) {
-        console.error('Markdown to Slate conversion error:', error)
         return [{ type: 'paragraph', children: [{ text: markdown }] }]
     }
 }

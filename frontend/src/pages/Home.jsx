@@ -19,7 +19,6 @@ export default function Home() {
       const response = await api.get('/blogs/public')
       setBlogs(response.data)
     } catch (err) {
-      console.error("Failed to fetch public blogs:", err)
     } finally {
       setLoading(false)
     }

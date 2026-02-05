@@ -38,7 +38,6 @@ export default function UserProfile() {
           bio: response.data.bio || ''
         })
       } catch (err) {
-        console.error('Error fetching profile:', err)
       } finally {
         setLoading(false)
       }
@@ -72,7 +71,6 @@ export default function UserProfile() {
         })
       }
     } catch (err) {
-      console.error('Update failed:', err)
       alert('Update failed! Please try again.')
     } finally {
       setSaving(false)

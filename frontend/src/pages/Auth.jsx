@@ -83,7 +83,7 @@ export default function Auth() {
       syncUserWithMongoDB({
         firebaseUid: result.user.uid,
         email: result.user.email
-      }).catch(err => console.error("MongoDB sync error:", err))
+      }).catch(() => { })
     } catch (error) {
       setIsAuthenticating(false)
       const errorMessages = {
@@ -114,7 +114,7 @@ export default function Auth() {
       syncUserWithMongoDB({
         firebaseUid: res.user.uid,
         email: res.user.email
-      }).catch(err => console.error("MongoDB sync error:", err))
+      }).catch(() => { })
     } catch (error) {
       setIsSigningUp(false)
       const errorMessages = {
@@ -133,7 +133,7 @@ export default function Auth() {
       syncUserWithMongoDB({
         firebaseUid: result.user.uid,
         email: result.user.email
-      }).catch(err => console.error("MongoDB sync error:", err))
+      }).catch(() => { })
       navigate("/home")
     } catch (err) {
       setError("Google sign in failed. Try again.")
