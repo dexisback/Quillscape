@@ -111,7 +111,7 @@ export default function Navbar() {
                 style={{ maxWidth: '50%' }}
             >
                 {/* Logo - SVG Only */}
-                <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                         <defs>
                             <mask id="cut">
@@ -120,7 +120,7 @@ export default function Navbar() {
                                 <circle cx="65" cy="65" r="10" fill="black" />
                             </mask>
                         </defs>
-                        <circle cx="50" cy="50" r="40" fill="currentColor" mask="url(#cut)" className="text-primary-foreground" />
+                        <circle cx="50" cy="50" r="40" fill="#262626" mask="url(#cut)" />
                     </svg>
                 </div>
 

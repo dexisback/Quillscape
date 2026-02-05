@@ -170,7 +170,7 @@ export default function Auth() {
         {/* Left: Auth Form */}
         <div ref={formRef} className="w-full max-w-sm mx-auto md:mx-0">
           {/* Logo */}
-          <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center mb-10 overflow-hidden">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center mb-10 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-9 h-9">
               <defs>
                 <mask id="auth-cut">
@@ -179,7 +179,7 @@ export default function Auth() {
                   <circle cx="65" cy="65" r="10" fill="black" />
                 </mask>
               </defs>
-              <circle cx="50" cy="50" r="40" fill="currentColor" mask="url(#auth-cut)" className="text-primary-foreground" />
+              <circle cx="50" cy="50" r="40" fill="#262626" mask="url(#auth-cut)" />
             </svg>
           </div>
 
