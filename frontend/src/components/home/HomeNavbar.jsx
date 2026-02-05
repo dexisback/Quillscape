@@ -115,10 +115,19 @@ export default function HomeNavbar() {
                 className="glass-nav rounded-3xl px-6 py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
                 style={{ maxWidth: '100%' }}
             >
-                {/* Logo Only - No text */}
+                {/* Logo Only - SVG */}
                 <Link to="/home" className="flex items-center z-10">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                        <span className="text-primary-foreground font-bold text-lg">Q</span>
+                    <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center overflow-hidden">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                            <defs>
+                                <mask id="home-cut">
+                                    <rect width="100" height="100" fill="white" />
+                                    <circle cx="52" cy="35" r="18" fill="black" />
+                                    <circle cx="65" cy="65" r="10" fill="black" />
+                                </mask>
+                            </defs>
+                            <circle cx="50" cy="50" r="40" fill="currentColor" mask="url(#home-cut)" className="text-primary-foreground" />
+                        </svg>
                     </div>
                 </Link>
 
@@ -170,7 +179,8 @@ export default function HomeNavbar() {
                     {!isCompact && (
                         <button
                             onClick={handleSignOut}
-                            className="px-4 py-2 rounded-lg bg-accent text-accent-foreground font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            className="px-4 py-2 rounded-lg font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                         >
                             Sign Out
                         </button>

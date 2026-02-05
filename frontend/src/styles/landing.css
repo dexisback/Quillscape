@@ -4,21 +4,22 @@
     /* Enhanced vintage aged paper aesthetic with stronger neutral base and crumbled texture effect */
     --color-background: oklch(0.96 0.025 75);
     --color-foreground: oklch(0.18 0.01 40);
-    --color-card: oklch(0.94 0.03 80);
+    /* Warmer, richer card color - slightly darker than background for depth */
+    --color-card: oklch(0.93 0.04 85);
     --color-card-foreground: oklch(0.15 0.01 40);
-    --color-popover: oklch(0.95 0.025 75);
+    --color-popover: oklch(0.94 0.03 80);
     --color-popover-foreground: oklch(0.15 0.01 40);
     --color-primary: oklch(0.35 0.1 35);
     --color-primary-foreground: oklch(0.97 0.02 75);
     --color-secondary: oklch(0.82 0.06 45);
     --color-secondary-foreground: oklch(0.2 0.01 40);
-    --color-muted: oklch(0.86 0.05 70);
+    --color-muted: oklch(0.88 0.04 75);
     --color-muted-foreground: oklch(0.48 0.03 40);
     --color-accent: oklch(0.62 0.18 25);
     --color-accent-foreground: oklch(0.98 0.02 75);
     --color-destructive: oklch(0.577 0.245 27.325);
     --color-destructive-foreground: oklch(0.577 0.245 27.325);
-    --color-border: oklch(0.9 0.025 70);
+    --color-border: oklch(0.85 0.03 75);
     --color-input: oklch(0.9 0.025 70);
     --color-ring: oklch(0.62 0.18 25);
     --radius: 1.25rem;
@@ -107,6 +108,8 @@
 
 .bg-card {
     background-color: var(--color-card);
+    background-image: radial-gradient(circle, rgba(139, 90, 43, 0.08) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
 }
 
 .text-card-foreground {
@@ -129,11 +132,14 @@ body {
 
 /* Glassmorphism Effect for Navbar */
 .glass-nav {
-    background: color-mix(in oklch, var(--color-background) 40%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid color-mix(in oklch, var(--color-border) 20%, transparent);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    /* Extra frosty warm tint */
+    background: color-mix(in oklch, var(--color-background) 80%, transparent);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 4px 30px rgba(0, 0, 0, 0.06),
+        inset 0 0 30px rgba(255, 255, 255, 0.6);
 }
 
 .dark .glass-nav {

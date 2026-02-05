@@ -15,7 +15,8 @@ export default function ShowPosts() {
       const fetchBlogs = async () => {
         try {
           const response = await getMyBlogs()
-          setBlogs(response.data)
+          const sorted = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          setBlogs(sorted)
         } catch (err) {
           console.error("fetch failed:", err)
         }
@@ -69,37 +70,12 @@ export default function ShowPosts() {
     }
   }
 
-  // Blog Card Component with GSAP animation
   function PostCard({ blog }) {
-    const cardRef = useRef(null)
-
-    useEffect(() => {
-      if (!cardRef.current) return
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            gsap.fromTo(
-              entry.target,
-              { opacity: 0, y: 20 },
-              { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
-            )
-            observer.unobserve(entry.target)
-          }
-        },
-        { threshold: 0.1 }
-      )
-
-      observer.observe(cardRef.current)
-      return () => observer.disconnect()
-    }, [])
-
     const isPublished = blog.status === 'published'
 
     return (
       <div
-        ref={cardRef}
-        className="bg-card border border-border rounded-xl p-5 hover:shadow-lg transition-all duration-300 hover:border-accent/30 opacity-0 text-left relative"
+        className="bg-card border border-border rounded-xl p-3 hover:shadow-lg transition-all duration-300 hover:border-accent/30 text-left relative"
       >
         {/* Status Indicator - Top Right */}
         <div className="absolute top-4 right-4 flex items-center gap-1.5">

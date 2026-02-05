@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { motion } from "framer-motion"
 import gsap from "gsap"
 
 const StickyNotes = () => {
@@ -33,22 +34,22 @@ const StickyNotes = () => {
     }, [])
 
     const noteTexts = [
-        "Write your thoughts\nand ideas here",
-        "Organize your\ninspirations",
-        "Capture creative\nmoments",
-        "Share your\nstories",
+        "Share your thoughts",
+        "Pour your heart out",
+        "aesthetic writing\nexperience",
+        "Write and save on\nthe internet anonymously"
     ]
 
     return (
         <div ref={containerRef} className="relative h-full w-full flex items-center justify-center">
             <div className="relative w-full h-96">
                 {noteTexts.map((text, index) => (
-                    <div
+                    <motion.div
                         key={index}
                         ref={(el) => {
                             if (el) notesRef.current[index] = el
                         }}
-                        className="sticky-note absolute w-48 h-56 p-5 rounded-xl"
+                        className="sticky-note absolute w-48 h-56 p-5 rounded-xl cursor-pointer"
                         style={{
                             left: `${index * 20}px`,
                             top: `${index * 18}px`,
@@ -56,22 +57,28 @@ const StickyNotes = () => {
                             backgroundColor: ["#fef3c7", "#fef08a", "#fde047", "#facc15"][index % 4],
                             boxShadow: "0 10px 24px rgba(0,0,0,0.12), 3px 6px 12px rgba(0,0,0,0.1)",
                         }}
+                        whileHover={{
+                            y: -35,
+                            boxShadow: "0 20px 40px rgba(0,0,0,0.2), 6px 12px 24px rgba(0,0,0,0.15)",
+                        }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
                     >
-                        {/* Pin */}
+                        {/* Pin - centered */}
                         <div
                             className="sticky-pin"
                             style={{
-                                left: `${20 + Math.random() * 120}px`,
+                                left: "50%",
+                                transform: "translateX(-50%)",
                                 backgroundColor: index % 2 === 0 ? "#dc2626" : "#991b1b",
                             }}
                         />
 
                         {/* Text */}
-                        <p className="text-sm text-gray-800 mt-8 leading-relaxed whitespace-pre-line font-medium">{text}</p>
+                        <p className="text-sm text-gray-800 mt-8 leading-relaxed whitespace-pre-line font-medium italic">{text}</p>
 
                         {/* Decorative lines */}
                         <div className="absolute bottom-4 left-5 right-5 border-t border-gray-300/50" />
-                    </div>
+                    </motion.div>
                 ))}
             </div>
         </div>
@@ -79,3 +86,4 @@ const StickyNotes = () => {
 }
 
 export default StickyNotes
+

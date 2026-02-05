@@ -34,8 +34,8 @@ export default function Navbar() {
     useEffect(() => {
         if (!navContainerRef.current) return
 
-        // Interpolate values based on scroll progress
-        const maxWidth = 100 - (scrollProgress * 20) // 100% to 80%
+        // Interpolate values based on scroll progress (50% to 40%)
+        const maxWidth = 50 - (scrollProgress * 10)
 
         gsap.to(navContainerRef.current, {
             maxWidth: `${maxWidth}%`,
@@ -103,28 +103,33 @@ export default function Navbar() {
     return (
         <nav
             ref={navRef}
-            className="fixed top-0 left-0 right-0 z-50 py-6 px-8 transition-all duration-500 ease-in-out"
+            className="fixed top-0 left-0 right-0 z-50 py-4 px-8 transition-all duration-500 ease-in-out"
         >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-3xl px-6 py-4 flex items-center justify-between mx-auto transition-all duration-500 ease-in-out"
-                style={{ maxWidth: '100%' }}
+                className="glass-nav rounded-full px-6 py-3 flex items-center justify-between mx-auto transition-all duration-500 ease-in-out"
+                style={{ maxWidth: '50%' }}
             >
-                {/* Logo and Name - Always visible */}
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center transition-all duration-500">
-                        <span className="text-primary-foreground font-bold text-lg">Q</span>
-                    </div>
-                    <span className="font-semibold text-foreground text-lg transition-all duration-500">Quillscape</span>
+                {/* Logo - SVG Only */}
+                <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                        <defs>
+                            <mask id="cut">
+                                <rect width="100" height="100" fill="white" />
+                                <circle cx="52" cy="35" r="18" fill="black" />
+                                <circle cx="65" cy="65" r="10" fill="black" />
+                            </mask>
+                        </defs>
+                        <circle cx="50" cy="50" r="40" fill="currentColor" mask="url(#cut)" className="text-primary-foreground" />
+                    </svg>
                 </div>
-
-                <div className="flex-1" />
 
                 {/* Actions - Always visible */}
                 <div className="flex items-center gap-4">
                     <button
                         onClick={handleGetStarted}
-                        className="px-5 py-2 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                        className="px-5 py-2 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                        style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                     >
                         Get Started
                     </button>
