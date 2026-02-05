@@ -13,7 +13,13 @@ const app=express();
 
 
 
-app.use(cors());
+
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+        ? process.env.FRONTEND_URL || 'https://quillscape.onrender.com'
+        : ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    credentials: true
+}));
 app.use(express.json());
 
 
@@ -30,4 +36,4 @@ app.get("/health", (req, res)=>{
 })
 
 const PORT= process.env.PORT || 3000 ;
-app.listen(PORT, ()=>{console.log("Up and runnin' ✅")})
+app.listen(PORT, ()=>{console.log("Server running on port " + PORT)})

@@ -15,7 +15,6 @@ const router= express.Router();
 
 //test:
 router.get("/", (req, res)=>{
-    console.log("testing route works, this was only meant for the developer")
     res.send("hellow, youre in the /blog endpoint")
 })
 
@@ -72,7 +71,6 @@ router.post("/post", verifyAuth, async (req, res)=>{
     })
     await newBlog.save();
     res.status(201).json({ msg: `Blog ${blogStatus === 'published' ? 'published' : 'saved as draft'}`, blog: newBlog });
-    console.log(`blog has been created as ${blogStatus}`);
 } catch (error) {
         console.error("error creating blog:", error);
         res.status(500).send({ msg: "Failed to create blog" });
@@ -92,12 +90,10 @@ router.delete("/delete/:id", verifyAuth, async(req, res)=>{
     })
 
     if(!deletedBlogs){
-        res.status(404).send({msg: "couldnt find your blog"})
-        console.error("blog with the given id not found")
+        return res.status(404).send({msg: "couldnt find your blog"})
     }
     res.status(200).send("blog succesfully yeeted")        
     } catch (error) {
-        console.log(error);
         res.status(404).send({msg: "invalid auth creds"})
     }
 

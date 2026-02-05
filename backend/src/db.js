@@ -12,7 +12,6 @@ export  async function connectDB(){
     }    
 
     await mongoose.connect(url);
-    console.log("connected to mongoose succesfully ✅");
     } catch (error) {
         console.error("connection to mongoose failed ⚠️")
     }

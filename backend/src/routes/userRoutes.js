@@ -17,7 +17,6 @@ router.post('/sync', async (req, res)=>{
         if(!user){
             user= new User({firebaseUid, email})
             await user.save();
-            console.log(" this nigga didnt exist before but now they exist, user saved in mongo");
 
         }
         res.status(200).json(user);
@@ -41,7 +40,6 @@ router.get('/profile', verifyAuth, async (req, res) => {
                 email: req.user.email
             })
             await user.save();
-            console.log("auto created user from firebase token")
         }
         res.status(200).json(user);
     } catch (err) {
