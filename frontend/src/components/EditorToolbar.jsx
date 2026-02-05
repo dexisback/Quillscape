@@ -1,4 +1,4 @@
-import { Bold, Italic, Highlighter, Eraser, PenTool } from 'lucide-react'
+import { Bold, Italic, Highlighter, Eraser, Pencil } from 'lucide-react'
 import { useSlate, ReactEditor } from 'slate-react'
 import { isMarkActive, toggleMark, clearFormatting } from './editorTools'
 
@@ -42,32 +42,35 @@ export default function EditorToolbar({ onDoodleClick }) {
 
     return (
         <div
-            className="flex flex-col items-center gap-2 p-3 rounded-xl"
+            className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl"
             style={{
-                backgroundColor: 'rgba(139, 115, 85, 0.08)',
-                border: '1px solid rgba(139, 115, 85, 0.15)',
+                background: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(12px) saturate(150%)',
+                WebkitBackdropFilter: 'blur(12px) saturate(150%)',
+                border: '1px solid rgba(255, 255, 255, 0.5)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
             }}
         >
             <ToolbarButton onClick={handleBold} isActive={isBoldActive} title="Bold (Ctrl+B)">
-                <Bold className="w-4 h-4" />
+                <Bold className="w-3.5 h-3.5" strokeWidth={2} />
             </ToolbarButton>
 
             <ToolbarButton onClick={handleItalic} isActive={isItalicActive} title="Italic (Ctrl+I)">
-                <Italic className="w-4 h-4" />
+                <Italic className="w-3.5 h-3.5" strokeWidth={2} />
             </ToolbarButton>
 
             <ToolbarButton onClick={handleHighlight} isActive={isHighlightActive} title="Highlight (Ctrl+H)">
-                <Highlighter className="w-4 h-4" />
+                <Highlighter className="w-3.5 h-3.5" strokeWidth={2} />
             </ToolbarButton>
 
-            <div className="w-6 h-px my-1" style={{ backgroundColor: 'rgba(139, 115, 85, 0.25)' }} />
+            <div className="w-5 h-px my-0.5" style={{ backgroundColor: 'rgba(82, 82, 82, 0.15)' }} />
 
-            <ToolbarButton onClick={handleEraser} isActive={false} title="Clear Formatting (Ctrl+Shift+X)">
-                <Eraser className="w-4 h-4" />
+            <ToolbarButton onClick={handleEraser} isActive={false} title="Clear Formatting">
+                <Eraser className="w-3.5 h-3.5" strokeWidth={2} />
             </ToolbarButton>
 
             <ToolbarButton onClick={handleDoodle} isActive={false} title="Draw a Doodle">
-                <PenTool className="w-4 h-4" />
+                <Pencil className="w-3.5 h-3.5" strokeWidth={2} />
             </ToolbarButton>
         </div>
     )
@@ -78,15 +81,15 @@ function ToolbarButton({ children, onClick, isActive, title }) {
         <button
             onClick={onClick}
             title={title}
-            className="w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-200 hover:scale-110"
+            className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-150"
             style={{
-                color: isActive ? 'oklch(0.95 0.02 80)' : 'oklch(0.35 0.1 35)',
-                backgroundColor: isActive ? 'oklch(0.45 0.12 40)' : 'transparent',
-                boxShadow: isActive ? '0 2px 8px rgba(100, 80, 60, 0.2)' : 'none',
+                color: isActive ? '#ffffff' : '#525252',
+                backgroundColor: isActive ? '#3d3d3d' : 'transparent',
+                boxShadow: isActive ? '0 2px 6px rgba(0, 0, 0, 0.15)' : 'none',
             }}
             onMouseEnter={(e) => {
                 if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'rgba(139, 115, 85, 0.15)'
+                    e.currentTarget.style.backgroundColor = 'rgba(82, 82, 82, 0.1)'
                 }
             }}
             onMouseLeave={(e) => {

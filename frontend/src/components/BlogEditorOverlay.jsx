@@ -1,21 +1,24 @@
-//NOTE; logic for converting the title into a SlateComponent present, we just choose to go with the default cursor for now
-//dump place for all text editor logic related -- i will implement all the fts i wanted organically for the text editor modal
-
-
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { createBlog, updateBlog } from '../api/blogs.api'
 import { useAuth } from '../context/AuthContext'
 import { X, Maximize2, Minimize2 } from 'lucide-react'
 
-//slate related stuff:
 import { createEditor, Transforms } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 
-// Rich text editing tools
 import { handleKeyboardShortcuts } from './editorTools'
 import EditorToolbar from './EditorToolbar'
 import DoodleCanvas from './DoodleCanvas'
+
+import {
+  withMarkdownShortcuts,
+  withImages,
+  renderElement,
+  renderLeaf,
+  slateToMarkdown,
+  markdownToSlate
+} from '../lib/slate'
 
 
 
@@ -23,49 +26,36 @@ export default function BlogEditorOverlay({
   isOpen,
   onClose,
   onBlogCreated,
-  editMode = false, //blog ka edit mode on/off 
+  editMode = false,
   blogId = null,
   initialTitle = '',
   initialBody = '',
   onBlogUpdated
 }) {
-  //all stuff init
-  const { user } = useAuth() //getting the user 
+  const { user } = useAuth()
   const [title, setTitle] = useState(initialTitle)
   const [body, setBody] = useState(initialBody)
   const [loading, setLoading] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isDoodleOpen, setIsDoodleOpen] = useState(false)
+  const bodyEditorRef = useRef(null)
 
 
-  const titleEditor = useMemo(() => withHistory(withReact(createEditor())), []) //title editor slate instance//on mount, create a title editor instance. so the title is NOT just a input field anymore
-  const bodyEditor = useMemo(() => withHistory(withReact(createEditor())), []) //body editor slate instance
+  const titleEditor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const bodyEditor = useMemo(() => withMarkdownShortcuts(withImages(withHistory(withReact(createEditor())))), [])
 
 
-
-  // string to array converter so that slate stores it 
   const getInitialSlateValue = useCallback((text) => {
     if (!text) {
       return [{ type: 'paragraph', children: [{ text: '' }] }]
     }
-    //else if paragraphs ARE there || something IS written
-    const paragraphs = text.split('\n').map(line => ({
-      type: 'paragraph',
-      children: [{ text: line }]
-    }))
-    return paragraphs.length > 0 ? paragraphs : [{ type: 'paragraph', children: [{ text: '' }] }]
+    return markdownToSlate(text)
   }, [])
-  //now that title is also a slate, use this:
-  const [titleSlateValue, setTitleSlateValue] = useState(() => [{ type: "paragraph", children: [{ text: initialTitle || '' }] }])
 
-  //imp:
+  const [titleSlateValue, setTitleSlateValue] = useState(() => [{ type: "paragraph", children: [{ text: initialTitle || '' }] }])
   const [bodySlateValue, setBodySlateValue] = useState(() => getInitialSlateValue(initialBody))
 
 
-
-
-
-  //on moounting, init all the "sets"
   useEffect(() => {
     setTitle(initialTitle)
     setBody(initialBody)
@@ -82,29 +72,6 @@ export default function BlogEditorOverlay({
       console.log("nothing, ignoring selection errors on init load")
     }
   }, [initialTitle, initialBody, bodyEditor, titleEditor, getInitialSlateValue])
-
-  const renderLeaf = useCallback(({ attributes, children, leaf }) => {
-    if (leaf.bold) {
-      children = <strong style={{ fontWeight: 700 }}>{children}</strong>
-    }
-    if (leaf.italic) {
-      children = <em style={{ fontStyle: 'italic' }}>{children}</em>
-    }
-    if (leaf.highlight) {
-      children = (
-        <mark
-          style={{
-            backgroundColor: 'oklch(0.88 0.12 80)',
-            padding: '0.1em 0.2em',
-            borderRadius: '2px',
-          }}
-        >
-          {children}
-        </mark>
-      )
-    }
-    return <span {...attributes}>{children}</span>
-  }, [])
 
 
   const handleBodyKeyDown = useCallback((event) => {
@@ -144,7 +111,6 @@ export default function BlogEditorOverlay({
     setLoading(true)
     try {
       if (editMode && blogId) {
-        // Update existing blog
         const data = { title: title.trim(), body: body.trim() }
         if (status) {
           data.status = status
@@ -156,12 +122,10 @@ export default function BlogEditorOverlay({
         }
         onClose()
       } else {
-        // Create new blog
         const data = { title: title.trim(), body: body.trim(), status }
         const response = await createBlog(data)
         setTitle('')
         setBody('')
-        //setting slate values to empty:
         setTitleSlateValue([{ type: "paragraph", children: [{ text: "" }] }]);
         setBodySlateValue([{ type: "paragraph", children: [{ text: "" }] }]);
 
@@ -192,12 +156,20 @@ export default function BlogEditorOverlay({
     onClose()
   }
 
-  //extra: only one line title allowed, enter key pressing doesnt do anything
   const handleTitleKeyDown = useCallback((event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
+      try {
+        Transforms.select(bodyEditor, { path: [0, 0], offset: 0 })
+        bodyEditorRef.current?.focus()
+      } catch (e) {
+        console.log("focus error")
+      }
     }
-  }, [])
+  }, [bodyEditor])
+
+  const handleRenderElement = useCallback((props) => renderElement(props), [])
+  const handleRenderLeaf = useCallback((props) => renderLeaf(props), [])
 
   if (!isOpen) { return null }
 
@@ -210,85 +182,56 @@ export default function BlogEditorOverlay({
         onClick={handleClose}
       />
 
-      {/* Editor Modal - Old crumbled paper aesthetic */}
+      {/* Editor Modal - Yellow paper aesthetic */}
       <div
-        className={`relative mx-4 shadow-2xl flex flex-col overflow-hidden rounded-2xl transition-all duration-500 ease-out ${isFullscreen
+        className={`relative mx-4 shadow-2xl flex flex-col overflow-hidden ${isFullscreen
           ? 'w-full h-full max-w-full max-h-full rounded-none'
-          : 'w-full max-w-4xl h-[100vh] max-h-[100vh]'
+          : 'w-full max-w-4xl h-[90vh] max-h-[90vh] rounded-2xl'
           }`}
         style={{
-          // Crumbled paper background color
-          backgroundColor: 'oklch(0.94 0.03 80)',
-          // Crumbled paper texture
+          backgroundColor: '#fef9c3',
           backgroundImage: `
-            repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 3px,
-              rgba(139, 115, 85, 0.03) 3px,
-              rgba(139, 115, 85, 0.03) 6px
-            ),
-            repeating-linear-gradient(
-              -45deg,
-              transparent,
-              transparent 3px,
-              rgba(139, 115, 85, 0.02) 3px,
-              rgba(139, 115, 85, 0.02) 6px
-            ),
-            repeating-linear-gradient(
-              0deg,
-              transparent,
-              transparent 2px,
-              rgba(139, 115, 85, 0.015) 2px,
-              rgba(139, 115, 85, 0.015) 4px
-            ),
-            radial-gradient(ellipse at 20% 30%, rgba(139, 115, 85, 0.05) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 70%, rgba(139, 115, 85, 0.04) 0%, transparent 50%),
-            radial-gradient(ellipse at 50% 50%, rgba(139, 115, 85, 0.02) 0%, transparent 70%)
+            radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+            radial-gradient(ellipse at 85% 80%, rgba(253, 224, 71, 0.12) 0%, transparent 50%)
           `
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-8 py-5 border-b" style={{ borderColor: 'rgba(139, 115, 85, 0.2)' }}>
-          <h2 className="text-xl font-semibold" style={{ color: 'oklch(0.35 0.1 35)' }}>
-            {editMode ? 'Edit your story' : 'Write your story'}
-          </h2>
+        {/* Minimal Header - just the controls */}
+        <div className="flex items-center justify-end px-6 py-4">
           <div className="flex items-center gap-2">
             {/* Fullscreen toggle */}
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
-              className="p-2 rounded-lg transition-all duration-300 hover:scale-105"
+              className="p-2.5 rounded-full transition-all duration-200 hover:scale-105"
               style={{
-                color: 'oklch(0.35 0.1 35)',
-                backgroundColor: 'rgba(139, 115, 85, 0.1)'
+                color: '#525252',
+                backgroundColor: 'rgba(82, 82, 82, 0.08)'
               }}
               title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
             >
-              {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+              {isFullscreen ? <Minimize2 className="w-4 h-4" strokeWidth={1.5} /> : <Maximize2 className="w-4 h-4" strokeWidth={1.5} />}
             </button>
             {/* Close button */}
             <button
               onClick={handleClose}
-              className="p-2 rounded-lg transition-all duration-300 hover:scale-105"
+              className="p-2.5 rounded-full transition-all duration-200 hover:scale-105"
               style={{
-                color: 'oklch(0.35 0.1 35)',
-                backgroundColor: 'rgba(139, 115, 85, 0.1)'
+                color: '#525252',
+                backgroundColor: 'rgba(82, 82, 82, 0.08)'
               }}
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" strokeWidth={1.5} />
             </button>
           </div>
         </div>
 
-        {/* Editor Area - Minimal writing space */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        {/* Editor Area */}
+        <div className="flex-1 overflow-y-auto px-10 pb-6">
           {/* Title - Slate Editor */}
-          <div
-            style={{ position: 'relative', marginBottom: '1.5rem' }}
-          >
+          <div style={{ position: 'relative', marginBottom: '1rem' }}>
             <Slate
               editor={titleEditor}
-              initialValue={titleSlateValue}  // You need to create this state
+              initialValue={titleSlateValue}
               onChange={(newValue) => {
                 setTitleSlateValue(newValue)
                 const text = newValue[0]?.children[0]?.text || ''
@@ -301,74 +244,51 @@ export default function BlogEditorOverlay({
                 onKeyDown={handleTitleKeyDown}
                 style={{
                   outline: 'none',
-                  fontSize: '2.25rem',
-                  fontWeight: 'bold',
+                  fontSize: '2.5rem',
+                  fontWeight: 600,
                   fontFamily: 'Inter, sans-serif',
-                  color: 'oklch(0.25 0.05 40)',
+                  letterSpacing: '-0.02em',
+                  color: '#262626',
                   textAlign: 'left',
                 }}
               />
             </Slate>
           </div>
 
-          {/* Decorative divider - like paper fold line */}
+          {/* Minimal divider */}
           <div
-            className="w-20 h-0.5 rounded mb-8"
-            style={{ backgroundColor: 'rgba(139, 115, 85, 0.3)' }}
+            className="w-16 h-0.5 rounded mb-6"
+            style={{ backgroundColor: 'rgba(38, 38, 38, 0.15)' }}
           />
 
 
-          <div
-            style={{ position: 'relative', flex: 1, minHeight: '400px' }}
-          >
+          <div style={{ position: 'relative', flex: 1, minHeight: '350px' }}>
             <Slate
               editor={bodyEditor}
               initialValue={bodySlateValue}
               onChange={(newBodyValue) => {
                 setBodySlateValue(newBodyValue)
-                const text = newBodyValue
-                  .map(node => {
-                    if (node.type === 'image') return '[doodle]'
-                    return node.children.map(child => child.text).join('')
-                  })
-                  .join('\n')
-                setBody(text)
+                const markdown = slateToMarkdown(newBodyValue)
+                setBody(markdown)
               }}
             >
               <div className="flex gap-4">
                 <div className="flex-1">
                   <Editable
+                    ref={bodyEditorRef}
                     readOnly={loading}
                     placeholder="Tell your story..."
                     onKeyDown={handleBodyKeyDown}
-                    renderLeaf={renderLeaf}
-                    renderElement={({ attributes, children, element }) => {
-                      if (element.type === 'image') {
-                        return (
-                          <div {...attributes} contentEditable={false} style={{ margin: '1rem 0' }}>
-                            <img
-                              src={element.url}
-                              alt="Doodle"
-                              style={{
-                                maxWidth: '100%',
-                                borderRadius: '8px',
-                                border: '2px solid rgba(139, 115, 85, 0.2)',
-                                boxShadow: '0 2px 8px rgba(100, 80, 60, 0.1)'
-                              }}
-                            />
-                            {children}
-                          </div>
-                        )
-                      }
-                      return <p {...attributes}>{children}</p>
-                    }}
+                    renderLeaf={handleRenderLeaf}
+                    renderElement={handleRenderElement}
                     style={{
                       outline: 'none',
-                      minHeight: '400px',
-                      fontSize: '18px',
-                      lineHeight: '1.7',
+                      minHeight: '350px',
+                      fontSize: '1.125rem',
+                      lineHeight: '1.8',
                       fontFamily: 'Inter, sans-serif',
-                      color: 'oklch(0.3 0.03 40)',
+                      letterSpacing: '-0.01em',
+                      color: '#404040',
                       textAlign: 'left',
                     }}
                   />
@@ -387,38 +307,41 @@ export default function BlogEditorOverlay({
                 top: 0 !important;
                 text-align: left !important;
                 width: 100% !important;
-                opacity: 0.4 !important;
+                opacity: 0.35 !important;
               }
             `}</style>
           </div>
         </div>
 
+        {/* Footer with buttons */}
         <div
-          className="flex items-center justify-end px-6 py-3 border-t gap-2"
+          className="flex items-center justify-end px-6 py-4 gap-3"
           style={{
-            borderColor: 'rgba(139, 115, 85, 0.15)',
+            borderTop: '1px solid rgba(38, 38, 38, 0.08)',
+            backgroundColor: 'rgba(255, 255, 255, 0.3)'
           }}
         >
           <button
             onClick={() => handleSubmit(editMode ? null : 'draft')}
             disabled={loading}
-            className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105"
+            className="px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md"
             style={{
-              backgroundColor: 'rgba(139, 115, 85, 0.12)',
-              color: 'oklch(0.35 0.1 35)',
+              backgroundColor: 'rgba(82, 82, 82, 0.08)',
+              color: '#525252',
               opacity: loading ? 0.6 : 1,
               cursor: loading ? 'not-allowed' : 'pointer'
             }}
           >
-            {loading ? '...' : 'Draft'}
+            {loading ? '...' : (editMode ? 'Save' : 'Draft')}
           </button>
           {!editMode && (
             <button
               onClick={() => handleSubmit('published')}
               disabled={loading}
-              className="px-4 py-1.5 rounded-full text-sm font-medium text-white transition-all duration-200 hover:scale-105"
+              className="px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
               style={{
-                backgroundColor: 'oklch(0.40 0.12 40)',
+                backgroundColor: '#3d3d3d',
+                color: '#ffffff',
                 opacity: loading ? 0.6 : 1,
                 cursor: loading ? 'not-allowed' : 'pointer'
               }}
