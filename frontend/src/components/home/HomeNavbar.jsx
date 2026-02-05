@@ -35,9 +35,9 @@ export default function HomeNavbar() {
     useEffect(() => {
         if (!navContainerRef.current) return
 
-        // Interpolate values based on scroll progress
-        const padding = 32 - (scrollProgress * 16) // 32px to 16px
-        const maxWidth = 100 - (scrollProgress * 30) // 100% to 70%
+        // Interpolate values based on scroll progress - elongated navbar
+        const padding = 24 - (scrollProgress * 8) // 24px to 16px
+        const maxWidth = 70 - (scrollProgress * 15) // 70% to 55%
 
         gsap.to(navContainerRef.current, {
             paddingLeft: `${padding}px`,
@@ -112,8 +112,8 @@ export default function HomeNavbar() {
         >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-3xl px-6 py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
-                style={{ maxWidth: '100%' }}
+                className="glass-nav rounded-full px-8 py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
+                style={{ maxWidth: '70%' }}
             >
                 {/* Logo Only - SVG */}
                 <Link to="/home" className="flex items-center z-10">
@@ -179,7 +179,7 @@ export default function HomeNavbar() {
                     {!isCompact && (
                         <button
                             onClick={handleSignOut}
-                            className="px-4 py-2 rounded-lg font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            className="px-5 py-2 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
                             style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                         >
                             Sign Out
