@@ -19,18 +19,19 @@ router.get("/", (req, res)=>{
 })
 
 
-//get all public blogs with author info (only published blogs)
+
 router.get("/public", async (req, res) => {
     try {
         const blogs = await Blog.find({ status: 'published' }).sort({ publishedAt: -1 }).limit(50);
         
-        //get author emails for each blog
+        
         const blogsWithAuthors = await Promise.all(
             blogs.map(async (blog) => {
                 const author = await User.findOne({ firebaseUid: blog.author_uid });
                 return {
                     ...blog.toObject(),
-                    author_email: author ? author.email : 'Anonymous'
+                    author_email: author ? author.email : 'Anonymous',
+                    author_uid: undefined   //no external should have access to author_uid
                 };
             })
         );
@@ -107,7 +108,12 @@ router.get("/:id", async(req, res)=>{
     if(!blog){
         res.status(404).send({msg: "sorry blog not found"})
     }
-    res.status(200).json(blog);        
+
+
+    // res.status(200).json(blog);        
+    //only return published blogs to the public
+    if(blog.status !== "published"){return res.status(403).send({msg: "this blog is a draft, unauthorised access"})}
+    res.status(200).json(blog);
     } catch (error) {
         console.error("invalid blog id");
     }

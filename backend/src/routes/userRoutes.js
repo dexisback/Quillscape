@@ -9,10 +9,13 @@ import Blog from "../models/Blog.js";
 
 const router = express.Router();
 
-//sync ka post route
-router.post('/sync', async (req, res)=>{
+//verifyAuth implemented, this was a security vulnerability back then
+router.post('/sync', verifyAuth,  async (req, res)=>{
     try {
-        const { firebaseUid, email } = req.body;
+        // const { firebaseUid, email } = req.body;
+        //now reject creds from external requests
+        const firebaseUid = req.user.uid; 
+        const email= req.user.email; 
         let user= await User.findOne({ firebaseUid })
         if(!user){
             user= new User({firebaseUid, email})
@@ -28,7 +31,7 @@ router.post('/sync', async (req, res)=>{
 })
 
 
-// Get user profile
+
 router.get('/profile', verifyAuth, async (req, res) => {
     try {
         let user = await User.findOne({ firebaseUid: req.user.uid });
@@ -41,7 +44,14 @@ router.get('/profile', verifyAuth, async (req, res) => {
             })
             await user.save();
         }
-        res.status(200).json(user);
+        // res.status(200).json(user);
+        //limiting get response -> decreasing attack prob
+        res.status(200).json({
+            username: user.username,
+            email: user.email,
+            bio: user.bio,
+            profilePicture: user.profilePicture
+        })
     } catch (err) {
         console.error("Error fetching profile:", err);
         res.status(500).json({ msg: "Server error fetching profile" });
@@ -49,7 +59,7 @@ router.get('/profile', verifyAuth, async (req, res) => {
 });
 
 
-// Update user profile
+
 router.put('/update', verifyAuth, async (req, res) => {
     try {
         const { username, bio } = req.body;
