@@ -1,49 +1,42 @@
-import React from 'react';
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { createBlog } from '../api/blogs.api';
-
-
-
+import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { createBlog } from '../api/blogs.api'
 
 function BlogWritingForm({ onBlogCreated }) {
-  const { user } = useAuth();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth()
+  const [title, setTitle] = useState("")
+  const [body, setBody] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (status) => {
-    // Validation BEFORE creating data and calling API
     if (!title.trim() || !body.trim()) {
-      return alert("Please fill both title and body before submitting.");
+      return alert("Please fill both title and body before submitting.")
     }
 
     if (!user) {
-      return alert("You must be logged in to create a post.");
+      return alert("You must be logged in to create a post.")
     }
 
-    setLoading(true);
+    setLoading(true)
     try {
-      const data = { title: title.trim(), body: body.trim(), status };
-      const response = await createBlog(data);
+      const data = { title: title.trim(), body: body.trim(), status }
+      const response = await createBlog(data)
 
-      // Clear form on success
-      setTitle("");
-      setBody("");
+      setTitle("")
+      setBody("")
 
-      // Notify parent component that a blog was created
       if (onBlogCreated && response.data) {
-        onBlogCreated(response.data.blog);
+        onBlogCreated(response.data.blog)
       }
 
-      const actionText = status === 'published' ? 'published' : 'saved as draft';
-      alert(`Blog ${actionText} successfully!`);
+      const actionText = status === 'published' ? 'published' : 'saved as draft'
+      alert(`Blog ${actionText} successfully!`)
     } catch (err) {
-      alert("Failed to create post. Please try again.");
+      alert("Failed to create post. Please try again.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
@@ -82,7 +75,7 @@ function BlogWritingForm({ onBlogCreated }) {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
-export default BlogWritingForm;
+export default BlogWritingForm

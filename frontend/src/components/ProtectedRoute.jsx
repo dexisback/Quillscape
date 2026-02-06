@@ -1,11 +1,9 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-export default function ProtectedRoute({children}) {
-    const { user, loading } = useAuth();
-  
-    // Show loading state while auth is being determined
+export default function ProtectedRoute({ children }) {
+    const { user, loading } = useAuth()
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[oklch(0.96_0.025_75)]">
@@ -16,12 +14,10 @@ export default function ProtectedRoute({children}) {
             </div>
         )
     }
-    
-    // Redirect to landing if not authenticated
+
     if (!user) {
         return <Navigate to="/" replace />
     }
 
-    return children;
+    return children
 }
-

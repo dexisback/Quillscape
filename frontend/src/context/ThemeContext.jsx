@@ -1,42 +1,40 @@
-//file to keep global context of themes. implement later
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react'
 
-const ThemeContext = createContext();
-const THEME_VERSION = 'v2'; // Bump this to reset user preferences
+const ThemeContext = createContext()
+const THEME_VERSION = 'v2'
 
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
-    const version = localStorage.getItem('themeVersion');
-    // Reset preferences if version changed (migrating users to light default)
+    const version = localStorage.getItem('themeVersion')
     if (version !== THEME_VERSION) {
-      localStorage.removeItem('darkMode');
-      localStorage.setItem('themeVersion', THEME_VERSION);
-      return false; // Default to light mode
+      localStorage.removeItem('darkMode')
+      localStorage.setItem('themeVersion', THEME_VERSION)
+      return false
     }
-    const saved = localStorage.getItem('darkMode');
-    return saved !== null ? JSON.parse(saved) : false;
-  });
+    const saved = localStorage.getItem('darkMode')
+    return saved !== null ? JSON.parse(saved) : false
+  })
 
   useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+    localStorage.setItem('darkMode', JSON.stringify(darkMode))
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add('dark')
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove('dark')
     }
-  }, [darkMode]);
+  }, [darkMode])
 
   const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
+    setDarkMode(!darkMode)
+  }
 
   return (
     <ThemeContext.Provider value={{ darkMode, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
-  );
+  )
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  return useContext(ThemeContext)
 }

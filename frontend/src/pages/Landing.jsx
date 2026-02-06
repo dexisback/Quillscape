@@ -3,10 +3,7 @@ import Navbar from '../components/landing/Navbar'
 import HeroSection from '../components/landing/HeroSection'
 import Footer from '../components/landing/Footer'
 
-
 export default function Landing() {
-
-//thankyou shubhash choudhary :)
   useEffect(() => {
     fetch(import.meta.env.VITE_API_BASE_URL + '/blogs/public').catch(() => { })
   }, [])

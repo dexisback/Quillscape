@@ -1,26 +1,22 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import Feed from './pages/Home';
-// import Dashboard from './pages/Dashboard';
-
-import UserProfile from './pages/UserProfile';
-import Settings from './pages/Settings';
-import Auth from './pages/Auth';
-import Landing from './pages/Landing';
-import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Post from './pages/Post';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import UserProfile from './pages/UserProfile'
+import Settings from './pages/Settings'
+import Auth from './pages/Auth'
+import Landing from './pages/Landing'
+import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import Post from './pages/Post'
 import Home from './pages/Home'
 import './App.css'
 
 export default function App() {
-  return(
+  return (
     <>
       <ThemeProvider>
         <AuthProvider>
           <Router>
-            <Routes>  
+            <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
@@ -34,9 +30,3 @@ export default function App() {
     </>
   )
 }
-
-
-
-
-
-
