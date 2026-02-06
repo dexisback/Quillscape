@@ -158,9 +158,9 @@ export default function Auth() {
       {/* Back Button */}
       <Link
         to="/"
-        className="fixed top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all hover:shadow-md bg-white/70 backdrop-blur-md border border-border/50 text-foreground"
+        className="fixed top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all hover:shadow-md bg-white/70 backdrop-blur-md border border-border/50 text-foreground"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
         Back
       </Link>
 
@@ -170,8 +170,8 @@ export default function Auth() {
         {/* Left: Auth Form */}
         <div ref={formRef} className="w-full max-w-sm mx-auto md:mx-0">
           {/* Logo */}
-          <div className="w-14 h-14 rounded-full flex items-center justify-center mb-10 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-9 h-9">
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-8 md:mb-10 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 md:w-9 md:h-9">
               <defs>
                 <mask id="auth-cut">
                   <rect width="100" height="100" fill="white" />
@@ -184,10 +184,10 @@ export default function Auth() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl font-semibold text-foreground mb-2" style={{ letterSpacing: '-0.02em' }}>
+          <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2" style={{ letterSpacing: '-0.02em' }}>
             Welcome back
           </h1>
-          <p className="text-muted-foreground text-sm mb-10">
+          <p className="text-muted-foreground text-sm mb-8 md:mb-10">
             Sign in to continue writing
           </p>
 

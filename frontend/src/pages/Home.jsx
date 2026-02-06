@@ -61,7 +61,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <HomeNavbar />
 
-      <main className="pt-24 pb-12 px-6 paper-main">
+      <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6 paper-main">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-12 text-left">

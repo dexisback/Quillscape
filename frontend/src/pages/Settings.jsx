@@ -54,7 +54,7 @@ export default function Settings() {
     <div className="min-h-screen bg-background">
       <HomeNavbar />
 
-      <main className="pt-24 pb-12 px-6">
+      <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6">
         <div className="max-w-2xl mx-auto" ref={pageRef}>
           {/* Header */}
           <div className="mb-10 text-left">
@@ -85,7 +85,7 @@ export default function Settings() {
           {/* Settings Card */}
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             {/* Fields */}
-            <div className="p-6 space-y-4">
+            <div className="p-4 md:p-6 space-y-4">
               {/* Account Email */}
               <div className="bg-muted/20 rounded-xl p-4 border border-border">
                 <div className="flex items-center gap-2 mb-2">
@@ -100,7 +100,7 @@ export default function Settings() {
               <div className="bg-destructive/5 rounded-xl p-4 border border-destructive/20">
                 <div className="flex items-center gap-2 mb-3">
                   <Trash2 className="w-4 h-4 text-destructive" />
-                  <label className="text-sm font-medium text-destructive" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
+                  <label className="text-sm font-medium text-red-500 dark:text-red-200" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
                     Permanently Delete Your Account
                   </label>
                 </div>
@@ -110,8 +110,8 @@ export default function Settings() {
 
                 {/* Slide to Delete Button */}
                 <div
-                  className="relative h-12 rounded-full overflow-hidden"
-                  style={{ width: `${sliderWidth}px`, backgroundColor: '#e57373' }}
+                  className="relative h-12 rounded-full overflow-hidden w-full max-w-[280px]"
+                  style={{ backgroundColor: '#e57373' }}
                 >
                   <motion.div
                     className="absolute inset-0"

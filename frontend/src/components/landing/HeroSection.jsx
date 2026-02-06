@@ -32,11 +32,11 @@ export default function HeroSection() {
     }
 
     return (
-        <section className="min-h-screen flex flex-col justify-center items-center pt-28 pb-12 px-6">
+        <section className="min-h-screen flex flex-col justify-center items-center pt-24 md:pt-28 pb-8 md:pb-12 px-4 md:px-6">
             {/* Headline */}
-            <div ref={headlineRef} className="text-center mb-10">
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Write. Publish. Share.</h1>
-                <p className="text-base text-muted-foreground max-w-xl mx-auto">
+            <div ref={headlineRef} className="text-center mb-8 md:mb-10">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">Write. Publish. Share.</h1>
+                <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto px-2">
                     Or{" "}
                     <span className="relative inline-block">
                         <span
@@ -51,14 +51,14 @@ export default function HeroSection() {
             </div>
 
             {/* Main Grid */}
-            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start px-2">
                 {/* Left Grid - Sticky Notes */}
                 <motion.div
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8 }}
                     viewport={{ once: true }}
-                    className="h-72 mt-8"
+                    className="h-48 sm:h-60 md:h-72 mt-4 md:mt-8 hidden sm:block"
                 >
                     <StickyNotes />
                 </motion.div>
@@ -72,7 +72,7 @@ export default function HeroSection() {
                     viewport={{ once: true }}
                     onHoverStart={() => setIsHovered(true)}
                     onHoverEnd={() => setIsHovered(false)}
-                    className="relative flex flex-col items-center justify-center gap-8 px-8 py-20 mt-4 cursor-pointer"
+                    className="relative flex flex-col items-center justify-center gap-6 md:gap-8 px-6 md:px-8 py-12 md:py-20 mt-4 cursor-pointer"
                     style={{
                         backgroundColor: '#fef08a',
                         boxShadow: '0 10px 24px rgba(0,0,0,0.12), 3px 6px 12px rgba(0,0,0,0.1)',
@@ -105,7 +105,7 @@ export default function HeroSection() {
 
                     {/* Text with styled "today" */}
                     <div className="relative">
-                        <p className="text-neutral-800 font-medium text-lg">
+                        <p className="text-neutral-800 font-medium text-base md:text-lg">
                             <span style={{ letterSpacing: '-0.03em' }}>Start writing</span>{" "}
                             <span className="relative italic">
                                 today
@@ -131,12 +131,12 @@ export default function HeroSection() {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
                         <motion.button
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={handleSignInWithQuillscape}
-                            className="py-3 px-8 rounded-full font-medium text-sm transition-all duration-300 hover:shadow-lg"
+                            className="py-2.5 md:py-3 px-6 md:px-8 rounded-full font-medium text-sm transition-all duration-300 hover:shadow-lg w-full sm:w-auto"
                             style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                         >
                             Quillscape
@@ -146,7 +146,7 @@ export default function HeroSection() {
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={handleSignInWithGoogle}
-                            className="py-3 px-8 rounded-full font-medium text-sm transition-all duration-300 hover:shadow-lg flex items-center gap-2"
+                            className="py-2.5 md:py-3 px-6 md:px-8 rounded-full font-medium text-sm transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto"
                             style={{ backgroundColor: '#fffdf7', color: '#3d3d3d', border: '1px solid rgba(0,0,0,0.1)' }}
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">

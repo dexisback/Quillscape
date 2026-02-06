@@ -26,25 +26,25 @@
 }
 
 .dark {
-    /* Refined dark theme with golden accents and better contrast */
-    --color-background: oklch(0.12 0.008 55);
+    /* Refined dark theme with golden accents - softer, lighter feel */
+    --color-background: oklch(0.16 0.01 55);
     --color-foreground: oklch(0.93 0.02 80);
-    --color-card: oklch(0.18 0.015 60);
+    --color-card: oklch(0.24 0.018 60);
     --color-card-foreground: oklch(0.92 0.02 80);
-    --color-popover: oklch(0.16 0.012 58);
+    --color-popover: oklch(0.22 0.015 58);
     --color-popover-foreground: oklch(0.92 0.02 80);
     --color-primary: oklch(0.80 0.10 70);
     --color-primary-foreground: oklch(0.12 0.01 55);
-    --color-secondary: oklch(0.26 0.035 65);
+    --color-secondary: oklch(0.30 0.035 65);
     --color-secondary-foreground: oklch(0.90 0.02 80);
-    --color-muted: oklch(0.22 0.025 60);
+    --color-muted: oklch(0.28 0.025 60);
     --color-muted-foreground: oklch(0.65 0.03 75);
     --color-accent: oklch(0.72 0.12 55);
     --color-accent-foreground: oklch(0.10 0.01 55);
     --color-destructive: oklch(0.50 0.18 25);
     --color-destructive-foreground: oklch(0.95 0.01 80);
-    --color-border: oklch(0.30 0.03 60);
-    --color-input: oklch(0.24 0.02 58);
+    --color-border: oklch(0.35 0.03 60);
+    --color-input: oklch(0.30 0.02 58);
     --color-ring: oklch(0.72 0.12 55);
 }
 
@@ -248,13 +248,19 @@ body {
         radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
         radial-gradient(ellipse at 85% 80%, rgba(253, 224, 71, 0.15) 0%, transparent 50%);
     background-size: 100% 100%;
-    max-width: 900px;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     border-radius: 0.75rem;
     box-shadow:
         0 2px 12px rgba(0, 0, 0, 0.04),
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@media (min-width: 640px) {
+    .paper-main {
+        max-width: 900px;
+    }
 }
 
 .dark .paper-main {

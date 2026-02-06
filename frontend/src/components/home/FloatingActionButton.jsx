@@ -19,11 +19,11 @@ export default function FloatingActionButton({ onClick }) {
         <button
             ref={fabRef}
             onClick={onClick}
-            className="fixed bottom-8 right-8 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-40"
+            className="fixed bottom-5 right-5 md:bottom-8 md:right-8 w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-40"
             style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
             aria-label="Create new post"
         >
-            <Pencil className="w-6 h-6" />
+            <Pencil className="w-5 h-5 md:w-6 md:h-6" />
         </button>
     )
 }

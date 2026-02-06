@@ -23,7 +23,7 @@ export default function Footer() {
     return (
         <footer
             ref={footerRef}
-            className="py-16 px-6 mt-24 bg-gradient-to-b from-transparent to-muted/20"
+            className="py-10 md:py-16 px-4 md:px-6 mt-16 md:mt-24 bg-gradient-to-b from-transparent to-muted/20"
         >
             <div className="max-w-5xl mx-auto">
                 <div className="flex flex-col gap-12">

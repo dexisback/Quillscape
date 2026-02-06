@@ -35,14 +35,20 @@ export default function HomeNavbar() {
     useEffect(() => {
         if (!navContainerRef.current) return
 
-        // Interpolate values based on scroll progress - elongated navbar
-        const padding = 24 - (scrollProgress * 8) // 24px to 16px
-        const maxWidth = 70 - (scrollProgress * 15) // 70% to 55%
+        // Responsive base widths
+        const isMobile = window.innerWidth < 640
+        const isTablet = window.innerWidth >= 640 && window.innerWidth < 768
+        const baseWidth = isMobile ? 96 : isTablet ? 90 : 70
+        const shrinkAmount = isMobile ? 0 : 15
+
+        // Interpolate values based on scroll progress
+        const padding = 24 - (scrollProgress * 8)
+        const width = baseWidth - (scrollProgress * shrinkAmount)
 
         gsap.to(navContainerRef.current, {
             paddingLeft: `${padding}px`,
             paddingRight: `${padding}px`,
-            maxWidth: `${maxWidth}%`,
+            width: `${width}%`,
             duration: 0.1,
             ease: "none"
         })
@@ -108,17 +114,17 @@ export default function HomeNavbar() {
     return (
         <nav
             ref={navRef}
-            className="fixed top-0 left-0 right-0 z-50 py-4 px-4"
+            className="fixed top-0 left-0 right-0 z-50 py-3 md:py-4 px-2 md:px-4"
         >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-full px-8 py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
-                style={{ maxWidth: '70%' }}
+                className="glass-nav rounded-full px-4 md:px-8 py-2.5 md:py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
+                style={{ width: '70%' }}
             >
                 {/* Logo Only - SVG */}
                 <Link to="/home" className="flex items-center z-10">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 md:w-6 md:h-6">
                             <defs>
                                 <mask id="home-cut">
                                     <rect width="100" height="100" fill="white" />
@@ -133,8 +139,7 @@ export default function HomeNavbar() {
 
                 {/* Navigation Links - Absolutely centered */}
                 <div
-                    className="absolute left-1/2 -translate-x-1/2 flex items-center transition-all duration-300 ease-out"
-                    style={{ gap: `${28 - (scrollProgress * 12)}px` }} // gap from 28px to 16px
+                    className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 sm:gap-4 md:gap-6 transition-all duration-300 ease-out"
                 >
                     <Link
                         to="/home"
@@ -143,7 +148,7 @@ export default function HomeNavbar() {
                         title="Home"
                     >
                         <Home className="w-4 h-4" />
-                        {!isCompact && <span>Home</span>}
+                        <span className="hidden md:inline">{!isCompact && 'Home'}</span>
                     </Link>
                     <Link
                         to="/post-blogs"
@@ -152,7 +157,7 @@ export default function HomeNavbar() {
                         title="Post"
                     >
                         <FileText className="w-4 h-4" />
-                        {!isCompact && <span>Post</span>}
+                        <span className="hidden md:inline">{!isCompact && 'Post'}</span>
                     </Link>
                     <Link
                         to="/user-settings"
@@ -161,7 +166,7 @@ export default function HomeNavbar() {
                         title="Settings"
                     >
                         <Settings className="w-4 h-4" />
-                        {!isCompact && <span>Settings</span>}
+                        <span className="hidden md:inline">{!isCompact && 'Settings'}</span>
                     </Link>
                     <Link
                         to="/user-profile"
@@ -170,16 +175,16 @@ export default function HomeNavbar() {
                         title="Profile"
                     >
                         <User className="w-4 h-4" />
-                        {!isCompact && <span>Profile</span>}
+                        <span className="hidden md:inline">{!isCompact && 'Profile'}</span>
                     </Link>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
                     {!isCompact && (
                         <button
                             onClick={handleSignOut}
-                            className="px-5 py-2 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            className="hidden sm:block px-4 md:px-5 py-1.5 md:py-2 rounded-full font-medium text-xs md:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
                             style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                         >
                             Sign Out
@@ -190,10 +195,10 @@ export default function HomeNavbar() {
                         ref={themeSwitchRef}
                         onClick={toggleTheme}
                         disabled={isAnimating}
-                        className="p-2 rounded-lg hover:bg-muted transition-all duration-300 disabled:opacity-50"
+                        className="p-1.5 md:p-2 rounded-lg hover:bg-muted transition-all duration-300 disabled:opacity-50"
                         aria-label="Toggle theme"
                     >
-                        {isDark ? <Sun className="w-5 h-5 text-accent" /> : <Moon className="w-5 h-5 text-primary" />}
+                        {isDark ? <Sun className="w-4 h-4 md:w-5 md:h-5 text-accent" /> : <Moon className="w-4 h-4 md:w-5 md:h-5 text-primary" />}
                     </button>
                 </div>
             </div>

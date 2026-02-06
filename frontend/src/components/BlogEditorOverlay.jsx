@@ -435,9 +435,9 @@ export default function BlogEditorOverlay({
 
       {/* Editor Modal - Yellow paper aesthetic */}
       <div
-        className={`relative mx-4 shadow-2xl flex flex-col overflow-hidden ${isFullscreen
+        className={`relative mx-2 md:mx-4 shadow-2xl flex flex-col overflow-hidden ${isFullscreen
           ? 'w-full h-full max-w-full max-h-full rounded-none'
-          : 'w-full max-w-4xl h-[90vh] max-h-[90vh] rounded-2xl'
+          : 'w-full max-w-4xl h-[85vh] md:h-[90vh] max-h-[90vh] rounded-xl md:rounded-2xl'
           }`}
         style={{
           backgroundColor: '#fef9c3',
@@ -448,7 +448,7 @@ export default function BlogEditorOverlay({
         }}
       >
         {/* Minimal Header - just the controls */}
-        <div className="flex items-center justify-end px-6 py-4">
+        <div className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
@@ -475,7 +475,7 @@ export default function BlogEditorOverlay({
         </div>
 
         {/* Editor Area */}
-        <div className="flex-1 overflow-y-auto px-10 pb-6">
+        <div className="flex-1 overflow-y-auto px-4 md:px-10 pb-4 md:pb-6">
           {/* Title - Slate Editor */}
           <div style={{ position: 'relative', marginBottom: '1rem' }}>
             <Slate
@@ -493,7 +493,7 @@ export default function BlogEditorOverlay({
                 onKeyDown={handleTitleKeyDown}
                 style={{
                   outline: 'none',
-                  fontSize: '2.5rem',
+                  fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
                   fontWeight: 600,
                   fontFamily: 'Inter, sans-serif',
                   letterSpacing: '-0.02em',
@@ -543,9 +543,9 @@ export default function BlogEditorOverlay({
                   />
                 </div>
 
-                {/* Toolbar - slides in/out on hover when not fullscreen */}
+                {/* Toolbar - slides in/out on hover when not fullscreen, hidden on mobile */}
                 <div
-                  className="sticky top-0 self-start"
+                  className="sticky top-0 self-start hidden md:block"
                   onMouseEnter={() => setIsToolbarHovered(true)}
                   onMouseLeave={() => setIsToolbarHovered(false)}
                   style={{
@@ -578,7 +578,7 @@ export default function BlogEditorOverlay({
 
         {/* Footer with buttons */}
         <div
-          className="flex items-center justify-end px-6 py-4 gap-3"
+          className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4 gap-2 md:gap-3"
           style={{
             borderTop: '1px solid rgba(38, 38, 38, 0.08)',
             backgroundColor: 'rgba(255, 255, 255, 0.3)'
@@ -587,7 +587,7 @@ export default function BlogEditorOverlay({
           <button
             onClick={() => handleSubmit(editMode ? null : 'draft')}
             disabled={loading}
-            className="px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md"
+            className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md"
             style={{
               backgroundColor: 'rgba(82, 82, 82, 0.08)',
               color: '#525252',
@@ -601,7 +601,7 @@ export default function BlogEditorOverlay({
             <button
               onClick={() => handleSubmit('published')}
               disabled={loading}
-              className="px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
+              className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
               style={{
                 backgroundColor: '#3d3d3d',
                 color: '#ffffff',

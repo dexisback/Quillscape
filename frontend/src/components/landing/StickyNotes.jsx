@@ -42,19 +42,19 @@ const StickyNotes = () => {
 
     return (
         <div ref={containerRef} className="relative h-full w-full flex items-center justify-center">
-            <div className="relative w-full h-96">
+            <div className="relative w-full h-60 sm:h-72 md:h-96">
                 {noteTexts.map((text, index) => (
                     <motion.div
                         key={index}
                         ref={(el) => {
                             if (el) notesRef.current[index] = el
                         }}
-                        className="sticky-note absolute w-48 h-56 p-5 rounded-xl cursor-pointer"
+                        className="sticky-note absolute w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-56 p-3 sm:p-4 md:p-5 rounded-xl cursor-pointer"
                         style={{
-                            left: `${index * 20}px`,
-                            top: `${index * 18}px`,
+                            left: `${index * 12}px`,
+                            top: `${index * 12}px`,
                             zIndex: index,
-                            backgroundColor: ["#fef3c7", "#fef08a", "#fde047", "#facc15"][index % 4],
+                            backgroundColor: ["#fef9c7", "#fef3c7", "#fde047", "#facc15"][index % 4],
                             boxShadow: "0 10px 24px rgba(0,0,0,0.12), 3px 6px 12px rgba(0,0,0,0.1)",
                         }}
                         whileHover={{
@@ -74,10 +74,10 @@ const StickyNotes = () => {
                         />
 
                         {/* Text */}
-                        <p className="text-sm text-gray-800 mt-8 leading-relaxed whitespace-pre-line font-medium italic">{text}</p>
+                        <p className="text-xs sm:text-sm text-gray-800 mt-6 sm:mt-8 leading-relaxed whitespace-pre-line font-medium italic">{text}</p>
 
                         {/* Decorative lines */}
-                        <div className="absolute bottom-4 left-5 right-5 border-t border-gray-300/50" />
+                        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 border-t border-gray-300/50" />
                     </motion.div>
                 ))}
             </div>

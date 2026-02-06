@@ -37,11 +37,16 @@ export default function Navbar() {
         // Interpolate values based on scroll progress (50% to 40%)
         const maxWidth = 50 - (scrollProgress * 10)
 
-        gsap.to(navContainerRef.current, {
-            maxWidth: `${maxWidth}%`,
-            duration: 0.1,
-            ease: "none"
-        })
+        // Use set on first render (scrollProgress = 0) to avoid animation from 0
+        if (scrollProgress === 0) {
+            gsap.set(navContainerRef.current, { maxWidth: `${maxWidth}%` })
+        } else {
+            gsap.to(navContainerRef.current, {
+                maxWidth: `${maxWidth}%`,
+                duration: 0.1,
+                ease: "none"
+            })
+        }
     }, [scrollProgress])
 
     const toggleTheme = () => {
@@ -103,16 +108,15 @@ export default function Navbar() {
     return (
         <nav
             ref={navRef}
-            className="fixed top-0 left-0 right-0 z-50 py-4 px-8 transition-all duration-500 ease-in-out"
+            className="fixed top-0 left-0 right-0 z-50 py-3 md:py-4 px-4 md:px-8 transition-all duration-500 ease-in-out"
         >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-full px-6 py-3 flex items-center justify-between mx-auto transition-all duration-500 ease-in-out"
-                style={{ maxWidth: '50%' }}
+                className="glass-nav rounded-full px-4 md:px-6 py-2.5 md:py-3 flex items-center justify-between mx-auto transition-all duration-500 ease-in-out w-[92%] sm:w-[80%] md:w-[70%] lg:w-[50%]"
             >
                 {/* Logo - SVG Only */}
-                <div className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 md:w-6 md:h-6">
                         <defs>
                             <mask id="cut">
                                 <rect width="100" height="100" fill="white" />
@@ -125,10 +129,10 @@ export default function Navbar() {
                 </div>
 
                 {/* Actions - Always visible */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                     <button
                         onClick={handleGetStarted}
-                        className="px-5 py-2 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                        className="px-3 py-1.5 md:px-5 md:py-2 rounded-full font-medium text-xs md:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
                         style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                     >
                         Get Started
@@ -138,10 +142,10 @@ export default function Navbar() {
                         ref={themeSwitchRef}
                         onClick={toggleTheme}
                         disabled={isAnimating}
-                        className="p-2 rounded-lg hover:bg-muted transition-all duration-300 disabled:opacity-50"
+                        className="p-1.5 md:p-2 rounded-lg hover:bg-muted transition-all duration-300 disabled:opacity-50"
                         aria-label="Toggle theme"
                     >
-                        {isDark ? <Sun className="w-5 h-5 text-accent" /> : <Moon className="w-5 h-5 text-primary" />}
+                        {isDark ? <Sun className="w-4 h-4 md:w-5 md:h-5 text-accent" /> : <Moon className="w-4 h-4 md:w-5 md:h-5 text-primary" />}
                     </button>
                 </div>
             </div>

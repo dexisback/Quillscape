@@ -95,7 +95,7 @@ export default function UserProfile() {
   if (loading) return (
     <div className="min-h-screen bg-background">
       <HomeNavbar />
-      <main className="pt-24 pb-12 px-6">
+      <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6">
         <div className="max-w-2xl mx-auto text-center py-16">
           <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
           <p className="text-muted-foreground" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>Loading profile...</p>
@@ -107,7 +107,7 @@ export default function UserProfile() {
   if (!user) return (
     <div className="min-h-screen bg-background">
       <HomeNavbar />
-      <main className="pt-24 pb-12 px-6">
+      <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6">
         <div className="max-w-2xl mx-auto text-center py-16">
           <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
             <User className="w-8 h-8 text-muted-foreground" />
@@ -122,7 +122,7 @@ export default function UserProfile() {
     <div className="min-h-screen bg-background">
       <HomeNavbar />
 
-      <main className="pt-24 pb-12 px-6">
+      <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6">
         <div className="max-w-2xl mx-auto" ref={pageRef}>
           {/* Header */}
           <div className="mb-10 text-left">
@@ -186,7 +186,7 @@ export default function UserProfile() {
             </div>
 
             {/* Avatar Section - Horizontal Layout */}
-            <div className="bg-muted/30 p-6 flex items-center gap-5 border-b border-border">
+            <div className="bg-muted/30 p-4 md:p-6 flex items-center gap-4 md:gap-5 border-b border-border">
               <div
                 ref={avatarRef}
                 className="w-16 h-16 rounded-full overflow-hidden border-3 border-card shadow-lg flex-shrink-0"
@@ -212,7 +212,7 @@ export default function UserProfile() {
             </div>
 
             {/* Profile Details */}
-            <div className="p-6">
+            <div className="p-4 md:p-6">
 
               {/* Fields */}
               <div className="space-y-4">

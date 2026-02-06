@@ -19,10 +19,10 @@ export default function Post() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="pt-24 pb-12 px-6 paper-main">
+            <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6 paper-main">
                 <div className="max-w-3xl mx-auto">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-10">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between mb-8 md:mb-10">
                         <div className="text-left">
                             <p className="text-lg text-muted-foreground" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
                                 <span className="relative inline-block" style={{ isolation: 'isolate' }}>
@@ -49,7 +49,7 @@ export default function Post() {
                         </div>
                         <button
                             onClick={() => setIsEditorOpen(true)}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            className="flex items-center justify-center gap-2 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto"
                             style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                         >
                             <Pencil className="w-4 h-4" />
