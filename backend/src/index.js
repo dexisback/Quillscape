@@ -10,7 +10,7 @@ const app = express()
 
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? process.env.FRONTEND_URL || 'https://quillscape.onrender.com'
+        ? process.env.FRONTEND_URL || 'https://quillscape.amaanworks.me'
         : ['http://localhost:5173', 'http://127.0.0.1:5173'],
     credentials: true
 }))
