@@ -25,6 +25,7 @@ import {
 
 
 export default function BlogEditorOverlay({
+  readOnly, //new
   isOpen,
   onClose,
   onBlogCreated,
@@ -488,7 +489,7 @@ export default function BlogEditorOverlay({
               }}
             >
               <Editable
-                readOnly={loading}
+                readOnly={loading || readOnly}
                 placeholder="Untitled"
                 onKeyDown={handleTitleKeyDown}
                 style={{
@@ -524,8 +525,8 @@ export default function BlogEditorOverlay({
               <div className="flex gap-4">
                 <div className="flex-1">
                   <Editable
-                    ref={bodyEditorRef}
-                    readOnly={loading}
+                    ref={bodyEditorRef }
+                    readOnly={loading || readOnly}
                     placeholder="Tell your story..."
                     onKeyDown={handleBodyKeyDown}
                     renderLeaf={handleRenderLeaf}
@@ -544,7 +545,8 @@ export default function BlogEditorOverlay({
                 </div>
 
                 {/* Toolbar - slides in/out on hover when not fullscreen, hidden on mobile */}
-                <div
+                {/* new: does not render on readonly */}
+                {!readOnly && (<div
                   className="sticky top-0 self-start hidden md:block"
                   onMouseEnter={() => setIsToolbarHovered(true)}
                   onMouseLeave={() => setIsToolbarHovered(false)}
@@ -559,7 +561,8 @@ export default function BlogEditorOverlay({
                   >
                     <EditorToolbar onDoodleClick={openDoodle} />
                   </motion.div>
-                </div>
+                </div>)}
+                
               </div>
             </Slate>
 
@@ -577,7 +580,10 @@ export default function BlogEditorOverlay({
         </div>
 
         {/* Footer with buttons */}
-        <div
+        {/* new: now hides footer buttons when readonly  */}
+        {/* not readonly jab true ho to ye return krna */}
+        {!readOnly && (
+          <div
           className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4 gap-2 md:gap-3"
           style={{
             borderTop: '1px solid rgba(38, 38, 38, 0.08)',
@@ -613,7 +619,10 @@ export default function BlogEditorOverlay({
             </button>
           )}
         </div>
+        )} 
       </div>
+        
+        
 
       {/* Doodle Canvas Overlay */}
       <DoodleCanvas

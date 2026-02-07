@@ -13,7 +13,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [endOfPosts, setEndOfPosts] = useState(false)
-
+  const [viewingBlog, setViewingBlog]= useState(null);
+  //above, new: to open and view a blog as read only
+  
   const fetchPublicBlogs = async () => {
     try {
       const response = await api.get('/blogs/public')
@@ -116,12 +118,22 @@ export default function Home() {
                 <BlogCard
                   key={blog._id}
                   blog={blog}
+                  onOpenBlog={(blog)=>{setViewingBlog(blog)}} //new
                   calculateReadTime={calculateReadTime}
                   formatTimeAgo={formatTimeAgo}
                 />
               ))}
             </div>
           )}
+          {/* readonly Overlay logic */}
+          {viewingBlog && <BlogEditorOverlay
+            isOpen={true}
+            onClose={()=>{setViewingBlog(null)}}
+            readOnly={true}
+            initialTitle={viewingBlog.title}
+            initialBody={viewingBlog.body}
+            authorInfo={{name: viewingBlog.author_name, email:viewingBlog.author_name }}
+          />}
 
           {/* Load More Button */}
           {blogs.length > 0 && (
