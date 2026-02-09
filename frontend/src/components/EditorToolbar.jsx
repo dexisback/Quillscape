@@ -1,9 +1,11 @@
-import { Bold, Italic, Highlighter, Eraser, Pencil } from 'lucide-react'
+import { useRef } from 'react'
+import { Bold, Italic, Highlighter, Eraser, Pencil, ImagePlus } from 'lucide-react'
 import { useSlate, ReactEditor } from 'slate-react'
 import { isMarkActive, toggleMark, clearFormatting } from './editorTools'
 
-export default function EditorToolbar({ onDoodleClick }) {
+export default function EditorToolbar({ onDoodleClick, onImageUpload }) {
     const editor = useSlate()
+    const fileInputRef = useRef(null)
 
     function handleBold(e) {
         e.preventDefault()
@@ -34,6 +36,19 @@ export default function EditorToolbar({ onDoodleClick }) {
         if (onDoodleClick) {
             onDoodleClick()
         }
+    }
+
+    function handleImageClick(e) {
+        e.preventDefault()
+        fileInputRef.current?.click()
+    }
+
+    function handleFileChange(e) {
+        const file = e.target.files?.[0]
+        if (file && onImageUpload) {
+            onImageUpload(file)
+        }
+        e.target.value = ''
     }
 
     const isBoldActive = isMarkActive(editor, 'bold')
@@ -72,6 +87,18 @@ export default function EditorToolbar({ onDoodleClick }) {
             <ToolbarButton onClick={handleDoodle} isActive={false} title="Draw a Doodle">
                 <Pencil className="w-3.5 h-3.5" strokeWidth={2} />
             </ToolbarButton>
+
+            <ToolbarButton onClick={handleImageClick} isActive={false} title="Upload Image">
+                <ImagePlus className="w-3.5 h-3.5" strokeWidth={2} />
+            </ToolbarButton>
+
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+            />
         </div>
     )
 }

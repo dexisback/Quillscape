@@ -4,6 +4,11 @@ import { useAuth } from '../context/AuthContext'
 import BlogEditorOverlay from './BlogEditorOverlay'
 import gsap from 'gsap'
 
+function stripMarkdownImages(text) {
+  if (!text) return ''
+  return text.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()
+}
+
 export default function ShowPosts() {
   const { user } = useAuth()
   const [blogs, setBlogs] = useState([])
@@ -90,9 +95,11 @@ export default function ShowPosts() {
           {/* Title */}
           <h3 className="text-base font-semibold text-foreground pr-20">{blog.title}</h3>
 
-          {/* Content */}
           <p className="text-muted-foreground text-sm leading-relaxed">
-            {blog.body.length > 150 ? `${blog.body.substring(0, 150)}...` : blog.body}
+            {(() => {
+              const cleanBody = stripMarkdownImages(blog.body)
+              return cleanBody.length > 150 ? `${cleanBody.substring(0, 150)}...` : cleanBody
+            })()}
           </p>
 
 

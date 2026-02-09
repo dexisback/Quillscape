@@ -2,6 +2,24 @@ import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkSlate from 'remark-slate'
 
+function transformNodes(nodes) {
+    if (!Array.isArray(nodes)) return nodes
+    return nodes.map(node => {
+        if (node.type === 'img' || node.type === 'image') {
+            return {
+                type: 'image',
+                url: node.url || node.link || node.src || '',
+                alt: node.alt || 'image',
+                children: [{ text: '' }]
+            }
+        }
+        if (node.children && Array.isArray(node.children)) {
+            return { ...node, children: transformNodes(node.children) }
+        }
+        return node
+    })
+}
+
 export function markdownToSlate(markdown) {
     if (!markdown || typeof markdown !== 'string') {
         return [{ type: 'paragraph', children: [{ text: '' }] }]
@@ -16,11 +34,12 @@ export function markdownToSlate(markdown) {
             return [{ type: 'paragraph', children: [{ text: '' }] }]
         }
 
-        return slateNodes
+        return transformNodes(slateNodes)
     } catch (error) {
         return [{ type: 'paragraph', children: [{ text: markdown }] }]
     }
 }
+
 
 export function slateToMarkdown(slateNodes) {
     if (!slateNodes || !Array.isArray(slateNodes)) {

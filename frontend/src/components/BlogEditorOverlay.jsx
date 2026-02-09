@@ -129,6 +129,24 @@ export default function BlogEditorOverlay({
     })
   }
 
+  function handleImageUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const dataUrl = e.target.result
+      const imageNode = {
+        type: 'image',
+        url: dataUrl,
+        children: [{ text: '' }]
+      }
+      Transforms.insertNodes(bodyEditor, imageNode)
+      Transforms.insertNodes(bodyEditor, {
+        type: 'paragraph',
+        children: [{ text: '' }]
+      })
+    }
+    reader.readAsDataURL(file)
+  }
 
   const handleSubmit = async (status) => {
     if (!title.trim() || !body.trim()) {
@@ -525,7 +543,7 @@ export default function BlogEditorOverlay({
               <div className="flex gap-4">
                 <div className="flex-1">
                   <Editable
-                    ref={bodyEditorRef }
+                    ref={bodyEditorRef}
                     readOnly={loading || readOnly}
                     placeholder="Tell your story..."
                     onKeyDown={handleBodyKeyDown}
@@ -559,10 +577,10 @@ export default function BlogEditorOverlay({
                     ref={toolbarRef}
                     initial={{ x: isFullscreen ? 0 : 30, opacity: isFullscreen ? 1 : 0.4 }}
                   >
-                    <EditorToolbar onDoodleClick={openDoodle} />
+                    <EditorToolbar onDoodleClick={openDoodle} onImageUpload={handleImageUpload} />
                   </motion.div>
                 </div>)}
-                
+
               </div>
             </Slate>
 
@@ -584,45 +602,45 @@ export default function BlogEditorOverlay({
         {/* not readonly jab true ho to ye return krna */}
         {!readOnly && (
           <div
-          className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4 gap-2 md:gap-3"
-          style={{
-            borderTop: '1px solid rgba(38, 38, 38, 0.08)',
-            backgroundColor: 'rgba(255, 255, 255, 0.3)'
-          }}
-        >
-          <button
-            onClick={() => handleSubmit(editMode ? null : 'draft')}
-            disabled={loading}
-            className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md"
+            className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4 gap-2 md:gap-3"
             style={{
-              backgroundColor: 'rgba(82, 82, 82, 0.08)',
-              color: '#525252',
-              opacity: loading ? 0.6 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer'
+              borderTop: '1px solid rgba(38, 38, 38, 0.08)',
+              backgroundColor: 'rgba(255, 255, 255, 0.3)'
             }}
           >
-            {loading ? '...' : (editMode ? 'Save' : 'Draft')}
-          </button>
-          {!editMode && (
             <button
-              onClick={() => handleSubmit('published')}
+              onClick={() => handleSubmit(editMode ? null : 'draft')}
               disabled={loading}
-              className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
+              className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md"
               style={{
-                backgroundColor: '#3d3d3d',
-                color: '#ffffff',
+                backgroundColor: 'rgba(82, 82, 82, 0.08)',
+                color: '#525252',
                 opacity: loading ? 0.6 : 1,
                 cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              {loading ? '...' : 'Publish'}
+              {loading ? '...' : (editMode ? 'Save' : 'Draft')}
             </button>
-          )}
-        </div>
-        )} 
+            {!editMode && (
+              <button
+                onClick={() => handleSubmit('published')}
+                disabled={loading}
+                className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                style={{
+                  backgroundColor: '#3d3d3d',
+                  color: '#ffffff',
+                  opacity: loading ? 0.6 : 1,
+                  cursor: loading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {loading ? '...' : 'Publish'}
+              </button>
+            )}
+          </div>
+        )}
       </div>
-        
-        
+
+
 
       {/* Doodle Canvas Overlay */}
       <DoodleCanvas
