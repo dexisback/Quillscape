@@ -50,18 +50,24 @@ export default function ShowPosts() {
   const [blogs, setBlogs] = useState([])
   const [editingBlog, setEditingBlog] = useState(null)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (user) {
       const fetchBlogs = async () => {
+        setLoading(true)
         try {
           const response = await getMyBlogs()
           const sorted = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           setBlogs(sorted)
         } catch (err) {
+        } finally {
+          setLoading(false)
         }
       }
       fetchBlogs()
+    } else {
+      setLoading(false)
     }
   }, [user])
 
@@ -201,7 +207,12 @@ export default function ShowPosts() {
   return (
     <>
       <div className="space-y-6">
-        {blogs.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-10 text-muted-foreground">
+            <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p>Loading posts...</p>
+          </div>
+        ) : blogs.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">📝</span>
