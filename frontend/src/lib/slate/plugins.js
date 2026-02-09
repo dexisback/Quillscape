@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range, Point } from 'slate'
+import { Editor, Transforms, Range, Point} from 'slate'
 
 const MARKDOWN_SHORTCUTS = {
     '*': 'bulleted-list',
@@ -174,12 +174,40 @@ function handleInlineMarkdown(editor, text) {
     return false
 }
 
-export function withImages(editor) {
-    const { isVoid } = editor
+// export function withImages(editor) {
+//     const { isVoid } = editor
 
+//     editor.isVoid = (element) => {
+//         return element.type === 'image' ? true : isVoid(element)
+//     }
+
+//     return editor
+// }
+export function withImages(editor){
+    const {isVoid, insertData}= editor;
     editor.isVoid = (element) => {
-        return element.type === 'image' ? true : isVoid(element)
+        return element.type === 'image' ? true: isVoid(element)
     }
-
+    editor.insertData= (data) => {
+        const files= data.files;
+        if(files && files.length>0){
+            for(let i=0;i<files.length;i++){
+                const file=files[i];
+                if(file.type.startsWith('image/')){
+                    const reader=new FileReader()
+                    reader.onload = () => {
+                        Transforms.insertNodes(editor, {
+                            type: 'image',
+                            url: reader.result,
+                            children: [{text: ''}]
+                        })
+                    }
+                    reader.readAsDataURL(file);
+                    return;
+                }
+            }
+        }
+        insertData(data)
+    }
     return editor
 }
