@@ -6,8 +6,44 @@ import gsap from 'gsap'
 
 function stripMarkdownImages(text) {
   if (!text) return ''
-  return text.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()
+  let result = ''
+  let i = 0
+  while (i < text.length) {
+    if (text[i] === '!' && text[i + 1] === '[') {
+      let j = i + 2
+      while (j < text.length && text[j] !== ']') j++
+      if (text[j] === ']' && text[j + 1] === '(') {
+        let depth = 1
+        let k = j + 2
+        while (k < text.length && depth > 0) {
+          if (text[k] === '(') depth++
+          else if (text[k] === ')') depth--
+          k++
+        }
+        i = k
+        continue
+      }
+    }
+    if (text.substring(i, i + 5) === 'data:' && text.substring(i, i + 11) === 'data:image/') {
+      while (i < text.length && text[i] !== ' ' && text[i] !== '\n' && text[i] !== ')') i++
+      continue
+    }
+    result += text[i]
+    i++
+  }
+  let cleaned = ''
+  let lastWasSpace = false
+  for (let c of result) {
+    if (c === ' ' || c === '\n' || c === '\t') {
+      if (!lastWasSpace) { cleaned += ' '; lastWasSpace = true }
+    } else {
+      cleaned += c
+      lastWasSpace = false
+    }
+  }
+  return cleaned.trim()
 }
+
 
 export default function ShowPosts() {
   const { user } = useAuth()
