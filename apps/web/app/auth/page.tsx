@@ -27,12 +27,19 @@ function ReviewCard({ review, index }: { review: { text: string; author: string 
 
     return (
         <motion.div
-            className="p-6 rounded-2xl cursor-default"
-            style={{ backgroundColor: colors[index % 3], boxShadow: "0 8px 20px rgba(0,0,0,0.08)" }}
+            className="rounded-2xl cursor-default"
+            style={{
+                backgroundColor: colors[index % 3],
+                boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+                paddingTop: "24px",
+                paddingRight: "24px",
+                paddingBottom: "24px",
+                paddingLeft: "24px",
+            }}
             whileHover={{ y: -8, boxShadow: "0 16px 32px rgba(0,0,0,0.12)" }}
             transition={{ duration: 0.25, ease: "easeOut" }}
         >
-            <p className="text-neutral-700 text-sm leading-relaxed mb-3 italic">"{review.text}"</p>
+            <p className="text-neutral-700 text-sm leading-relaxed italic" style={{ marginBottom: "12px" }}>"{review.text}"</p>
             <p className="text-neutral-500 text-xs">{review.author}</p>
         </motion.div>
     )
@@ -117,7 +124,7 @@ export default function Auth() {
     if (authLoading || isAuthenticating) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center" style={{ gap: "16px" }}>
                     <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
                     <p className="text-sm text-muted-foreground">
                         {isAuthenticating ? "Signing in..." : "Loading..."}
@@ -128,18 +135,39 @@ export default function Auth() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-8 md:p-16 bg-background">
+        <div
+            className="min-h-screen flex items-center justify-center bg-background"
+            style={{ paddingTop: "64px", paddingRight: "64px", paddingBottom: "64px", paddingLeft: "64px" }}
+        >
             <Link
                 href="/"
-                className="fixed top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all hover:shadow-md bg-white/70 backdrop-blur-md border border-border/50 text-foreground"
+                className="fixed flex items-center rounded-full font-medium transition-all hover:shadow-md bg-white/70 backdrop-blur-md border border-border/50 text-foreground"
+                style={{
+                    top: "24px",
+                    left: "24px",
+                    gap: "8px",
+                    paddingTop: "8px",
+                    paddingRight: "16px",
+                    paddingBottom: "8px",
+                    paddingLeft: "16px",
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    borderRadius: "9999px",
+                }}
             >
                 <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 Back
             </Link>
 
-            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <div ref={formRef} className="w-full max-w-sm mx-auto md:mx-0">
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-8 md:mb-10 overflow-hidden" style={{ backgroundColor: "#d4a574" }}>
+            <div
+                className="w-full grid grid-cols-1 md:grid-cols-2 items-center"
+                style={{ maxWidth: "1024px", columnGap: "64px", rowGap: "64px" }}
+            >
+                <div ref={formRef} className="w-full max-w-sm mx-auto md:mx-0" style={{ maxWidth: "384px" }}>
+                    <div
+                        className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center overflow-hidden"
+                        style={{ backgroundColor: "#d4a574", marginBottom: "40px" }}
+                    >
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 md:w-9 md:h-9">
                             <defs>
                                 <mask id="auth-cut">
@@ -152,18 +180,19 @@ export default function Auth() {
                         </svg>
                     </div>
 
-                    <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2" style={{ letterSpacing: "-0.02em" }}>
+                    <h1 className="text-2xl md:text-3xl font-semibold text-foreground" style={{ letterSpacing: "-0.02em", marginBottom: "8px" }}>
                         Welcome back
                     </h1>
-                    <p className="text-muted-foreground text-sm mb-8 md:mb-10">Sign in to continue writing</p>
+                    <p className="text-muted-foreground text-sm" style={{ marginBottom: "40px" }}>Sign in to continue writing</p>
 
-                    <div className="space-y-4 mb-6">
+                    <div className="space-y-4" style={{ marginBottom: "24px" }}>
                         <input
                             type="email"
                             placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full px-5 py-3 rounded-full text-sm bg-white border border-border/60 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                            style={{ paddingTop: "12px", paddingRight: "20px", paddingBottom: "12px", paddingLeft: "20px" }}
                         />
                         <input
                             type="password"
@@ -171,6 +200,7 @@ export default function Auth() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-5 py-3 rounded-full text-sm bg-white border border-border/60 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                            style={{ paddingTop: "12px", paddingRight: "20px", paddingBottom: "12px", paddingLeft: "20px" }}
                         />
                     </div>
 
@@ -179,13 +209,19 @@ export default function Auth() {
                     <button
                         onClick={handleLogin}
                         disabled={isAuthenticating}
-                        className="w-full py-3.5 rounded-full font-medium text-sm transition-all hover:shadow-lg hover:scale-[1.01] disabled:opacity-50"
-                        style={{ backgroundColor: "#3d3d3d", color: "#ffffff" }}
+                        className="w-full rounded-full font-medium text-sm transition-all hover:shadow-lg hover:scale-[1.01] disabled:opacity-50"
+                        style={{
+                            backgroundColor: "#3d3d3d",
+                            color: "#ffffff",
+                            paddingTop: "14px",
+                            paddingBottom: "14px",
+                            lineHeight: "20px",
+                        }}
                     >
                         {isAuthenticating ? "Signing in..." : "Login"}
                     </button>
 
-                    <div className="mt-6 flex items-center justify-center gap-3 text-sm text-muted-foreground">
+                    <div className="flex items-center justify-center text-sm text-muted-foreground" style={{ marginTop: "24px", gap: "12px" }}>
                         <span>New?</span>
                         <button
                             onClick={handleSignUp}
@@ -210,7 +246,7 @@ export default function Auth() {
                     </div>
                 </div>
 
-                <div className="hidden md:flex flex-col gap-5">
+                <div className="hidden md:flex flex-col" style={{ gap: "20px" }}>
                     {reviews.map((review, index) => (
                         <ReviewCard key={index} review={review} index={index} />
                     ))}
