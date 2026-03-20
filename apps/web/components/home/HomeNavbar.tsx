@@ -70,11 +70,22 @@ export default function HomeNavbar() {
     const isCompact = scrollProgress > 0.5
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 py-3 md:py-4 px-2 md:px-4">
+        <nav
+            className="fixed top-0 left-0 right-0 z-50"
+            style={{ paddingTop: "16px", paddingRight: "16px", paddingBottom: "16px", paddingLeft: "16px" }}
+        >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-full px-4 md:px-8 py-2.5 md:py-3 flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
-                style={{ width: "70%" }}
+                className="glass-nav rounded-full flex items-center justify-between mx-auto transition-all duration-300 ease-out relative"
+                style={{
+                    width: "70%",
+                    paddingTop: "12px",
+                    paddingRight: "24px",
+                    paddingBottom: "12px",
+                    paddingLeft: "24px",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                }}
             >
                 <Link href="/home" className="flex items-center z-10">
                     <div className="w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: "#d4a574" }}>

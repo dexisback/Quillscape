@@ -69,9 +69,12 @@ export default function Home() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6 paper-main">
-                <div className="max-w-3xl mx-auto">
-                    <div className="mb-12 text-left">
+            <main
+                className="paper-main"
+                style={{ paddingTop: "96px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}
+            >
+                <div className="max-w-3xl mx-auto" style={{ maxWidth: "768px", marginLeft: "auto", marginRight: "auto" }}>
+                    <div className="text-left" style={{ marginBottom: "48px" }}>
                         <p className="text-lg text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
                             <span className="relative inline-block" style={{ isolation: "isolate" }}>
                                 <motion.span
@@ -95,12 +98,12 @@ export default function Home() {
                     </div>
 
                     {loading ? (
-                        <div className="text-center py-10 text-muted-foreground">
+                        <div className="text-center text-muted-foreground" style={{ paddingTop: "40px", paddingBottom: "40px" }}>
                             <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
                             <p>Loading posts...</p>
                         </div>
                     ) : blogs.length === 0 ? (
-                        <div className="text-center py-16">
+                        <div className="text-center" style={{ paddingTop: "64px", paddingBottom: "64px" }}>
                             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                                 <span className="text-2xl">📝</span>
                             </div>
@@ -138,7 +141,7 @@ export default function Home() {
                     )}
 
                     {blogs.length > 0 && (
-                        <div className="mt-12 text-center">
+                        <div className="text-center" style={{ marginTop: "48px" }}>
                             {!endOfPosts ? (
                                 <button
                                     onClick={() => setEndOfPosts(true)}
