@@ -1,0 +1,170 @@
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import api from '../api/axios'
+import HomeNavbar from '../components/home/HomeNavbar'
+import BlogCard from '../components/home/BlogCard'
+import FloatingActionButton from '../components/home/FloatingActionButton'
+import BlogEditorOverlay from '../components/BlogEditorOverlay'
+import { motion } from 'framer-motion'
+
+export default function Home() {
+  const { user } = useAuth()
+  const [blogs, setBlogs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const [endOfPosts, setEndOfPosts] = useState(false)
+  const [viewingBlog, setViewingBlog]= useState(null);
+  //above, new: to open and view a blog as read only
+  
+  const fetchPublicBlogs = async () => {
+    try {
+      const response = await api.get('/blogs/public')
+      setBlogs(response.data)
+    } catch (err) {
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchPublicBlogs()
+  }, [])
+
+  const handleBlogCreated = (newBlog) => {
+    fetchPublicBlogs()
+  }
+
+  const handleLoadMore = () => {
+    setEndOfPosts(true)
+  }
+
+  const calculateReadTime = (body) => {
+    const wordsPerMinute = 200
+    const wordCount = body.trim().split(/\s+/).length
+    const readTime = Math.ceil(wordCount / wordsPerMinute)
+    return readTime
+  }
+
+  const formatTimeAgo = (timestamp) => {
+    const now = new Date()
+    const posted = new Date(timestamp)
+    const diffMs = now - posted
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffMins < 1) return 'just now'
+    if (diffMins < 60) return `${diffMins} min ago`
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <HomeNavbar />
+
+      <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6 paper-main">
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="mb-12 text-left">
+            <p className="text-lg text-muted-foreground" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
+              <span className="relative inline-block" style={{ isolation: 'isolate' }}>
+                <motion.span
+                  className="absolute rounded-sm"
+                  style={{
+                    backgroundColor: '#fde047',
+                    zIndex: 0,
+                    transform: 'skewY(-2deg) rotate(-0.5deg)',
+                    top: '2px',
+                    bottom: '2px',
+                    left: '-3px',
+                    right: '-3px',
+                    borderRadius: '2px 8px 4px 6px'
+                  }}
+                  initial={{ scaleX: 0, originX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                />
+                <span className="relative font-medium text-neutral-800" style={{ zIndex: 1 }}>Discover stories</span>
+              </span>
+              {" "}from writers across{" "}
+              <span className="font-semibold text-primary">Quillscape</span>
+            </p>
+          </div>
+
+          {/* Blog Feed */}
+          {loading ? (
+            <div className="text-center py-10 text-muted-foreground">
+              <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p>Loading posts...</p>
+            </div>
+          ) : blogs.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">📝</span>
+              </div>
+              <p className="text-muted-foreground text-lg">No posts yet. Be the first to write!</p>
+              <button
+                onClick={() => setIsEditorOpen(true)}
+                className="mt-4 px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
+              >
+                Create Your First Post
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {blogs.map(blog => (
+                <BlogCard
+                  key={blog._id}
+                  blog={blog}
+                  onOpenBlog={(blog)=>{setViewingBlog(blog)}} //new
+                  calculateReadTime={calculateReadTime}
+                  formatTimeAgo={formatTimeAgo}
+                />
+              ))}
+            </div>
+          )}
+          {/* readonly Overlay logic */}
+          {viewingBlog && <BlogEditorOverlay
+            isOpen={true}
+            onClose={()=>{setViewingBlog(null)}}
+            readOnly={true}
+            initialTitle={viewingBlog.title}
+            initialBody={viewingBlog.body}
+            authorInfo={{name: viewingBlog.author_name, email:viewingBlog.author_name }}
+          />}
+
+          {/* Load More Button */}
+          {blogs.length > 0 && (
+            <div className="mt-12 text-center">
+              {!endOfPosts ? (
+                <button
+                  onClick={handleLoadMore}
+                  className="px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
+                >
+                  Load More Stories
+                </button>
+              ) : (
+                <p className="text-xs text-red-500">
+                  That's it for now — start writing to publish notes on the fyp page
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton onClick={() => setIsEditorOpen(true)} />
+
+      {/* Blog Editor Overlay */}
+      <BlogEditorOverlay
+        isOpen={isEditorOpen}
+        onClose={() => setIsEditorOpen(false)}
+        onBlogCreated={handleBlogCreated}
+      />
+    </div>
+  )
+}

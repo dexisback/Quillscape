@@ -1,0 +1,32 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import UserProfile from './pages/UserProfile'
+import Settings from './pages/Settings'
+import Auth from './pages/Auth'
+import Landing from './pages/Landing'
+import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import Post from './pages/Post'
+import Home from './pages/Home'
+import './App.css'
+
+export default function App() {
+  return (
+    <>
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+              <Route path="/post-blogs" element={<ProtectedRoute><Post /></ProtectedRoute>} />
+              <Route path="/user-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+              <Route path="/user-settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </>
+  )
+}

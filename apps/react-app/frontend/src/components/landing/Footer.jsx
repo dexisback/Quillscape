@@ -1,18 +1,21 @@
-"use client"
-
 import { Github, ExternalLink } from "lucide-react"
 import { useEffect, useRef } from "react"
 import gsap from "gsap"
 
 export default function Footer() {
-    const footerRef = useRef<HTMLElement>(null)
+    const footerRef = useRef(null)
 
     useEffect(() => {
         if (footerRef.current) {
             gsap.fromTo(
                 footerRef.current,
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power2.out",
+                },
             )
         }
     }, [])
@@ -21,27 +24,21 @@ export default function Footer() {
         <footer
             ref={footerRef}
             className="py-10 md:py-16 px-4 md:px-6 mt-16 md:mt-24 bg-gradient-to-b from-transparent to-muted/20"
-            style={{
-                paddingTop: "40px",
-                paddingBottom: "64px",
-                paddingLeft: "24px",
-                paddingRight: "24px",
-                marginTop: "64px",
-            }}
         >
-            <div className="max-w-5xl mx-auto" style={{ maxWidth: "1024px", marginLeft: "auto", marginRight: "auto" }}>
+            <div className="max-w-5xl mx-auto">
                 <div className="flex flex-col gap-12">
-                    {/* Brand and Tagline */}
-                    <div className="space-y-3" style={{ textAlign: "center" }}>
+                    {/* Top Section - Brand and Tagline */}
+                    <div className="space-y-3">
                         <h3 className="text-lg font-semibold text-foreground">Quillscape</h3>
                         <p className="text-sm text-muted-foreground leading-relaxed">
                             A minimal space to write and craft your thoughts. Open source. Anonymous.
                         </p>
                     </div>
 
-                    {/* Links and Social */}
+                    {/* Bottom Section - Links and Social */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pt-8">
                         <div className="flex flex-col gap-4 items-start">
+                            {/* Developer Link */}
                             <a
                                 href="https://github.com/dexisback"
                                 className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors duration-200 group"
@@ -50,9 +47,11 @@ export default function Footer() {
                                 <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:translate-x-1" />
                             </a>
 
+                            {/* Copyright */}
                             <p className="text-xs text-muted-foreground">© 2026 Quillscape.</p>
                         </div>
 
+                        {/* GitHub Link */}
                         <a
                             href="https://github.com/dexisback/Quillscape"
                             target="_blank"

@@ -1,10 +1,35 @@
 @import "tailwindcss";
+@source "../app/**/*.{js,jsx,ts,tsx,mdx}";
+@source "../components/**/*.{js,jsx,ts,tsx,mdx}";
+@source "../context/**/*.{js,jsx,ts,tsx}";
+@source "../lib/**/*.{js,jsx,ts,tsx}";
 
 /* Class-based dark mode: applies when .dark is on any ancestor (e.g. <html>) */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ─── Custom theme values (ported from tailwind.config.js) ─── */
 @theme {
+  /* Core scale tokens so spacing/text utilities work reliably in Tailwind v4 */
+  --spacing: 0.25rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+
   --radius-4xl: 2rem;
   --radius-5xl: 2.5rem;
   --radius-6xl: 3rem;
@@ -229,7 +254,6 @@ button, input, textarea, select {
 /* ─── Sticky notes (from landing.css) ─── */
 
 .sticky-note {
-  position: relative;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: var(--color-card);

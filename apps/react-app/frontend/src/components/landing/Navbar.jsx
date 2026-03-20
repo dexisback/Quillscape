@@ -1,22 +1,21 @@
-"use client"
-
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigate } from "react-router-dom"
 import { Moon, Sun } from "lucide-react"
 import gsap from "gsap"
 
 export default function Navbar() {
-    const router = useRouter()
-    const navRef = useRef<HTMLElement>(null)
-    const navContainerRef = useRef<HTMLDivElement>(null)
-    const themeSwitchRef = useRef<HTMLButtonElement>(null)
-    const overlayRef = useRef<HTMLDivElement | null>(null)
+    const navigate = useNavigate()
+    const navRef = useRef(null)
+    const navContainerRef = useRef(null)
+    const themeSwitchRef = useRef(null)
+    const overlayRef = useRef(null)
     const [scrollProgress, setScrollProgress] = useState(0)
     const [isDark, setIsDark] = useState(false)
     const [isAnimating, setIsAnimating] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
+            // Calculate scroll progress from 0 to 1 over 150px of scrolling
             const progress = Math.min(window.scrollY / 150, 1)
             setScrollProgress(progress)
         }
@@ -31,18 +30,21 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
+    // Use GSAP for smooth navbar animation based on scroll progress
     useEffect(() => {
         if (!navContainerRef.current) return
 
-        const maxWidth = 50 - scrollProgress * 10
+        // Interpolate values based on scroll progress (50% to 40%)
+        const maxWidth = 50 - (scrollProgress * 10)
 
+        // Use set on first render (scrollProgress = 0) to avoid animation from 0
         if (scrollProgress === 0) {
             gsap.set(navContainerRef.current, { maxWidth: `${maxWidth}%` })
         } else {
             gsap.to(navContainerRef.current, {
                 maxWidth: `${maxWidth}%`,
                 duration: 0.1,
-                ease: "none",
+                ease: "none"
             })
         }
     }, [scrollProgress])
@@ -55,15 +57,17 @@ export default function Navbar() {
 
         setIsAnimating(true)
 
+        // Create and append overlay element for the animated transition
         const overlay = document.createElement("div")
         overlay.className = "theme-transition-overlay"
         overlay.style.background = newIsDark
-            ? "oklch(0.16 0.01 40)"
-            : "oklch(0.96 0.025 75)"
+            ? "oklch(0.16 0.01 40)" // Dark mode color
+            : "oklch(0.96 0.025 75)" // Light mode color
         overlay.style.clipPath = "circle(0% at 100% 0%)"
         document.body.appendChild(overlay)
         overlayRef.current = overlay
 
+        // Animate the icon
         if (themeSwitchRef.current) {
             gsap.to(themeSwitchRef.current, {
                 rotation: newIsDark ? 180 : -180,
@@ -72,11 +76,13 @@ export default function Navbar() {
             })
         }
 
+        // Animate the overlay from top-right to fill the screen
         gsap.to(overlay, {
             clipPath: "circle(150% at 100% 0%)",
             duration: 0.6,
             ease: "power2.inOut",
             onComplete: () => {
+                // Apply theme change at the end of animation
                 if (newIsDark) {
                     document.documentElement.classList.add("dark")
                 } else {
@@ -84,40 +90,31 @@ export default function Navbar() {
                 }
                 setIsDark(newIsDark)
 
+                // Remove overlay after theme is applied
                 setTimeout(() => {
                     if (overlay && overlay.parentNode) {
                         overlay.parentNode.removeChild(overlay)
                     }
                     setIsAnimating(false)
                 }, 50)
-            },
+            }
         })
     }
 
     const handleGetStarted = () => {
-        router.push("/auth")
+        navigate("/auth")
     }
 
     return (
         <nav
             ref={navRef}
-            className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out"
-            style={{ paddingTop: "16px", paddingRight: "32px", paddingBottom: "16px", paddingLeft: "32px" }}
+            className="fixed top-0 left-0 right-0 z-50 py-3 md:py-4 px-4 md:px-8 transition-all duration-500 ease-in-out"
         >
             <div
                 ref={navContainerRef}
-                className="glass-nav rounded-full flex items-center justify-between mx-auto transition-all duration-500 ease-in-out"
-                style={{
-                    width: "92%",
-                    maxWidth: "50%",
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                    paddingTop: "12px",
-                    paddingRight: "24px",
-                    paddingBottom: "12px",
-                    paddingLeft: "24px",
-                }}
+                className="glass-nav rounded-full px-4 md:px-6 py-2.5 md:py-3 flex items-center justify-between mx-auto transition-all duration-500 ease-in-out w-[92%] sm:w-[80%] md:w-[70%] lg:w-[50%]"
             >
+                {/* Logo - SVG Only */}
                 <div className="w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden" style={{ backgroundColor: '#d4a574' }}>
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 md:w-6 md:h-6">
                         <defs>
@@ -131,20 +128,12 @@ export default function Navbar() {
                     </svg>
                 </div>
 
+                {/* Actions - Always visible */}
                 <div className="flex items-center gap-2 md:gap-4">
                     <button
                         onClick={handleGetStarted}
-                        className="rounded-full font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
-                        style={{
-                            backgroundColor: "#3d3d3d",
-                            color: "#ffffff",
-                            paddingTop: "8px",
-                            paddingRight: "20px",
-                            paddingBottom: "8px",
-                            paddingLeft: "20px",
-                            fontSize: "14px",
-                            lineHeight: "20px",
-                        }}
+                        className="px-3 py-1.5 md:px-5 md:py-2 rounded-full font-medium text-xs md:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                        style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                     >
                         Get Started
                     </button>

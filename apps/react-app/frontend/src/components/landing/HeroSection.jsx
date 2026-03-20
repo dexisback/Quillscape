@@ -1,51 +1,40 @@
-"use client"
-
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import StickyNotes from "./StickyNotes"
 import gsap from "gsap"
-import { auth } from "@/lib/firebase"
+import { auth } from "../../firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 
 export default function HeroSection() {
-    const router = useRouter()
-    const headlineRef = useRef<HTMLDivElement>(null)
+    const navigate = useNavigate()
+    const headlineRef = useRef(null)
     const [isHovered, setIsHovered] = useState(false)
 
     useEffect(() => {
         if (headlineRef.current) {
-            gsap.fromTo(
-                headlineRef.current,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 1, ease: "power2.out" },
-            )
+            gsap.fromTo(headlineRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" })
         }
     }, [])
 
     const handleSignInWithQuillscape = () => {
-        router.push("/auth")
+        navigate("/auth")
     }
 
     const handleSignInWithGoogle = async () => {
-        if (!auth) return
         try {
             const provider = new GoogleAuthProvider()
             const result = await signInWithPopup(auth, provider)
-            router.push("/home")
+            navigate("/home")
             return result.user
-        } catch {
-            // sign-in cancelled or failed
+        } catch (err) {
         }
     }
 
     return (
-        <section
-            className="min-h-screen flex flex-col justify-center items-center"
-            style={{ paddingTop: "112px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}
-        >
+        <section className="min-h-screen flex flex-col justify-center items-center pt-24 md:pt-28 pb-8 md:pb-12 px-4 md:px-6">
             {/* Headline */}
-            <div ref={headlineRef} className="text-center" style={{ marginBottom: "40px" }}>
+            <div ref={headlineRef} className="text-center mb-8 md:mb-10">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">Write. Publish. Share.</h1>
                 <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto px-2">
                     Or{" "}
@@ -62,10 +51,7 @@ export default function HeroSection() {
             </div>
 
             {/* Main Grid */}
-            <div
-                className="w-full grid grid-cols-1 md:grid-cols-2 items-start px-2"
-                style={{ maxWidth: "896px", columnGap: "32px", rowGap: "32px" }}
-            >
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start px-2">
                 {/* Left Grid - Sticky Notes */}
                 <motion.div
                     initial={{ opacity: 0, x: -50 }}
@@ -73,7 +59,6 @@ export default function HeroSection() {
                     transition={{ duration: 0.8 }}
                     viewport={{ once: true }}
                     className="h-48 sm:h-60 md:h-72 mt-4 md:mt-8 hidden sm:block"
-                    style={{ marginTop: "32px" }}
                 >
                     <StickyNotes />
                 </motion.div>
@@ -87,16 +72,11 @@ export default function HeroSection() {
                     viewport={{ once: true }}
                     onHoverStart={() => setIsHovered(true)}
                     onHoverEnd={() => setIsHovered(false)}
-                    className="relative flex flex-col items-center justify-center gap-6 md:gap-8 cursor-pointer"
+                    className="relative flex flex-col items-center justify-center gap-6 md:gap-8 px-6 md:px-8 py-12 md:py-20 mt-4 cursor-pointer"
                     style={{
                         backgroundColor: '#fef08a',
                         boxShadow: '0 10px 24px rgba(0,0,0,0.12), 3px 6px 12px rgba(0,0,0,0.1)',
                         borderRadius: '0.75rem',
-                        marginTop: "16px",
-                        paddingTop: "80px",
-                        paddingRight: "32px",
-                        paddingBottom: "80px",
-                        paddingLeft: "32px",
                         backgroundImage: `
                             repeating-linear-gradient(
                                 45deg,
@@ -115,7 +95,7 @@ export default function HeroSection() {
                         `,
                     }}
                 >
-                    {/* Pin */}
+                    {/* Pin - Inside the card */}
                     <div
                         className="absolute top-3 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full"
                         style={{ backgroundColor: '#dc2626', boxShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
@@ -123,7 +103,7 @@ export default function HeroSection() {
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-black/20 rounded-full" />
                     </div>
 
-                    {/* Text */}
+                    {/* Text with styled "today" */}
                     <div className="relative">
                         <p className="text-neutral-800 font-medium text-base md:text-lg">
                             <span style={{ letterSpacing: '-0.03em' }}>Start writing</span>{" "}
@@ -156,17 +136,8 @@ export default function HeroSection() {
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={handleSignInWithQuillscape}
-                            className="rounded-full font-medium transition-all duration-300 hover:shadow-lg w-full sm:w-auto"
-                            style={{
-                                backgroundColor: "#3d3d3d",
-                                color: "#ffffff",
-                                paddingTop: "12px",
-                                paddingRight: "32px",
-                                paddingBottom: "12px",
-                                paddingLeft: "32px",
-                                fontSize: "14px",
-                                lineHeight: "20px",
-                            }}
+                            className="py-2.5 md:py-3 px-6 md:px-8 rounded-full font-medium text-sm transition-all duration-300 hover:shadow-lg w-full sm:w-auto"
+                            style={{ backgroundColor: '#3d3d3d', color: '#ffffff' }}
                         >
                             Quillscape
                         </motion.button>
@@ -175,18 +146,8 @@ export default function HeroSection() {
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={handleSignInWithGoogle}
-                            className="rounded-full font-medium transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto"
-                            style={{
-                                backgroundColor: "#fffdf7",
-                                color: "#3d3d3d",
-                                border: "1px solid rgba(0,0,0,0.1)",
-                                paddingTop: "12px",
-                                paddingRight: "32px",
-                                paddingBottom: "12px",
-                                paddingLeft: "32px",
-                                fontSize: "14px",
-                                lineHeight: "20px",
-                            }}
+                            className="py-2.5 md:py-3 px-6 md:px-8 rounded-full font-medium text-sm transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto"
+                            style={{ backgroundColor: '#fffdf7', color: '#3d3d3d', border: '1px solid rgba(0,0,0,0.1)' }}
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

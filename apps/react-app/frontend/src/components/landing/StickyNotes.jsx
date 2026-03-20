@@ -1,21 +1,10 @@
-"use client"
-
 import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import gsap from "gsap"
 
-const noteTexts = [
-    "Share your thoughts",
-    "Pour your heart out",
-    "aesthetic writing\nexperience",
-    "Write and save on\nthe internet anonymously",
-]
-
-const noteColors = ["#fef9c7", "#fef3c7", "#fde047", "#facc15"]
-
 const StickyNotes = () => {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const notesRef = useRef<HTMLElement[]>([])
+    const containerRef = useRef(null)
+    const notesRef = useRef([])
 
     useEffect(() => {
         if (!containerRef.current) return
@@ -44,6 +33,13 @@ const StickyNotes = () => {
         })
     }, [])
 
+    const noteTexts = [
+        "Share your thoughts",
+        "Pour your heart out",
+        "aesthetic writing\nexperience",
+        "Write and save on\nthe internet anonymously"
+    ]
+
     return (
         <div ref={containerRef} className="relative h-full w-full flex items-center justify-center">
             <div className="relative w-full h-60 sm:h-72 md:h-96">
@@ -58,9 +54,8 @@ const StickyNotes = () => {
                             left: `${index * 12}px`,
                             top: `${index * 12}px`,
                             zIndex: index,
-                            backgroundColor: noteColors[index % 4],
+                            backgroundColor: ["#fef9c7", "#fef3c7", "#fde047", "#facc15"][index % 4],
                             boxShadow: "0 10px 24px rgba(0,0,0,0.12), 3px 6px 12px rgba(0,0,0,0.1)",
-                            padding: "20px",
                         }}
                         whileHover={{
                             y: -35,
@@ -68,7 +63,7 @@ const StickyNotes = () => {
                         }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
                     >
-                        {/* Pin */}
+                        {/* Pin - centered */}
                         <div
                             className="sticky-pin"
                             style={{
@@ -79,12 +74,7 @@ const StickyNotes = () => {
                         />
 
                         {/* Text */}
-                        <p
-                            className="text-xs sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line font-medium italic"
-                            style={{ marginTop: "32px" }}
-                        >
-                            {text}
-                        </p>
+                        <p className="text-xs sm:text-sm text-gray-800 mt-6 sm:mt-8 leading-relaxed whitespace-pre-line font-medium italic">{text}</p>
 
                         {/* Decorative lines */}
                         <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 border-t border-gray-300/50" />
@@ -96,3 +86,4 @@ const StickyNotes = () => {
 }
 
 export default StickyNotes
+
