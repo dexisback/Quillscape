@@ -222,6 +222,22 @@ button, input, textarea, select {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Remove browser native outlines/borders that cause black lines */
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input, textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

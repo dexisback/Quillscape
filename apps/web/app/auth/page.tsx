@@ -76,7 +76,7 @@ export default function Auth() {
         setError("")
         try {
             const result = await signInWithEmailAndPassword(auth, email, password)
-            syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => {})
+            syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
         } catch (err: any) {
             setIsAuthenticating(false)
             const errorMessages: Record<string, string> = {
@@ -97,7 +97,7 @@ export default function Auth() {
         setError("")
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password)
-            syncUserWithMongoDB({ firebaseUid: res.user.uid, email: res.user.email }).catch(() => {})
+            syncUserWithMongoDB({ firebaseUid: res.user.uid, email: res.user.email }).catch(() => { })
         } catch (err: any) {
             setIsSigningUp(false)
             const errorMessages: Record<string, string> = {
@@ -114,7 +114,7 @@ export default function Auth() {
         try {
             const provider = new GoogleAuthProvider()
             const result = await signInWithPopup(auth, provider)
-            syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => {})
+            syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
             router.push("/home")
         } catch {
             setError("Google sign in failed. Try again.")
@@ -138,7 +138,8 @@ export default function Auth() {
         <div className="min-h-screen flex items-center justify-center bg-background auth-page-shell">
             <Link
                 href="/"
-                className="fixed flex items-center rounded-full font-medium transition-all hover:shadow-md bg-white/70 backdrop-blur-md border border-border/50 text-foreground auth-back-btn"
+                className="fixed flex items-center rounded-full font-medium transition-all hover:shadow-md text-foreground auth-back-btn"
+                style={{ backgroundColor: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(12px)', border: '1px solid rgba(0,0,0,0.08)' }}
             >
                 <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 Back
@@ -147,8 +148,8 @@ export default function Auth() {
             <div className="w-full grid grid-cols-1 md:grid-cols-2 items-center auth-grid">
                 <div ref={formRef} className="w-full max-w-sm mx-auto md:mx-0 auth-form-wrap">
                     <div
-                        className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center overflow-hidden auth-logo-gap"
-                        style={{ backgroundColor: "#d4a574" }}
+                        className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center overflow-hidden"
+                        style={{ backgroundColor: "#d4a574", marginBottom: "40px" }}
                     >
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 md:w-9 md:h-9">
                             <defs>
@@ -162,25 +163,27 @@ export default function Auth() {
                         </svg>
                     </div>
 
-                    <h1 className="text-2xl md:text-3xl font-semibold text-foreground auth-title-gap inter-tight">
+                    <h1 className="text-2xl md:text-3xl font-semibold text-foreground inter-tight" style={{ marginBottom: '8px' }}>
                         Welcome back
                     </h1>
-                    <p className="text-muted-foreground text-sm auth-subtitle-gap">Sign in to continue writing</p>
+                    <p className="text-muted-foreground text-sm" style={{ marginBottom: '40px' }}>Sign in to continue writing</p>
 
-                    <div className="space-y-4 auth-inputs-gap">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                         <input
                             type="email"
                             placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-5 py-3 rounded-full text-sm bg-white border border-border/60 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all auth-input-pad"
+                            className="w-full rounded-full text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none transition-all"
+                            style={{ backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.12)', padding: '12px 20px' }}
                         />
                         <input
                             type="password"
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-5 py-3 rounded-full text-sm bg-white border border-border/60 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all auth-input-pad"
+                            className="w-full rounded-full text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none transition-all"
+                            style={{ backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.12)', padding: '12px 20px' }}
                         />
                     </div>
 
@@ -189,13 +192,13 @@ export default function Auth() {
                     <button
                         onClick={handleLogin}
                         disabled={isAuthenticating}
-                        className="w-full rounded-full font-medium text-sm transition-all hover:shadow-lg hover:scale-[1.01] disabled:opacity-50 auth-login-btn"
-                        style={{ backgroundColor: "#3d3d3d", color: "#ffffff" }}
+                        className="w-full rounded-full font-medium text-sm transition-all hover:shadow-lg hover:scale-[1.01] disabled:opacity-50"
+                        style={{ backgroundColor: "#3d3d3d", color: "#ffffff", paddingTop: '14px', paddingBottom: '14px' }}
                     >
                         {isAuthenticating ? "Signing in..." : "Login"}
                     </button>
 
-                    <div className="flex items-center justify-center text-sm text-muted-foreground mt-24-fixed gap-3">
+                    <div className="flex items-center justify-center text-sm text-muted-foreground gap-3" style={{ marginTop: '24px' }}>
                         <span>New?</span>
                         <button
                             onClick={handleSignUp}
