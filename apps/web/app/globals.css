@@ -47,20 +47,49 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes bounceSubtle {
-  0%, 20%, 53%, 80%, 100% { transform: translate3d(0, 0, 0); }
-  40%, 43% { transform: translate3d(0, -5px, 0); }
-  70% { transform: translate3d(0, -3px, 0); }
-  90% { transform: translate3d(0, -1px, 0); }
+
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  40%,
+  43% {
+    transform: translate3d(0, -5px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, -3px, 0);
+  }
+
+  90% {
+    transform: translate3d(0, -1px, 0);
+  }
 }
 
 /* ─── Landing Page — Vintage Aged Paper Aesthetic (from landing.css) ─── */
@@ -112,19 +141,57 @@
 
 /* ─── Utility classes (from landing.css) ─── */
 
-.bg-primary { background-color: var(--color-primary); }
-.text-primary { color: var(--color-primary); }
-.text-primary-foreground { color: var(--color-primary-foreground); }
-.bg-secondary { background-color: var(--color-secondary); }
-.text-secondary-foreground { color: var(--color-secondary-foreground); }
-.bg-accent { background-color: var(--color-accent); }
-.text-accent { color: var(--color-accent); }
-.text-accent-foreground { color: var(--color-accent-foreground); }
-.bg-muted { background-color: var(--color-muted); }
-.text-muted-foreground { color: var(--color-muted-foreground); }
-.text-foreground { color: var(--color-foreground); }
-.border-border { border-color: var(--color-border); }
-.text-card-foreground { color: var(--color-card-foreground); }
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-primary-foreground {
+  color: var(--color-primary-foreground);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+
+.text-secondary-foreground {
+  color: var(--color-secondary-foreground);
+}
+
+.bg-accent {
+  background-color: var(--color-accent);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-accent-foreground {
+  color: var(--color-accent-foreground);
+}
+
+.bg-muted {
+  background-color: var(--color-muted);
+}
+
+.text-muted-foreground {
+  color: var(--color-muted-foreground);
+}
+
+.text-foreground {
+  color: var(--color-foreground);
+}
+
+.border-border {
+  border-color: var(--color-border);
+}
+
+.text-card-foreground {
+  color: var(--color-card-foreground);
+}
 
 .bg-background {
   background-color: var(--color-background);
@@ -218,7 +285,10 @@ body {
 }
 
 /* Smooth transitions for interactive elements */
-button, input, textarea, select {
+button,
+input,
+textarea,
+select {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -228,26 +298,41 @@ button {
   appearance: none;
   border: none;
   outline: none;
-  background: transparent;
   cursor: pointer;
 }
 
-input, textarea {
+input,
+textarea {
   -webkit-appearance: none;
   appearance: none;
   outline: none;
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
   background: rgba(156, 163, 175, 0.5);
   border-radius: 3px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.8); }
-.dark ::-webkit-scrollbar-thumb { background: rgba(255, 248, 240, 0.15); }
-.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 248, 240, 0.25); }
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 248, 240, 0.15);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 248, 240, 0.25);
+}
 
 /* ─── Glassmorphism navbar (from landing.css) ─── */
 
@@ -312,23 +397,50 @@ input, textarea {
 /* ─── Keyframe animations (from landing.css) ─── */
 
 @keyframes swipe-in {
-  from { transform: translateX(-100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-in-up {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes theme-switch {
-  0% { clip-path: circle(0% at 100% 0%); }
-  100% { clip-path: circle(150% at 0% 0%); }
+  0% {
+    clip-path: circle(0% at 100% 0%);
+  }
+
+  100% {
+    clip-path: circle(150% at 0% 0%);
+  }
 }
 
-.animate-theme-switch { animation: theme-switch 0.6s ease-in-out forwards; }
-.animate-swipe-in { animation: swipe-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+.animate-theme-switch {
+  animation: theme-switch 0.6s ease-in-out forwards;
+}
+
+.animate-swipe-in {
+  animation: swipe-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+}
 
 /* ─── Paper main (from landing.css) ─── */
 
@@ -348,7 +460,9 @@ input, textarea {
 }
 
 @media (min-width: 640px) {
-  .paper-main { max-width: 900px; }
+  .paper-main {
+    max-width: 900px;
+  }
 }
 
 .dark .paper-main {
@@ -393,14 +507,31 @@ input, textarea {
   margin-right: auto;
 }
 
-.section-gap-40 { margin-bottom: 40px; }
-.section-gap-48 { margin-bottom: 48px; }
+.section-gap-40 {
+  margin-bottom: 40px;
+}
 
-.panel-pad-24 { padding: 24px; }
-.panel-pad-16 { padding: 16px; }
-.stack-gap-16 { display: grid; gap: 16px; }
+.section-gap-48 {
+  margin-bottom: 48px;
+}
 
-.auth-page-shell { padding: 64px; }
+.panel-pad-24 {
+  padding: 24px;
+}
+
+.panel-pad-16 {
+  padding: 16px;
+}
+
+.stack-gap-16 {
+  display: grid;
+  gap: 16px;
+}
+
+.auth-page-shell {
+  padding: 64px;
+}
+
 .auth-back-btn {
   top: 16px;
   left: 16px;
@@ -410,17 +541,37 @@ input, textarea {
   line-height: 16px;
   border-radius: 9999px;
 }
+
 .auth-grid {
   max-width: 1024px;
   column-gap: 64px;
   row-gap: 64px;
 }
-.auth-form-wrap { max-width: 384px; }
-.auth-logo-gap { margin-bottom: 40px; }
-.auth-title-gap { margin-bottom: 8px; }
-.auth-subtitle-gap { margin-bottom: 40px; }
-.auth-inputs-gap { margin-bottom: 24px; }
-.auth-input-pad { padding: 12px 20px; }
+
+.auth-form-wrap {
+  max-width: 384px;
+}
+
+.auth-logo-gap {
+  margin-bottom: 40px;
+}
+
+.auth-title-gap {
+  margin-bottom: 8px;
+}
+
+.auth-subtitle-gap {
+  margin-bottom: 40px;
+}
+
+.auth-inputs-gap {
+  margin-bottom: 24px;
+}
+
+.auth-input-pad {
+  padding: 12px 20px;
+}
+
 .auth-login-btn {
   padding-top: 14px;
   padding-bottom: 14px;
@@ -428,7 +579,10 @@ input, textarea {
 }
 
 @media (min-width: 768px) {
-  .auth-page-shell { padding: 64px; }
+  .auth-page-shell {
+    padding: 64px;
+  }
+
   .auth-back-btn {
     top: 24px;
     left: 24px;
@@ -436,14 +590,28 @@ input, textarea {
     font-size: 14px;
     line-height: 20px;
   }
-  .auth-logo-gap { margin-bottom: 40px; }
-  .auth-subtitle-gap { margin-bottom: 40px; }
+
+  .auth-logo-gap {
+    margin-bottom: 40px;
+  }
+
+  .auth-subtitle-gap {
+    margin-bottom: 40px;
+  }
 }
 
 @media (max-width: 767px) {
-  .auth-page-shell { padding: 32px; }
-  .auth-logo-gap { margin-bottom: 32px; }
-  .auth-subtitle-gap { margin-bottom: 32px; }
+  .auth-page-shell {
+    padding: 32px;
+  }
+
+  .auth-logo-gap {
+    margin-bottom: 32px;
+  }
+
+  .auth-subtitle-gap {
+    margin-bottom: 32px;
+  }
 }
 
 .inter-tight {
@@ -451,7 +619,10 @@ input, textarea {
   letter-spacing: -0.02em;
 }
 
-.marker-wrap { isolation: isolate; }
+.marker-wrap {
+  isolation: isolate;
+}
+
 .marker-swipe {
   background-color: #fde047;
   z-index: 0;
@@ -462,20 +633,37 @@ input, textarea {
   right: -3px;
   border-radius: 2px 8px 4px 6px;
 }
-.marker-text { z-index: 1; }
+
+.marker-text {
+  z-index: 1;
+}
 
 .block-pad-40 {
   padding-top: 40px;
   padding-bottom: 40px;
 }
+
 .block-pad-64 {
   padding-top: 64px;
   padding-bottom: 64px;
 }
 
-.gap-16-fixed { gap: 16px; }
-.gap-20-fixed { gap: 20px; }
+.gap-16-fixed {
+  gap: 16px;
+}
 
-.mt-24-fixed { margin-top: 24px; }
-.mt-48-fixed { margin-top: 48px; }
-.mb-12-fixed { margin-bottom: 12px; }
+.gap-20-fixed {
+  gap: 20px;
+}
+
+.mt-24-fixed {
+  margin-top: 24px;
+}
+
+.mt-48-fixed {
+  margin-top: 48px;
+}
+
+.mb-12-fixed {
+  margin-bottom: 12px;
+}

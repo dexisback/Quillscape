@@ -67,9 +67,9 @@ export default function Home() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="paper-main app-main-shell">
-                <div className="max-w-3xl mx-auto app-wrap-3xl">
-                    <div className="text-left section-gap-48">
+            <main className="app-main-shell">
+                <div className="paper-main" style={{ maxWidth: '768px', margin: '0 auto', padding: '32px 28px' }}>
+                    <div className="text-left" style={{ marginBottom: '32px' }}>
                         <p className="text-lg text-muted-foreground inter-tight">
                             <span className="relative inline-block marker-wrap">
                                 <motion.span
@@ -86,26 +86,26 @@ export default function Home() {
                     </div>
 
                     {loading ? (
-                        <div className="text-center text-muted-foreground block-pad-40">
-                            <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <div className="text-center text-muted-foreground" style={{ padding: '40px 0' }}>
+                            <div className="inline-block w-8 h-8 rounded-full animate-spin mb-4" style={{ border: '2px solid var(--color-primary)', borderTopColor: 'transparent' }}></div>
                             <p>Loading posts...</p>
                         </div>
                     ) : blogs.length === 0 ? (
-                        <div className="text-center block-pad-64">
-                            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="text-center" style={{ padding: '64px 0' }}>
+                            {/* <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                                 <span className="text-2xl">📝</span>
-                            </div>
+                            </div> */}
                             <p className="text-muted-foreground text-lg">No posts yet. Be the first to write!</p>
                             <button
                                 onClick={() => setIsEditorOpen(true)}
-                                className="mt-4 px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
-                                style={{ backgroundColor: "#3d3d3d", color: "#ffffff" }}
+                                className="rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                                style={{ backgroundColor: "#3d3d3d", color: "#ffffff", padding: "12px 24px", marginTop: '16px' }}
                             >
                                 Create Your First Post
                             </button>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             {blogs.map((blog) => (
                                 <BlogCard
                                     key={blog._id}
@@ -129,12 +129,12 @@ export default function Home() {
                     )}
 
                     {blogs.length > 0 && (
-                        <div className="text-center mt-48-fixed">
+                        <div className="text-center" style={{ marginTop: '48px' }}>
                             {!endOfPosts ? (
                                 <button
                                     onClick={() => setEndOfPosts(true)}
-                                    className="px-6 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
-                                    style={{ backgroundColor: "#3d3d3d", color: "#ffffff" }}
+                                    className="rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
+                                    style={{ backgroundColor: "#3d3d3d", color: "#ffffff", padding: "12px 24px" }}
                                 >
                                     Load More Stories
                                 </button>

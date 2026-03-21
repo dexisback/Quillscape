@@ -117,7 +117,7 @@ export default function HomeNavbar() {
 
                 <div className="flex items-center gap-2 md:gap-3">
                     {!isCompact && (
-                        <button onClick={handleSignOut} className="hidden sm:block px-4 md:px-5 py-1.5 md:py-2 rounded-full font-medium text-xs md:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105" style={{ backgroundColor: "#3d3d3d", color: "#ffffff" }}>
+                        <button onClick={handleSignOut} className="hidden sm:block rounded-full font-medium text-xs md:text-sm hover:shadow-lg transition-all duration-300 hover:scale-105" style={{ backgroundColor: "#3d3d3d", color: "#ffffff", padding: "6px 16px" }}>
                             Sign Out
                         </button>
                     )}

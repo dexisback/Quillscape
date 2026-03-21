@@ -64,20 +64,23 @@ export default function BlogCard({ blog, calculateReadTime, formatTimeAgo, onOpe
     return (
         <div
             onClick={() => onOpenBlog(blog)}
-            className="bg-card border border-border rounded-xl p-3 hover:shadow-[0_4px_20px_rgba(180,150,90,0.15)] dark:hover:shadow-[0_4px_24px_rgba(200,170,100,0.12)] transition-all duration-300 hover:border-accent/40 cursor-pointer text-left"
+            className="rounded-xl cursor-pointer text-left transition-all duration-300"
+            style={{ backgroundColor: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.08)', padding: '16px' }}
+            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(180,150,90,0.15)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}
         >
-            <div className="flex items-center gap-2 mb-3">
-                <img src={avatarUrl} alt={authorName} className="w-6 h-6 rounded-full bg-muted" />
+            <div className="flex items-center gap-2" style={{ marginBottom: '10px' }}>
+                <img src={avatarUrl} alt={authorName} className="w-6 h-6 rounded-full" style={{ backgroundColor: 'var(--color-muted)' }} />
                 <span className="text-sm font-medium text-foreground">{authorName}</span>
             </div>
 
-            <h3 className="text-xl font-bold text-foreground mb-2 text-left">{blog.title}</h3>
+            <h3 className="text-xl font-bold text-foreground text-left" style={{ marginBottom: '8px' }}>{blog.title}</h3>
 
-            <p className="text-muted-foreground text-sm leading-relaxed mb-4 bg-muted/30 rounded-lg p-3 text-left">{excerpt}</p>
+            <p className="text-muted-foreground text-sm leading-relaxed text-left" style={{ marginBottom: '16px', backgroundColor: 'rgba(139,90,43,0.06)', borderRadius: '8px', padding: '10px 12px' }}>{excerpt}</p>
 
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span className="bg-muted/50 px-2 py-1 rounded">{readTime} min read</span>
-                <span className="bg-muted/50 px-2 py-1 rounded">{timeAgo}</span>
+                <span style={{ backgroundColor: 'rgba(139,90,43,0.08)', padding: '3px 8px', borderRadius: '4px' }}>{readTime} min read</span>
+                <span style={{ backgroundColor: 'rgba(139,90,43,0.08)', padding: '3px 8px', borderRadius: '4px' }}>{timeAgo}</span>
             </div>
         </div>
     )
