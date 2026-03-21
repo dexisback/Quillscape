@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/context/AuthContext"
 import api from "@/lib/api/axios"
 import HomeNavbar from "@/components/home/HomeNavbar"
 import BlogCard from "@/components/home/BlogCard"
@@ -21,7 +20,6 @@ type Blog = {
 }
 
 export default function Home() {
-    const { user } = useAuth()
     const [blogs, setBlogs] = useState<Blog[]>([])
     const [loading, setLoading] = useState(true)
     const [isEditorOpen, setIsEditorOpen] = useState(false)

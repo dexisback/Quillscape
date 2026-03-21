@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useAuth } from "@/context/AuthContext"
 import HomeNavbar from "@/components/home/HomeNavbar"
 import ShowPosts from "@/components/ShowPosts"
 import BlogEditorOverlay from "@/components/BlogEditorOverlay"
@@ -9,7 +8,6 @@ import { Pencil } from "lucide-react"
 import { motion } from "framer-motion"
 
 export default function PostBlogs() {
-    const { user } = useAuth()
     const [refreshPosts, setRefreshPosts] = useState(0)
     const [isEditorOpen, setIsEditorOpen] = useState(false)
 
@@ -21,26 +19,19 @@ export default function PostBlogs() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6 paper-main">
-                <div className="max-w-3xl mx-auto">
+            <main className="paper-main app-main-shell">
+                <div className="max-w-3xl mx-auto app-wrap-3xl">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between mb-8 md:mb-10">
                         <div className="text-left">
-                            <p className="text-lg text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
-                                <span className="relative inline-block" style={{ isolation: "isolate" }}>
+                            <p className="text-lg text-muted-foreground inter-tight">
+                                <span className="relative inline-block marker-wrap">
                                     <motion.span
-                                        className="absolute rounded-sm"
-                                        style={{
-                                            backgroundColor: "#fde047",
-                                            zIndex: 0,
-                                            transform: "skewY(-2deg) rotate(-0.5deg)",
-                                            top: "2px", bottom: "2px", left: "-3px", right: "-3px",
-                                            borderRadius: "2px 8px 4px 6px",
-                                        }}
+                                        className="absolute rounded-sm marker-swipe"
                                         initial={{ scaleX: 0, originX: 0 }}
                                         animate={{ scaleX: 1 }}
                                         transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                                     />
-                                    <span className="relative font-medium text-neutral-800" style={{ zIndex: 1 }}>Manage</span>
+                                    <span className="relative font-medium text-neutral-800 marker-text">Manage</span>
                                 </span>
                                 {" "}your drafts and published stories
                             </p>

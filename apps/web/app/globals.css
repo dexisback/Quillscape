@@ -350,10 +350,19 @@ button, input, textarea, select {
 
 /* ─── Parity layout utilities ─── */
 .app-main-shell {
-  padding-top: 96px;
-  padding-right: 24px;
-  padding-bottom: 48px;
-  padding-left: 24px;
+  padding-top: 80px;
+  padding-right: 16px;
+  padding-bottom: 32px;
+  padding-left: 16px;
+}
+
+@media (min-width: 768px) {
+  .app-main-shell {
+    padding-top: 96px;
+    padding-right: 24px;
+    padding-bottom: 48px;
+    padding-left: 24px;
+  }
 }
 
 .app-wrap-2xl {
@@ -377,12 +386,12 @@ button, input, textarea, select {
 
 .auth-page-shell { padding: 64px; }
 .auth-back-btn {
-  top: 24px;
-  left: 24px;
+  top: 16px;
+  left: 16px;
   gap: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
-  line-height: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 16px;
   border-radius: 9999px;
 }
 .auth-grid {
@@ -400,6 +409,25 @@ button, input, textarea, select {
   padding-top: 14px;
   padding-bottom: 14px;
   line-height: 20px;
+}
+
+@media (min-width: 768px) {
+  .auth-page-shell { padding: 64px; }
+  .auth-back-btn {
+    top: 24px;
+    left: 24px;
+    padding: 8px 16px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .auth-logo-gap { margin-bottom: 40px; }
+  .auth-subtitle-gap { margin-bottom: 40px; }
+}
+
+@media (max-width: 767px) {
+  .auth-page-shell { padding: 32px; }
+  .auth-logo-gap { margin-bottom: 32px; }
+  .auth-subtitle-gap { margin-bottom: 32px; }
 }
 
 .inter-tight {
