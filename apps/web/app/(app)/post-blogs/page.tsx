@@ -19,9 +19,9 @@ export default function PostBlogs() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="paper-main app-main-shell">
-                <div className="max-w-3xl mx-auto app-wrap-3xl">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between mb-8 md:mb-10">
+            <main className="app-main-shell">
+                <div className="paper-main" style={{ maxWidth: '768px', margin: '0 auto', padding: '32px 28px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
                         <div className="text-left">
                             <p className="text-lg text-muted-foreground inter-tight">
                                 <span className="relative inline-block marker-wrap">
@@ -38,8 +38,8 @@ export default function PostBlogs() {
                         </div>
                         <button
                             onClick={() => setIsEditorOpen(true)}
-                            className="flex items-center justify-center gap-2 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto"
-                            style={{ backgroundColor: "#3d3d3d", color: "#ffffff" }}
+                            className="flex items-center justify-center gap-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            style={{ backgroundColor: "#3d3d3d", color: "#ffffff", padding: "8px 20px" }}
                         >
                             <Pencil className="w-4 h-4" />
                             New Post
