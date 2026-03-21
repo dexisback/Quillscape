@@ -81,10 +81,10 @@ export default function UserProfile() {
     if (loading) return (
         <div className="min-h-screen bg-background">
             <HomeNavbar />
-            <main style={{ paddingTop: "96px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}>
-                <div className="max-w-2xl mx-auto text-center" style={{ maxWidth: "672px", marginLeft: "auto", marginRight: "auto", paddingTop: "64px", paddingBottom: "64px" }}>
+            <main className="app-main-shell">
+                <div className="max-w-2xl mx-auto text-center app-wrap-2xl block-pad-64">
                     <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>Loading profile...</p>
+                    <p className="text-muted-foreground inter-tight">Loading profile...</p>
                 </div>
             </main>
         </div>
@@ -93,12 +93,12 @@ export default function UserProfile() {
     if (!user) return (
         <div className="min-h-screen bg-background">
             <HomeNavbar />
-            <main style={{ paddingTop: "96px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}>
-                <div className="max-w-2xl mx-auto text-center" style={{ maxWidth: "672px", marginLeft: "auto", marginRight: "auto", paddingTop: "64px", paddingBottom: "64px" }}>
+            <main className="app-main-shell">
+                <div className="max-w-2xl mx-auto text-center app-wrap-2xl block-pad-64">
                     <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                         <User className="w-8 h-8 text-muted-foreground" />
                     </div>
-                    <p className="text-muted-foreground text-lg" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>User not found</p>
+                    <p className="text-muted-foreground text-lg inter-tight">User not found</p>
                 </div>
             </main>
         </div>
@@ -108,26 +108,19 @@ export default function UserProfile() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main style={{ paddingTop: "96px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}>
-                <div className="max-w-2xl mx-auto" style={{ maxWidth: "672px", marginLeft: "auto", marginRight: "auto" }} ref={pageRef}>
-                    <div className="text-left" style={{ marginBottom: "40px" }}>
-                        <p className="text-lg text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+            <main className="app-main-shell">
+                <div className="max-w-2xl mx-auto app-wrap-2xl" ref={pageRef}>
+                    <div className="text-left section-gap-40">
+                        <p className="text-lg text-muted-foreground inter-tight">
                             Your{" "}
-                            <span className="relative inline-block" style={{ isolation: "isolate" }}>
+                            <span className="relative inline-block marker-wrap">
                                 <motion.span
-                                    className="absolute rounded-sm"
-                                    style={{
-                                        backgroundColor: "#fde047",
-                                        zIndex: 0,
-                                        transform: "skewY(-2deg) rotate(-0.5deg)",
-                                        top: "2px", bottom: "2px", left: "-3px", right: "-3px",
-                                        borderRadius: "2px 8px 4px 6px",
-                                    }}
+                                    className="absolute rounded-sm marker-swipe"
                                     initial={{ scaleX: 0, originX: 0 }}
                                     animate={{ scaleX: 1 }}
                                     transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                                 />
-                                <span className="relative font-medium text-neutral-800" style={{ zIndex: 1 }}>public presence</span>
+                                <span className="relative font-medium text-neutral-800 marker-text">public presence</span>
                             </span>
                             {" "}on Quillscape
                         </p>
@@ -165,10 +158,7 @@ export default function UserProfile() {
                             )}
                         </div>
 
-                        <div
-                            className="bg-muted/30 flex items-center border-b border-border"
-                            style={{ paddingTop: "24px", paddingRight: "24px", paddingBottom: "24px", paddingLeft: "24px", gap: "20px" }}
-                        >
+                        <div className="bg-muted/30 flex items-center border-b border-border panel-pad-24 gap-20-fixed">
                             <div
                                 ref={avatarRef}
                                 className="w-16 h-16 rounded-full overflow-hidden border-3 border-card shadow-lg flex-shrink-0"
@@ -186,30 +176,29 @@ export default function UserProfile() {
                                 )}
                             </div>
                             <div className="text-left">
-                                <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+                                <h2 className="text-lg font-semibold text-foreground inter-tight">
                                     {user.username || "Anonymous Writer"}
                                 </h2>
-                                <p className="text-muted-foreground text-xs" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>{user.email}</p>
+                                <p className="text-muted-foreground text-xs inter-tight">{user.email}</p>
                             </div>
                         </div>
 
-                        <div style={{ paddingTop: "24px", paddingRight: "24px", paddingBottom: "24px", paddingLeft: "24px" }}>
-                            <div style={{ display: "grid", gap: "16px" }}>
+                        <div className="panel-pad-24">
+                            <div className="stack-gap-16">
                                 <div className="bg-muted/20 rounded-xl p-4 border border-border">
                                     <div className="flex items-center gap-2 mb-2">
                                         <User className="w-4 h-4 text-primary" />
-                                        <label className="text-xs font-medium text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>Username</label>
+                                        <label className="text-xs font-medium text-muted-foreground inter-tight">Username</label>
                                     </div>
                                     {isEditing ? (
                                         <input
                                             value={formData.username}
                                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                            className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                             placeholder="Enter your username"
-                                            style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}
+                                            className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary inter-tight"
                                         />
                                     ) : (
-                                        <p className="text-foreground text-sm font-medium text-left" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+                                        <p className="text-foreground text-sm font-medium text-left inter-tight">
                                             {user.username || <span className="text-muted-foreground italic">Not set</span>}
                                         </p>
                                     )}
@@ -218,18 +207,17 @@ export default function UserProfile() {
                                 <div className="bg-muted/20 rounded-xl p-4 border border-border">
                                     <div className="flex items-center gap-2 mb-2">
                                         <FileText className="w-4 h-4 text-primary" />
-                                        <label className="text-xs font-medium text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>Bio</label>
+                                        <label className="text-xs font-medium text-muted-foreground inter-tight">Bio</label>
                                     </div>
                                     {isEditing ? (
                                         <textarea
                                             value={formData.bio}
                                             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                            className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground min-h-[100px] resize-y focus:outline-none focus:ring-2 focus:ring-primary"
                                             placeholder="Tell us about yourself..."
-                                            style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}
+                                            className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground min-h-[100px] resize-y focus:outline-none focus:ring-2 focus:ring-primary inter-tight"
                                         />
                                     ) : (
-                                        <p className="text-foreground text-sm leading-relaxed text-left" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+                                        <p className="text-foreground text-sm leading-relaxed text-left inter-tight">
                                             {user.bio || <span className="text-muted-foreground italic">No bio yet. Tell the world about yourself!</span>}
                                         </p>
                                     )}
@@ -238,10 +226,10 @@ export default function UserProfile() {
                                 <div className="bg-muted/20 rounded-xl p-4 border border-border">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Mail className="w-4 h-4 text-primary" />
-                                        <label className="text-xs font-medium text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>Email</label>
+                                        <label className="text-xs font-medium text-muted-foreground inter-tight">Email</label>
                                         <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
                                     </div>
-                                    <p className="text-foreground text-sm text-left" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>{user.email}</p>
+                                    <p className="text-foreground text-sm text-left inter-tight">{user.email}</p>
                                 </div>
                             </div>
                         </div>

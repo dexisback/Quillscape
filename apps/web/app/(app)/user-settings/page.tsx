@@ -53,55 +53,47 @@ export default function Settings() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main style={{ paddingTop: "96px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}>
-                <div className="max-w-2xl mx-auto" style={{ maxWidth: "672px", marginLeft: "auto", marginRight: "auto" }} ref={pageRef}>
-                    <div className="text-left" style={{ marginBottom: "40px" }}>
-                        <p className="text-lg text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
-                            <span className="relative inline-block" style={{ isolation: "isolate" }}>
+            <main className="app-main-shell">
+                <div className="max-w-2xl mx-auto app-wrap-2xl" ref={pageRef}>
+                    <div className="text-left section-gap-40">
+                        <p className="text-lg text-muted-foreground inter-tight">
+                            <span className="relative inline-block marker-wrap">
                                 <motion.span
-                                    className="absolute rounded-sm"
-                                    style={{
-                                        backgroundColor: "#fde047",
-                                        zIndex: 0,
-                                        transform: "skewY(-2deg) rotate(-0.5deg)",
-                                        top: "2px", bottom: "2px", left: "-3px", right: "-3px",
-                                        borderRadius: "2px 8px 4px 6px",
-                                    }}
+                                    className="absolute rounded-sm marker-swipe"
                                     initial={{ scaleX: 0, originX: 0 }}
                                     animate={{ scaleX: 1 }}
                                     transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                                 />
-                                <span className="relative font-medium text-neutral-800" style={{ zIndex: 1 }}>Manage</span>
+                                <span className="relative font-medium text-neutral-800 marker-text">Manage</span>
                             </span>
                             {" "}your account preferences
                         </p>
                     </div>
 
                     <div className="bg-card border border-border rounded-xl overflow-hidden">
-                        <div style={{ paddingTop: "24px", paddingRight: "24px", paddingBottom: "24px", paddingLeft: "24px" }}>
+                        <div className="panel-pad-24">
                             <div
-                                className="bg-muted/20 rounded-xl border border-border"
-                                style={{ paddingTop: "16px", paddingRight: "16px", paddingBottom: "16px", paddingLeft: "16px" }}
+                                className="bg-muted/20 rounded-xl border border-border panel-pad-16"
                             >
                                 <div className="flex items-center gap-2 mb-2">
                                     <Mail className="w-4 h-4 text-primary" />
-                                    <label className="text-xs font-medium text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>Account Email</label>
+                                    <label className="text-xs font-medium text-muted-foreground inter-tight">Account Email</label>
                                     <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
                                 </div>
-                                <p className="text-foreground text-sm text-left" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>{user?.email}</p>
+                                <p className="text-foreground text-sm text-left inter-tight">{user?.email}</p>
                             </div>
 
                             <div
-                                className="bg-destructive/5 rounded-xl border border-destructive/20"
-                                style={{ marginTop: "16px", paddingTop: "16px", paddingRight: "16px", paddingBottom: "16px", paddingLeft: "16px" }}
+                                className="bg-destructive/5 rounded-xl border border-destructive/20 panel-pad-16"
+                                style={{ marginTop: "16px" }}
                             >
                                 <div className="flex items-center gap-2 mb-3">
                                     <Trash2 className="w-4 h-4 text-destructive" />
-                                    <label className="text-sm font-medium text-red-500 dark:text-red-200" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+                                    <label className="text-sm font-medium text-red-500 dark:text-red-200 inter-tight">
                                         Permanently Delete Your Account
                                     </label>
                                 </div>
-                                <p className="text-xs text-red-500 mb-4 text-left" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+                                <p className="text-xs text-red-500 mb-4 text-left inter-tight">
                                     This action is permanent.
                                 </p>
 
@@ -114,8 +106,8 @@ export default function Settings() {
                                         style={{ opacity: backgroundOpacity, backgroundColor: "#c62828" }}
                                     />
                                     <motion.span
-                                        className="absolute inset-0 flex items-center justify-center text-sm font-medium text-white pointer-events-none"
-                                        style={{ opacity: textOpacity, fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}
+                                        className="absolute inset-0 flex items-center justify-center text-sm font-medium text-white pointer-events-none inter-tight"
+                                        style={{ opacity: textOpacity }}
                                     >
                                         Slide to delete →
                                     </motion.span>
