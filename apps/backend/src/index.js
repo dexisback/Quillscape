@@ -8,10 +8,22 @@ import userRoutes from "./routes/userRoutes.js"
 
 const app = express()
 
+const defaultOrigins = [
+    "https://quillscape.amaanworks.me",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+const configuredOrigins = process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(",").map((origin) => origin.trim()).filter(Boolean)
+    : process.env.FRONTEND_URL
+        ? [process.env.FRONTEND_URL]
+        : defaultOrigins
+
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
-        ? process.env.FRONTEND_URL || 'https://quillscape.amaanworks.me'
-        : ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: configuredOrigins,
     credentials: true
 }))
 app.use(express.json({ limit: '10mb' })) //increased limit

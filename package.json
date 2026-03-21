@@ -1,8 +1,15 @@
 {
-  "dependencies": {
-    "dotenv": "^17.2.3",
-    "framer-motion": "^12.26.2",
-    "gsap": "^3.14.2",
-    "react-router-dom": "^7.12.0"
+  "name": "quillscape",
+  "private": true,
+  "workspaces": [
+    "apps/backend",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace apps/web",
+    "build:web": "npm run build --workspace apps/web",
+    "start:web": "npm run start --workspace apps/web",
+    "dev:backend": "npm run dev --workspace apps/backend",
+    "start:backend": "npm run start --workspace apps/backend"
   }
 }
