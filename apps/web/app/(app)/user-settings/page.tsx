@@ -53,9 +53,9 @@ export default function Settings() {
         <div className="min-h-screen bg-background">
             <HomeNavbar />
 
-            <main className="pt-20 md:pt-24 pb-8 md:pb-12 px-4 md:px-6">
-                <div className="max-w-2xl mx-auto" ref={pageRef}>
-                    <div className="mb-10 text-left">
+            <main style={{ paddingTop: "96px", paddingRight: "24px", paddingBottom: "48px", paddingLeft: "24px" }}>
+                <div className="max-w-2xl mx-auto" style={{ maxWidth: "672px", marginLeft: "auto", marginRight: "auto" }} ref={pageRef}>
+                    <div className="text-left" style={{ marginBottom: "40px" }}>
                         <p className="text-lg text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
                             <span className="relative inline-block" style={{ isolation: "isolate" }}>
                                 <motion.span
@@ -78,8 +78,11 @@ export default function Settings() {
                     </div>
 
                     <div className="bg-card border border-border rounded-xl overflow-hidden">
-                        <div className="p-4 md:p-6 space-y-4">
-                            <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                        <div style={{ paddingTop: "24px", paddingRight: "24px", paddingBottom: "24px", paddingLeft: "24px" }}>
+                            <div
+                                className="bg-muted/20 rounded-xl border border-border"
+                                style={{ paddingTop: "16px", paddingRight: "16px", paddingBottom: "16px", paddingLeft: "16px" }}
+                            >
                                 <div className="flex items-center gap-2 mb-2">
                                     <Mail className="w-4 h-4 text-primary" />
                                     <label className="text-xs font-medium text-muted-foreground" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>Account Email</label>
@@ -88,7 +91,10 @@ export default function Settings() {
                                 <p className="text-foreground text-sm text-left" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>{user?.email}</p>
                             </div>
 
-                            <div className="bg-destructive/5 rounded-xl p-4 border border-destructive/20">
+                            <div
+                                className="bg-destructive/5 rounded-xl border border-destructive/20"
+                                style={{ marginTop: "16px", paddingTop: "16px", paddingRight: "16px", paddingBottom: "16px", paddingLeft: "16px" }}
+                            >
                                 <div className="flex items-center gap-2 mb-3">
                                     <Trash2 className="w-4 h-4 text-destructive" />
                                     <label className="text-sm font-medium text-red-500 dark:text-red-200" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
