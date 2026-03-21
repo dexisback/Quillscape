@@ -55,7 +55,7 @@ export default function Settings() {
 
             <main className="app-main-shell">
                 <div className="max-w-2xl mx-auto app-wrap-2xl" ref={pageRef}>
-                    <div className="text-left section-gap-40">
+                    <div className="text-left" style={{ marginBottom: '28px' }}>
                         <p className="text-lg text-muted-foreground inter-tight">
                             <span className="relative inline-block marker-wrap">
                                 <motion.span
@@ -70,30 +70,31 @@ export default function Settings() {
                         </p>
                     </div>
 
-                    <div className="bg-card border border-border rounded-xl overflow-hidden">
+                    <div className="rounded-xl overflow-hidden" style={{ backgroundColor: 'var(--color-card)' }}>
                         <div className="panel-pad-24">
                             <div
-                                className="bg-muted/20 rounded-xl border border-border panel-pad-16"
+                                className="rounded-xl"
+                                style={{ backgroundColor: 'rgba(139,90,43,0.05)', border: '1px solid rgba(0,0,0,0.08)', padding: '14px 16px' }}
                             >
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex items-center gap-2" style={{ marginBottom: '6px' }}>
                                     <Mail className="w-4 h-4 text-primary" />
                                     <label className="text-xs font-medium text-muted-foreground inter-tight">Account Email</label>
-                                    <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
+                                    <span className="text-xs rounded-full text-muted-foreground inter-tight" style={{ backgroundColor: 'var(--color-muted)', padding: '2px 8px' }}>Read-only</span>
                                 </div>
                                 <p className="text-foreground text-sm text-left inter-tight">{user?.email}</p>
                             </div>
 
                             <div
-                                className="bg-destructive/5 rounded-xl border border-destructive/20 panel-pad-16"
-                                style={{ marginTop: "16px" }}
+                                className="rounded-xl"
+                                style={{ marginTop: "16px", backgroundColor: 'rgba(139,90,43,0.05)', border: '1px solid rgba(0,0,0,0.08)', padding: '14px 16px' }}
                             >
-                                <div className="flex items-center gap-2 mb-3">
+                                <div className="flex items-center gap-2" style={{ marginBottom: '8px' }}>
                                     <Trash2 className="w-4 h-4 text-destructive" />
                                     <label className="text-sm font-medium text-red-500 dark:text-red-200 inter-tight">
                                         Permanently Delete Your Account
                                     </label>
                                 </div>
-                                <p className="text-xs text-red-500 mb-4 text-left inter-tight">
+                                <p className="text-xs text-red-500 text-left inter-tight" style={{ marginBottom: '16px' }}>
                                     This action is permanent.
                                 </p>
 

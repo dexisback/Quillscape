@@ -68,14 +68,14 @@ export default function UserProfile() {
     }
 
     const cancelEdit = () => {
-        setFormData({ username: user?.username || "", bio: user?.bio || "" })
+        setFormData({ username: displayUser?.username || "", bio: displayUser?.bio || "" })
         setIsEditing(false)
     }
 
     const avatarUrl = isGoogleUser && firebaseUser?.photoURL
         ? firebaseUser.photoURL
-        : user?.email
-            ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.email)}`
+        : user?.email || firebaseUser?.email
+            ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.email || firebaseUser?.email || "anonymous")}`
             : null
 
     if (loading) return (
@@ -83,19 +83,24 @@ export default function UserProfile() {
             <HomeNavbar />
             <main className="app-main-shell">
                 <div className="max-w-2xl mx-auto text-center app-wrap-2xl block-pad-64">
-                    <div className="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <div className="inline-block w-8 h-8 rounded-full animate-spin mb-4" style={{ border: '2px solid var(--color-primary)', borderTopColor: 'transparent' }}></div>
                     <p className="text-muted-foreground inter-tight">Loading profile...</p>
                 </div>
             </main>
         </div>
     )
+    const displayUser = user || (firebaseUser ? {
+        username: firebaseUser.displayName || "",
+        email: firebaseUser.email || "",
+        bio: ""
+    } : null)
 
-    if (!user) return (
+    if (!displayUser) return (
         <div className="min-h-screen bg-background">
             <HomeNavbar />
             <main className="app-main-shell">
                 <div className="max-w-2xl mx-auto text-center app-wrap-2xl block-pad-64">
-                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                         <User className="w-8 h-8 text-muted-foreground" />
                     </div>
                     <p className="text-muted-foreground text-lg inter-tight">User not found</p>
@@ -110,7 +115,7 @@ export default function UserProfile() {
 
             <main className="app-main-shell">
                 <div className="max-w-2xl mx-auto app-wrap-2xl" ref={pageRef}>
-                    <div className="text-left section-gap-40">
+                    <div className="text-left" style={{ marginBottom: '28px' }}>
                         <p className="text-lg text-muted-foreground inter-tight">
                             Your{" "}
                             <span className="relative inline-block marker-wrap">
@@ -126,14 +131,17 @@ export default function UserProfile() {
                         </p>
                     </div>
 
-                    <div className="bg-card border border-border rounded-xl overflow-hidden relative">
+                    <div className="rounded-xl overflow-hidden relative" style={{ backgroundColor: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.08)' }}>
                         <div className="absolute top-4 right-4 z-10">
                             {isEditing ? (
                                 <div className="flex gap-1">
                                     <button
                                         onClick={handleUpdate}
                                         disabled={saving}
-                                        className="p-2 rounded-lg transition-all duration-200 hover:bg-primary/20 text-primary disabled:opacity-50"
+                                        className="transition-all duration-200 text-primary disabled:opacity-50"
+                                        style={{ padding: '8px', borderRadius: '8px' }}
+                                        onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = 'rgba(139,90,43,0.15)')}
+                                        onMouseLeave={(e) => !saving && (e.currentTarget.style.backgroundColor = 'transparent')}
                                         title="Save"
                                     >
                                         <Check className="w-4 h-4" />
@@ -141,7 +149,10 @@ export default function UserProfile() {
                                     <button
                                         onClick={cancelEdit}
                                         disabled={saving}
-                                        className="p-2 rounded-lg transition-all duration-200 hover:bg-muted text-muted-foreground"
+                                        className="transition-all duration-200 text-muted-foreground"
+                                        style={{ padding: '8px', borderRadius: '8px' }}
+                                        onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = 'rgba(139,90,43,0.08)')}
+                                        onMouseLeave={(e) => !saving && (e.currentTarget.style.backgroundColor = 'transparent')}
                                         title="Cancel"
                                     >
                                         <X className="w-4 h-4" />
@@ -150,7 +161,10 @@ export default function UserProfile() {
                             ) : (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="p-2 rounded-lg transition-all duration-200 hover:bg-muted/50 text-muted-foreground hover:text-primary"
+                                    className="transition-all duration-200 text-muted-foreground hover:text-primary"
+                                    style={{ padding: '8px', borderRadius: '8px' }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(139,90,43,0.08)' }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
                                     title="Edit Profile"
                                 >
                                     <Pencil className="w-4 h-4" />
@@ -158,15 +172,16 @@ export default function UserProfile() {
                             )}
                         </div>
 
-                        <div className="bg-muted/30 flex items-center border-b border-border panel-pad-24 gap-20-fixed">
+                        <div className="flex items-center panel-pad-24" style={{ backgroundColor: 'rgba(139,90,43,0.03)', borderBottom: '1px solid rgba(0,0,0,0.08)', gap: '20px' }}>
                             <div
                                 ref={avatarRef}
-                                className="w-16 h-16 rounded-full overflow-hidden border-3 border-card shadow-lg flex-shrink-0"
+                                className="w-16 h-16 rounded-full overflow-hidden shadow-lg flex-shrink-0"
+                                style={{ border: '3px solid var(--color-card)' }}
                             >
                                 {avatarUrl ? (
                                     <img
                                         src={avatarUrl}
-                                        alt={user.username || "User"}
+                                        alt={displayUser.username || "User"}
                                         className="w-full h-full object-cover bg-muted"
                                     />
                                 ) : (
@@ -177,15 +192,15 @@ export default function UserProfile() {
                             </div>
                             <div className="text-left">
                                 <h2 className="text-lg font-semibold text-foreground inter-tight">
-                                    {user.username || "Anonymous Writer"}
+                                    {displayUser.username || "Anonymous Writer"}
                                 </h2>
-                                <p className="text-muted-foreground text-xs inter-tight">{user.email}</p>
+                                <p className="text-muted-foreground text-xs inter-tight">{displayUser.email}</p>
                             </div>
                         </div>
 
                         <div className="panel-pad-24">
-                            <div className="stack-gap-16">
-                                <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <div className="rounded-xl" style={{ backgroundColor: 'rgba(139,90,43,0.05)', border: '1px solid rgba(0,0,0,0.08)', padding: '16px' }}>
                                     <div className="flex items-center gap-2 mb-2">
                                         <User className="w-4 h-4 text-primary" />
                                         <label className="text-xs font-medium text-muted-foreground inter-tight">Username</label>
@@ -195,16 +210,19 @@ export default function UserProfile() {
                                             value={formData.username}
                                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                             placeholder="Enter your username"
-                                            className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary inter-tight"
+                                            className="w-full rounded-lg text-sm text-foreground placeholder:text-muted-foreground inter-tight focus:outline-none"
+                                            style={{ backgroundColor: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.12)', padding: '10px' }}
+                                            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)' }}
+                                            onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.12)' }}
                                         />
                                     ) : (
                                         <p className="text-foreground text-sm font-medium text-left inter-tight">
-                                            {user.username || <span className="text-muted-foreground italic">Not set</span>}
+                                            {displayUser.username || <span className="text-muted-foreground italic">Not set</span>}
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                                <div className="rounded-xl" style={{ backgroundColor: 'rgba(139,90,43,0.05)', border: '1px solid rgba(0,0,0,0.08)', padding: '16px' }}>
                                     <div className="flex items-center gap-2 mb-2">
                                         <FileText className="w-4 h-4 text-primary" />
                                         <label className="text-xs font-medium text-muted-foreground inter-tight">Bio</label>
@@ -214,22 +232,25 @@ export default function UserProfile() {
                                             value={formData.bio}
                                             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                             placeholder="Tell us about yourself..."
-                                            className="w-full p-2.5 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground min-h-[100px] resize-y focus:outline-none focus:ring-2 focus:ring-primary inter-tight"
+                                            className="w-full rounded-lg text-sm text-foreground placeholder:text-muted-foreground min-h-[100px] resize-y inter-tight focus:outline-none"
+                                            style={{ backgroundColor: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.12)', padding: '10px' }}
+                                            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)' }}
+                                            onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.12)' }}
                                         />
                                     ) : (
                                         <p className="text-foreground text-sm leading-relaxed text-left inter-tight">
-                                            {user.bio || <span className="text-muted-foreground italic">No bio yet. Tell the world about yourself!</span>}
+                                            {displayUser.bio || <span className="text-muted-foreground italic">No bio yet. Tell the world about yourself!</span>}
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="bg-muted/20 rounded-xl p-4 border border-border">
+                                <div className="rounded-xl" style={{ backgroundColor: 'rgba(139,90,43,0.05)', border: '1px solid rgba(0,0,0,0.08)', padding: '16px' }}>
                                     <div className="flex items-center gap-2 mb-2">
                                         <Mail className="w-4 h-4 text-primary" />
                                         <label className="text-xs font-medium text-muted-foreground inter-tight">Email</label>
-                                        <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Read-only</span>
+                                        <span className="text-xs rounded-full text-muted-foreground inter-tight" style={{ backgroundColor: 'var(--color-muted)', padding: '2px 8px' }}>Read-only</span>
                                     </div>
-                                    <p className="text-foreground text-sm text-left inter-tight">{user.email}</p>
+                                    <p className="text-foreground text-sm text-left inter-tight">{displayUser.email}</p>
                                 </div>
                             </div>
                         </div>
