@@ -22,27 +22,35 @@ const reviews = [
     { text: "Anonymous drafts? Game changer for journaling.", author: "— Early user" },
 ]
 
-function ReviewCard({ review, index }: { review: { text: string; author: string }; index: number }) {
+type AuthReview = (typeof reviews)[number]
+
+/** Large vertical review cards (original /auth layout — not the hero StickyNotes). */
+function AuthReviewCard({ review, index }: { review: AuthReview; index: number }) {
     const colors = ["#fef3c7", "#fef08a", "#fde047"]
 
     return (
         <motion.div
-            className="rounded-2xl cursor-default"
-            style={{
-                backgroundColor: colors[index % 3],
-                boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-                paddingTop: "24px",
-                paddingRight: "24px",
-                paddingBottom: "24px",
-                paddingLeft: "24px",
-            }}
-            whileHover={{ y: -8, boxShadow: "0 16px 32px rgba(0,0,0,0.12)" }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="auth-review-card w-full cursor-default rounded-2xl"
+            style={{ backgroundColor: colors[index % 3], boxShadow: "0 6px 16px rgba(0,0,0,0.07)" }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.08 * index, ease: "easeOut" }}
+            whileHover={{ y: -4, boxShadow: "0 12px 24px rgba(0,0,0,0.1)" }}
         >
-            <p className="text-neutral-700 text-sm leading-relaxed italic mb-12-fixed">"{review.text}"</p>
-            <p className="text-neutral-500 text-xs">{review.author}</p>
+            <p className="mb-1.5 text-sm font-medium italic leading-snug text-neutral-800 md:leading-normal dark:text-neutral-900">
+                &ldquo;{review.text}&rdquo;
+            </p>
+            <p className="text-xs text-neutral-600 md:text-sm dark:text-neutral-700">{review.author}</p>
         </motion.div>
     )
+}
+
+function firebaseAuthCode(err: unknown): string {
+    if (typeof err === "object" && err !== null && "code" in err) {
+        const c = (err as { code?: unknown }).code
+        return typeof c === "string" ? c : ""
+    }
+    return ""
 }
 
 export default function Auth() {
@@ -77,15 +85,16 @@ export default function Auth() {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password)
             syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
-        } catch (err: any) {
+        } catch (err: unknown) {
             setIsAuthenticating(false)
+            const code = firebaseAuthCode(err)
             const errorMessages: Record<string, string> = {
                 "auth/invalid-credential": "Invalid email or password.",
                 "auth/wrong-password": "Invalid email or password.",
                 "auth/user-not-found": "No account found. Create one below.",
                 "auth/too-many-requests": "Too many attempts. Try again later.",
             }
-            setError(errorMessages[err.code] || "Login failed. Please try again.")
+            setError(errorMessages[code] || "Login failed. Please try again.")
         }
     }
 
@@ -98,14 +107,15 @@ export default function Auth() {
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password)
             syncUserWithMongoDB({ firebaseUid: res.user.uid, email: res.user.email }).catch(() => { })
-        } catch (err: any) {
+        } catch (err: unknown) {
             setIsSigningUp(false)
+            const code = firebaseAuthCode(err)
             const errorMessages: Record<string, string> = {
                 "auth/email-already-in-use": "Email already registered. Try logging in.",
                 "auth/weak-password": "Password too weak.",
                 "auth/invalid-email": "Invalid email address.",
             }
-            setError(errorMessages[err.code] || "Signup failed. Please try again.")
+            setError(errorMessages[code] || "Signup failed. Please try again.")
         }
     }
 
