@@ -71,3 +71,66 @@ export function parsePublicFeedPayload(value: unknown): PublicFeedPayload | null
         cachedAt: payload.cachedAt,
     }
 }
+
+export function stripMarkdownImages(text: string): string {
+    if (!text) return ""
+    let result = ""
+    let i = 0
+    while (i < text.length) {
+        if (text[i] === "!" && text[i + 1] === "[") {
+            let j = i + 2
+            while (j < text.length && text[j] !== "]") j += 1
+            if (text[j] === "]" && text[j + 1] === "(") {
+                let depth = 1
+                let k = j + 2
+                while (k < text.length && depth > 0) {
+                    if (text[k] === "(") depth += 1
+                    else if (text[k] === ")") depth -= 1
+                    k += 1
+                }
+                i = k
+                continue
+            }
+        }
+        if (text.substring(i, i + 11) === "data:image/") {
+            while (i < text.length && text[i] !== " " && text[i] !== "\n" && text[i] !== ")") i += 1
+            continue
+        }
+        result += text[i]
+        i += 1
+    }
+
+    let cleaned = ""
+    let lastWasSpace = false
+    for (const c of result) {
+        if (c === " " || c === "\n" || c === "\t") {
+            if (!lastWasSpace) {
+                cleaned += " "
+                lastWasSpace = true
+            }
+        } else {
+            cleaned += c
+            lastWasSpace = false
+        }
+    }
+    return cleaned.trim()
+}
+
+export function getReadTimeMinutes(body: string): number {
+    const wordCount = body.trim().split(/\s+/).length
+    return Math.max(1, Math.ceil(wordCount / 200))
+}
+
+export function formatTimeAgo(timestamp: string): string {
+    const now = new Date()
+    const posted = new Date(timestamp)
+    const diffMs = now.getTime() - posted.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffMins < 1) return "just now"
+    if (diffMins < 60) return `${diffMins} min ago`
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`
+}

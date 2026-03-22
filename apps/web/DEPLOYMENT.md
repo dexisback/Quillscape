@@ -35,6 +35,7 @@
 
 - `/`
 - `/auth`
+- `/feed`
 - `/home`
 - `/post-blogs`
 - `/user-profile`
