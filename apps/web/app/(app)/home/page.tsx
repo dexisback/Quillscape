@@ -1,50 +1,97 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import api from "@/lib/api/axios"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import HomeNavbar from "@/components/home/HomeNavbar"
 import BlogCard from "@/components/home/BlogCard"
 import FloatingActionButton from "@/components/home/FloatingActionButton"
 import BlogEditorOverlay from "@/components/BlogEditorOverlay"
 import { motion } from "framer-motion"
+import {
+    PUBLIC_FEED_SNAPSHOT_KEY,
+    parsePublicFeedPayload,
+    type PublicBlog,
+    type PublicFeedPayload,
+} from "@/lib/publicFeed"
 
-type Blog = {
-    _id: string
-    title: string
-    body: string
-    author_name?: string
-    author_email?: string
-    status?: string
-    publishedAt?: string
-    createdAt: string
+function readPublicFeedSnapshot(): PublicFeedPayload | null {
+    if (typeof window === "undefined") return null
+
+    try {
+        const raw = window.localStorage.getItem(PUBLIC_FEED_SNAPSHOT_KEY)
+        if (!raw) return null
+
+        const parsed = parsePublicFeedPayload(JSON.parse(raw) as unknown)
+        if (!parsed) {
+            window.localStorage.removeItem(PUBLIC_FEED_SNAPSHOT_KEY)
+            return null
+        }
+        return parsed
+    } catch {
+        return null
+    }
+}
+
+function writePublicFeedSnapshot(snapshot: PublicFeedPayload) {
+    if (typeof window === "undefined") return
+    try {
+        window.localStorage.setItem(PUBLIC_FEED_SNAPSHOT_KEY, JSON.stringify(snapshot))
+    } catch {}
+}
+
+function isHardReloadNavigation(): boolean {
+    if (typeof window === "undefined") return false
+
+    const entry = window.performance.getEntriesByType("navigation")[0]
+    if (entry) {
+        const timing = entry as PerformanceNavigationTiming
+        return timing.type === "reload"
+    }
+
+    const legacy = window.performance as Performance & { navigation?: { type?: number } }
+    return legacy.navigation?.type === 1
 }
 
 export default function Home() {
-    const [blogs, setBlogs] = useState<Blog[]>([])
-    const [loading, setLoading] = useState(true)
+    const initialSnapshot = useMemo(() => readPublicFeedSnapshot(), [])
+
+    const [blogs, setBlogs] = useState<PublicBlog[]>(initialSnapshot?.blogs ?? [])
+    const [snapshotHash, setSnapshotHash] = useState(initialSnapshot?.hash ?? "")
+    const [loading, setLoading] = useState(!initialSnapshot)
     const [isEditorOpen, setIsEditorOpen] = useState(false)
     const [endOfPosts, setEndOfPosts] = useState(false)
-    const [viewingBlog, setViewingBlog] = useState<any>(null)
+    const [viewingBlog, setViewingBlog] = useState<{ title: string; body: string } | null>(null)
 
-    const fetchPublicBlogs = async (opts?: { showLoading?: boolean }) => {
+    const fetchPublicBlogs = useCallback(async (opts?: { showLoading?: boolean }) => {
         const showSpinner = opts?.showLoading !== false
         if (showSpinner) setLoading(true)
         try {
-            const response = await api.get("/blogs/public", {
-                params: { _t: Date.now() },
-            })
-            setBlogs(Array.isArray(response.data) ? response.data : [])
+            const response = await fetch("/api/public-blogs", { method: "GET" })
+            if (!response.ok) throw new Error("Failed to fetch public blogs")
+
+            const payload = parsePublicFeedPayload((await response.json()) as unknown)
+            if (!payload) throw new Error("Invalid public feed payload")
+
+            if (payload.hash !== snapshotHash) {
+                setBlogs(payload.blogs)
+                setSnapshotHash(payload.hash)
+                writePublicFeedSnapshot(payload)
+            }
         } catch {
         } finally {
             if (showSpinner) setLoading(false)
         }
-    }
+    }, [snapshotHash])
 
     useEffect(() => {
-        fetchPublicBlogs({ showLoading: true })
-    }, [])
+        const shouldRefresh = !initialSnapshot || isHardReloadNavigation()
+        if (!shouldRefresh) {
+            setLoading(false)
+            return
+        }
+        void fetchPublicBlogs({ showLoading: !initialSnapshot })
+    }, [fetchPublicBlogs, initialSnapshot])
 
-    /** Refetch after publish without flashing the full-page loader */
+    /** Refresh from Next cached endpoint after a publish action */
     const handleBlogCreated = () => fetchPublicBlogs({ showLoading: false })
 
     const calculateReadTime = (body: string) => {
@@ -110,7 +157,7 @@ export default function Home() {
                                 <BlogCard
                                     key={blog._id}
                                     blog={blog}
-                                    onOpenBlog={(b) => setViewingBlog(b)}
+                                    onOpenBlog={(b) => setViewingBlog({ title: b.title, body: b.body || "" })}
                                     calculateReadTime={calculateReadTime}
                                     formatTimeAgo={formatTimeAgo}
                                 />

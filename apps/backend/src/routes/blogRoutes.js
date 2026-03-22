@@ -11,6 +11,28 @@ import User from "../models/User.js";
 
 
 const router= express.Router();
+const NEXT_REVALIDATE_URL = process.env.NEXT_REVALIDATE_URL;
+const NEXT_REVALIDATE_SECRET = process.env.NEXT_REVALIDATE_SECRET;
+
+async function revalidatePublicBlogs(reason) {
+    if (!NEXT_REVALIDATE_URL || !NEXT_REVALIDATE_SECRET) return;
+    try {
+        await axios.post(
+            NEXT_REVALIDATE_URL,
+            { reason },
+            {
+                timeout: 5000,
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-revalidate-secret": NEXT_REVALIDATE_SECRET,
+                },
+            }
+        );
+    } catch (error) {
+        const message = error?.response?.data || error?.message || error;
+        console.error("failed to revalidate public blog cache", message);
+    }
+}
 
 
 //test:
@@ -71,6 +93,9 @@ router.post("/post", verifyAuth, async (req, res)=>{
         publishedAt: blogStatus === 'published' ? new Date() : null
     })
     await newBlog.save();
+    if (blogStatus === "published") {
+        void revalidatePublicBlogs("blog-created-published");
+    }
     res.status(201).json({ msg: `Blog ${blogStatus === 'published' ? 'published' : 'saved as draft'}`, blog: newBlog });
 } catch (error) {
         console.error("error creating blog:", error);
@@ -92,6 +117,9 @@ router.delete("/delete/:id", verifyAuth, async(req, res)=>{
 
     if(!deletedBlogs){
         return res.status(404).send({msg: "couldnt find your blog"})
+    }
+    if (deletedBlogs.status === "published") {
+        void revalidatePublicBlogs("blog-deleted-published");
     }
     res.status(200).send("blog succesfully yeeted")        
     } catch (error) {
@@ -145,6 +173,10 @@ router.put("/:id", verifyAuth, async(req, res)=>{
         ) 
 
         if(!updatedBlog){return res.status(404).send({msg: "sorry the blog doesnt exist"})}
+        const affectsPublicFeed = updatedBlog.status === "published" || status === "draft" || status === "published";
+        if (affectsPublicFeed) {
+            void revalidatePublicBlogs("blog-updated");
+        }
         res.status(200).json({msg: "blog updated successfully", blog: updatedBlog})
     } catch (error) {
         console.error("sorry blog not found w the given id");
@@ -155,7 +187,6 @@ router.put("/:id", verifyAuth, async(req, res)=>{
 
 
 export default router;
-
 
 
 

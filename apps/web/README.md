@@ -22,6 +22,7 @@ Required in `.env.local` (and Vercel Project Environment Variables):
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `REVALIDATE_SECRET` — shared secret for on-demand cache invalidation endpoint (`/api/revalidate/public-blogs`).
 
 ### Local API + CORS
 
@@ -51,3 +52,7 @@ Deploy `apps/web` as the project root.
 - Backend CORS: set `FRONTEND_URL` or `FRONTEND_URLS` for production; localhost is always merged in for dev.
 - Firebase Authentication authorized domains must include your Vercel domain.
 - `NEXT_PUBLIC_API_BASE_URL` must point to the production backend API.
+- Vercel Production branch should be set to `next-refactor` for this repo flow.
+- Backend env must include:
+  - `NEXT_REVALIDATE_URL=https://<frontend-domain>/api/revalidate/public-blogs`
+  - `NEXT_REVALIDATE_SECRET=<same-as-frontend-REVALIDATE_SECRET>`
