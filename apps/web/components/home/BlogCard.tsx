@@ -76,7 +76,7 @@ export default function BlogCard({ blog, calculateReadTime, formatTimeAgo, onOpe
 
             <h3 className="text-xl font-bold text-foreground text-left" style={{ marginBottom: '8px' }}>{blog.title}</h3>
 
-            <p className="text-muted-foreground text-sm leading-relaxed text-left border border-border/25 rounded-lg px-3 py-2.5" style={{ marginBottom: '16px', backgroundColor: 'transparent' }}>{excerpt}</p>
+            <p className="text-muted-foreground text-sm leading-relaxed text-left" style={{ marginBottom: '16px' }}>{excerpt}</p>
 
             <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span className="rounded px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06]">{readTime} min read</span>

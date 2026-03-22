@@ -92,9 +92,6 @@ export default function Home() {
                         </div>
                     ) : blogs.length === 0 ? (
                         <div className="text-center" style={{ padding: '64px 0' }}>
-                            {/* <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'var(--color-muted)' }}>
-                                <span className="text-2xl">📝</span>
-                            </div> */}
                             <p className="text-muted-foreground text-lg">No posts yet. Be the first to write!</p>
                             <button
                                 onClick={() => setIsEditorOpen(true)}

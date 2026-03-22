@@ -163,7 +163,6 @@ export default function ShowPosts() {
                     </div>
                 ) : blogs.length === 0 ? (
                     <div className="text-center" style={{ padding: '64px 0' }}>
-                        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: 'var(--color-muted)', marginBottom: '16px' }}><span className="text-2xl">📝</span></div>
                         <p className="text-muted-foreground text-lg">No posts yet. Create your first post!</p>
                     </div>
                 ) : (
