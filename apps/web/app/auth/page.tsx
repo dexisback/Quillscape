@@ -8,6 +8,7 @@ import {
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    type User,
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { syncUserWithMongoDB } from "@/lib/api/user"
@@ -53,6 +54,15 @@ function firebaseAuthCode(err: unknown): string {
     return ""
 }
 
+async function persistSessionCookie(user: User) {
+    const token = await user.getIdToken()
+    await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+    })
+}
+
 export default function Auth() {
     const router = useRouter()
     const { user, loading: authLoading } = useAuth()
@@ -84,7 +94,9 @@ export default function Auth() {
         setError("")
         try {
             const result = await signInWithEmailAndPassword(auth, email, password)
+            await persistSessionCookie(result.user)
             syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
+            router.replace("/home")
         } catch (err: unknown) {
             setIsAuthenticating(false)
             const code = firebaseAuthCode(err)
@@ -106,7 +118,9 @@ export default function Auth() {
         setError("")
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password)
+            await persistSessionCookie(res.user)
             syncUserWithMongoDB({ firebaseUid: res.user.uid, email: res.user.email }).catch(() => { })
+            router.replace("/home")
         } catch (err: unknown) {
             setIsSigningUp(false)
             const code = firebaseAuthCode(err)
@@ -124,6 +138,7 @@ export default function Auth() {
         try {
             const provider = new GoogleAuthProvider()
             const result = await signInWithPopup(auth, provider)
+            await persistSessionCookie(result.user)
             syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
             router.push("/home")
         } catch {

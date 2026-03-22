@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, createContext, useContext } from "react"
-import { getAuth, onAuthStateChanged, signOut, type User } from "firebase/auth"
+import { onIdTokenChanged, signOut, type User } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 
 type AuthContextType = {
@@ -18,12 +18,24 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(Boolean(auth))
 
     useEffect(() => {
-        if (!auth) { setLoading(false); return }
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (!auth) return
+        const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
             setUser(currentUser)
+            try {
+                if (currentUser) {
+                    const token = await currentUser.getIdToken()
+                    await fetch("/api/auth/session", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ token }),
+                    })
+                } else {
+                    await fetch("/api/auth/session", { method: "DELETE" })
+                }
+            } catch {}
             setLoading(false)
         })
         return () => unsubscribe()
@@ -31,7 +43,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const logout = async () => {
         if (!auth) return
-        try { await signOut(auth) } catch {}
+        try {
+            await signOut(auth)
+            await fetch("/api/auth/session", { method: "DELETE" })
+        } catch {}
     }
 
     return (
