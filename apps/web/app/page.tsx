@@ -4,11 +4,18 @@ import { useEffect } from "react"
 import Navbar from "@/components/landing/Navbar"
 import HeroSection from "@/components/landing/HeroSection"
 import Footer from "@/components/landing/Footer"
+import { parsePublicFeedPayload, writePublicFeedSnapshot } from "@/lib/publicFeed"
 
 export default function LandingPage() {
   useEffect(() => {
-    // Non-blocking warm-up call so first paint is never delayed.
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs/public`).catch(() => {})
+    // Non-blocking warm-up + snapshot seed via Next cached endpoint.
+    void fetch("/api/public-blogs")
+      .then(async (response) => {
+        if (!response.ok) return
+        const payload = parsePublicFeedPayload((await response.json()) as unknown)
+        if (payload) writePublicFeedSnapshot(payload)
+      })
+      .catch(() => {})
   }, [])
 
   return (

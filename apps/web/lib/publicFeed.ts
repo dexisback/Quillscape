@@ -72,6 +72,44 @@ export function parsePublicFeedPayload(value: unknown): PublicFeedPayload | null
     }
 }
 
+export function readPublicFeedSnapshot(): PublicFeedPayload | null {
+    if (typeof window === "undefined") return null
+
+    try {
+        const raw = window.localStorage.getItem(PUBLIC_FEED_SNAPSHOT_KEY)
+        if (!raw) return null
+
+        const parsed = parsePublicFeedPayload(JSON.parse(raw) as unknown)
+        if (!parsed) {
+            window.localStorage.removeItem(PUBLIC_FEED_SNAPSHOT_KEY)
+            return null
+        }
+        return parsed
+    } catch {
+        return null
+    }
+}
+
+export function writePublicFeedSnapshot(snapshot: PublicFeedPayload) {
+    if (typeof window === "undefined") return
+    try {
+        window.localStorage.setItem(PUBLIC_FEED_SNAPSHOT_KEY, JSON.stringify(snapshot))
+    } catch {}
+}
+
+export function isHardReloadNavigation(): boolean {
+    if (typeof window === "undefined") return false
+
+    const entry = window.performance.getEntriesByType("navigation")[0]
+    if (entry) {
+        const timing = entry as PerformanceNavigationTiming
+        return timing.type === "reload"
+    }
+
+    const legacy = window.performance as Performance & { navigation?: { type?: number } }
+    return legacy.navigation?.type === 1
+}
+
 export function stripMarkdownImages(text: string): string {
     if (!text) return ""
     let result = ""
