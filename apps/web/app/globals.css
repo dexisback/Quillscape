@@ -339,24 +339,31 @@ textarea {
 
 /* Frosted glass — keep translucent so page/dots show through (app + landing nav) */
 .glass-nav {
-  background: color-mix(in srgb, #fff 22%, transparent);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid color-mix(in srgb, #fff 55%, transparent);
+  background:
+    linear-gradient(130deg,
+      color-mix(in srgb, #fff 20%, transparent) 0%,
+      color-mix(in srgb, #fff 10%, transparent) 52%,
+      color-mix(in srgb, #fde68a 10%, transparent) 100%);
+  backdrop-filter: blur(32px) saturate(165%);
+  -webkit-backdrop-filter: blur(32px) saturate(165%);
+  border: 1px solid color-mix(in srgb, #fff 46%, transparent);
   box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 color-mix(in srgb, #fff 70%, transparent);
+    0 8px 28px rgba(100, 74, 39, 0.10),
+    inset 0 1px 0 color-mix(in srgb, #fff 62%, transparent);
   isolation: isolate;
 }
 
 .dark .glass-nav {
-  background: color-mix(in oklch, var(--color-card) 38%, transparent);
-  backdrop-filter: blur(40px) saturate(160%);
-  -webkit-backdrop-filter: blur(40px) saturate(160%);
-  border: 1px solid color-mix(in oklch, var(--color-border) 45%, transparent);
+  background:
+    linear-gradient(130deg,
+      color-mix(in oklch, var(--color-card) 42%, transparent) 0%,
+      color-mix(in oklch, var(--color-card) 30%, transparent) 100%);
+  backdrop-filter: blur(32px) saturate(145%);
+  -webkit-backdrop-filter: blur(32px) saturate(145%);
+  border: 1px solid color-mix(in oklch, var(--color-border) 38%, transparent);
   box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 8px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* ─── Sticky notes (from landing.css) ─── */
@@ -501,24 +508,9 @@ textarea {
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-/* In-flow height for fixed HomeNavbar (nav padding + pill + safe clearance) */
-.home-navbar-spacer {
-  width: 100%;
-  flex-shrink: 0;
-  height: 6.5rem;
-  pointer-events: none;
-}
-
-@media (min-width: 768px) {
-  .home-navbar-spacer {
-    height: 7rem;
-  }
-}
-
 /* ─── Parity layout utilities ─── */
 .app-main-shell {
-  /* Top offset is handled by .home-navbar-spacer; keep a small gap before content */
-  padding-top: 0.75rem;
+  padding-top: 80px;
   padding-right: 16px;
   padding-bottom: 32px;
   padding-left: 16px;
@@ -526,7 +518,7 @@ textarea {
 
 @media (min-width: 768px) {
   .app-main-shell {
-    padding-top: 1rem;
+    padding-top: 96px;
     padding-right: 24px;
     padding-bottom: 48px;
     padding-left: 24px;

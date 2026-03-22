@@ -26,23 +26,26 @@ export default function Home() {
     const [endOfPosts, setEndOfPosts] = useState(false)
     const [viewingBlog, setViewingBlog] = useState<any>(null)
 
-    const fetchPublicBlogs = async () => {
+    const fetchPublicBlogs = async (opts?: { showLoading?: boolean }) => {
+        const showSpinner = opts?.showLoading !== false
+        if (showSpinner) setLoading(true)
         try {
-            const response = await api.get("/blogs/public")
-            setBlogs(response.data)
+            const response = await api.get("/blogs/public", {
+                params: { _t: Date.now() },
+            })
+            setBlogs(Array.isArray(response.data) ? response.data : [])
         } catch {
         } finally {
-            setLoading(false)
+            if (showSpinner) setLoading(false)
         }
     }
 
     useEffect(() => {
-        fetchPublicBlogs()
+        fetchPublicBlogs({ showLoading: true })
     }, [])
 
-    const handleBlogCreated = () => {
-        fetchPublicBlogs()
-    }
+    /** Refetch after publish without flashing the full-page loader */
+    const handleBlogCreated = () => fetchPublicBlogs({ showLoading: false })
 
     const calculateReadTime = (body: string) => {
         const wordCount = body.trim().split(/\s+/).length
