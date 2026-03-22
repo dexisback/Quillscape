@@ -233,9 +233,9 @@ export default function Auth() {
                     </div>
                 </div>
 
-                <div className="hidden md:flex flex-col gap-20-fixed">
+                <div className="auth-reviews-column hidden md:flex w-full max-w-lg shrink-0 flex-col justify-center gap-3 md:max-w-xl md:gap-3.5 md:pl-4 lg:max-w-2xl lg:gap-4 lg:pl-6 md:max-h-[min(100dvh-7rem,44rem)] md:overflow-y-auto md:overscroll-contain [scrollbar-width:thin]">
                     {reviews.map((review, index) => (
-                        <ReviewCard key={index} review={review} index={index} />
+                        <AuthReviewCard key={index} review={review} index={index} />
                     ))}
                 </div>
             </div>

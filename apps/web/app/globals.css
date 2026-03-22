@@ -212,9 +212,10 @@
 
 /* ─── Base styles (from index.css) ─── */
 
+/* No padding on * — unlayered rules beat @layer utilities, so * { padding: 0 }
+   was wiping Tailwind px-/py-* on components (e.g. /auth review cards). */
 * {
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -337,19 +338,22 @@ textarea {
 /* ─── Glassmorphism navbar (from landing.css) ─── */
 
 .glass-nav {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  isolation: isolate;
 }
 
 .dark .glass-nav {
-  background: color-mix(in oklch, var(--color-background) 60%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-border) 40%, transparent);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  background: color-mix(in oklch, var(--color-card) 45%, transparent);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid color-mix(in oklch, var(--color-border) 50%, transparent);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* ─── Sticky notes (from landing.css) ─── */
@@ -385,6 +389,22 @@ textarea {
   height: 6px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 50%;
+}
+
+.auth-social-sticky {
+  position: relative;
+  background-color: #fef3c7;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.12),
+    3px 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .auth-social-sticky {
+  background-color: color-mix(in oklch, var(--color-card) 92%, #fde047 8%);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.35),
+    3px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Smooth color transitions */
@@ -478,9 +498,24 @@ textarea {
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+/* In-flow height for fixed HomeNavbar (nav padding + pill + safe clearance) */
+.home-navbar-spacer {
+  width: 100%;
+  flex-shrink: 0;
+  height: 6.5rem;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .home-navbar-spacer {
+    height: 7rem;
+  }
+}
+
 /* ─── Parity layout utilities ─── */
 .app-main-shell {
-  padding-top: 80px;
+  /* Top offset is handled by .home-navbar-spacer; keep a small gap before content */
+  padding-top: 0.75rem;
   padding-right: 16px;
   padding-bottom: 32px;
   padding-left: 16px;
@@ -488,7 +523,7 @@ textarea {
 
 @media (min-width: 768px) {
   .app-main-shell {
-    padding-top: 96px;
+    padding-top: 1rem;
     padding-right: 24px;
     padding-bottom: 48px;
     padding-left: 24px;
@@ -546,6 +581,23 @@ textarea {
   max-width: 1024px;
   column-gap: 64px;
   row-gap: 64px;
+}
+
+/* /auth testimonial cards — compact so three fit in viewport beside the form */
+.auth-review-card {
+  padding: 0.75rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .auth-review-card {
+    padding: 0.875rem 1.125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-review-card {
+    padding: 1rem 1.25rem;
+  }
 }
 
 .auth-form-wrap {
