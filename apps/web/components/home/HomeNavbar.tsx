@@ -70,7 +70,6 @@ export default function HomeNavbar() {
     const isCompact = scrollProgress > 0.5
 
     return (
-        <>
         <nav
             className="fixed top-0 left-0 right-0 z-50"
             style={{ paddingTop: "16px", paddingRight: "16px", paddingBottom: "16px", paddingLeft: "16px" }}
@@ -128,8 +127,5 @@ export default function HomeNavbar() {
                 </div>
             </div>
         </nav>
-        {/* Fixed nav is out of flow — reserve height so main / paper-main start below the bar */}
-        <div className="home-navbar-spacer" aria-hidden />
-        </>
     )
 }

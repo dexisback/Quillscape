@@ -2,29 +2,33 @@
 
 import { useRef } from "react"
 import { Bold, Italic, Highlighter, Eraser, Pencil, ImagePlus } from "lucide-react"
-import { useSlate, ReactEditor } from "slate-react"
+import { ReactEditor } from "slate-react"
+import type { BaseEditor } from "slate"
+import type { HistoryEditor } from "slate-history"
 import { isMarkActive, toggleMark, clearFormatting } from "./editorTools"
 
+type RichEditor = BaseEditor & ReactEditor & HistoryEditor
+
 type Props = {
+    editor: RichEditor
     onDoodleClick?: () => void
     onImageUpload?: (file: File) => void
 }
 
-export default function EditorToolbar({ onDoodleClick, onImageUpload }: Props) {
-    const editor = useSlate()
+export default function EditorToolbar({ editor, onDoodleClick, onImageUpload }: Props) {
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     function handleBold(e: React.MouseEvent) {
-        e.preventDefault(); toggleMark(editor, "bold"); ReactEditor.focus(editor as any)
+        e.preventDefault(); toggleMark(editor, "bold"); ReactEditor.focus(editor)
     }
     function handleItalic(e: React.MouseEvent) {
-        e.preventDefault(); toggleMark(editor, "italic"); ReactEditor.focus(editor as any)
+        e.preventDefault(); toggleMark(editor, "italic"); ReactEditor.focus(editor)
     }
     function handleHighlight(e: React.MouseEvent) {
-        e.preventDefault(); toggleMark(editor, "highlight"); ReactEditor.focus(editor as any)
+        e.preventDefault(); toggleMark(editor, "highlight"); ReactEditor.focus(editor)
     }
     function handleEraser(e: React.MouseEvent) {
-        e.preventDefault(); clearFormatting(editor); ReactEditor.focus(editor as any)
+        e.preventDefault(); clearFormatting(editor); ReactEditor.focus(editor)
     }
     function handleDoodle(e: React.MouseEvent) {
         e.preventDefault(); onDoodleClick?.()

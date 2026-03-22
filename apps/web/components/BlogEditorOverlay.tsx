@@ -18,7 +18,7 @@ type Props = {
     readOnly?: boolean
     isOpen: boolean
     onClose: () => void
-    onBlogCreated?: (blog: any) => void
+    onBlogCreated?: () => void | Promise<void>
     editMode?: boolean
     blogId?: string | null
     initialTitle?: string
@@ -45,9 +45,7 @@ export default function BlogEditorOverlay({
     const [loading, setLoading] = useState(false)
     const [isFullscreen, setIsFullscreen] = useState(false)
     const [isDoodleOpen, setIsDoodleOpen] = useState(false)
-    const [isToolbarHovered, setIsToolbarHovered] = useState(false)
     const bodyEditorRef = useRef<HTMLDivElement>(null)
-    const toolbarRef = useRef<HTMLDivElement>(null)
 
     const titleEditor = useMemo(() => withHistory(withReact(createEditor())), [])
     const bodyEditor = useMemo(() => withMarkdownShortcuts(withImages(withHistory(withReact(createEditor())))), [])
@@ -73,15 +71,11 @@ export default function BlogEditorOverlay({
     }, [initialTitle, initialBody, bodyEditor, titleEditor, getInitialSlateValue])
 
     useEffect(() => {
-        if (!toolbarRef.current) return
-        if (isFullscreen) {
-            gsap.to(toolbarRef.current, { x: 0, opacity: 1, duration: 0.2 })
-        } else if (isToolbarHovered) {
-            gsap.to(toolbarRef.current, { x: 0, opacity: 1, duration: 0.25, ease: "power2.out" })
-        } else {
-            gsap.to(toolbarRef.current, { x: 30, opacity: 0.4, duration: 0.25, ease: "power2.in" })
-        }
-    }, [isToolbarHovered, isFullscreen])
+        if (!isOpen) return
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = "hidden"
+        return () => { document.body.style.overflow = previousOverflow }
+    }, [isOpen])
 
     const handleBodyKeyDown = useCallback((event: React.KeyboardEvent) => {
         handleKeyboardShortcuts(event, bodyEditor)
@@ -116,10 +110,10 @@ export default function BlogEditorOverlay({
                 onClose()
             } else {
                 const data = { title: title.trim(), body: body.trim(), status }
-                const response = await createBlog(data)
+                await createBlog(data)
                 setTitle(""); setBody("")
                 setTitleSlateValue(EMPTY_PARAGRAPH); setBodySlateValue(EMPTY_PARAGRAPH)
-                if (onBlogCreated && response.data) onBlogCreated(response.data.blog)
+                if (onBlogCreated) await Promise.resolve(onBlogCreated())
                 onClose()
             }
         } catch {
@@ -176,86 +170,124 @@ export default function BlogEditorOverlay({
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={handleClose} />
+        <div className={`fixed inset-0 z-50 flex ${isFullscreen ? "items-stretch justify-stretch p-0" : "items-center justify-center p-2 sm:p-4 md:p-6"}`}>
+            <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" onClick={handleClose} aria-hidden />
 
             <div
-                className={`relative mx-2 md:mx-4 shadow-2xl flex flex-col overflow-hidden ${isFullscreen ? "w-full h-full max-w-full max-h-full rounded-none" : "w-full max-w-4xl h-[85vh] md:h-[90vh] max-h-[90vh] rounded-xl md:rounded-2xl"}`}
+                className={`relative flex w-full flex-col overflow-hidden shadow-2xl ring-1 ring-black/5 dark:ring-white/10 ${isFullscreen ? "h-[100dvh] max-h-[100dvh] max-w-[100vw] rounded-none" : "max-h-[min(92dvh,900px)] max-w-4xl rounded-2xl md:rounded-3xl"}`}
                 style={{
                     backgroundColor: "#fef9c3",
-                    backgroundImage: "radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 85% 80%, rgba(253, 224, 71, 0.12) 0%, transparent 50%)",
+                    backgroundImage:
+                        "radial-gradient(ellipse at 20% 15%, rgba(255, 255, 255, 0.45) 0%, transparent 55%), radial-gradient(ellipse at 85% 85%, rgba(253, 224, 71, 0.14) 0%, transparent 50%)",
                 }}
             >
-                <div className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4">
-                    <div className="flex items-center gap-2">
-                        <button onClick={() => setIsFullscreen(!isFullscreen)} className="p-2.5 rounded-full transition-all duration-200 hover:scale-105" style={{ color: "#525252", backgroundColor: "rgba(82, 82, 82, 0.08)" }} title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}>
-                            {isFullscreen ? <Minimize2 className="w-4 h-4" strokeWidth={1.5} /> : <Maximize2 className="w-4 h-4" strokeWidth={1.5} />}
-                        </button>
-                        <button onClick={handleClose} className="p-2.5 rounded-full transition-all duration-200 hover:scale-105" style={{ color: "#525252", backgroundColor: "rgba(82, 82, 82, 0.08)" }}>
-                            <X className="w-4 h-4" strokeWidth={1.5} />
-                        </button>
-                    </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto px-4 md:px-10 pb-4 md:pb-6">
-                    <div style={{ position: "relative", marginBottom: "1rem" }}>
+                {/* Header: title + window actions (aligned with other app shells) */}
+                <header className="flex shrink-0 items-start justify-between gap-4 border-b border-neutral-800/10 px-4 pt-4 pb-3.5 md:px-8 md:pt-7 md:pb-5">
+                    <div className="min-w-0 flex-1 pr-2">
                         <Slate editor={titleEditor} initialValue={titleSlateValue} onChange={(v) => { setTitleSlateValue(v); setTitle((v[0] as any)?.children[0]?.text || "") }}>
                             <Editable
                                 readOnly={loading || readOnly}
                                 placeholder="Untitled"
                                 onKeyDown={handleTitleKeyDown}
-                                style={{ outline: "none", fontSize: "clamp(1.5rem, 5vw, 2.5rem)", fontWeight: 600, fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em", color: "#262626", textAlign: "left" }}
+                                className="inter-tight"
+                                style={{
+                                    outline: "none",
+                                    fontSize: "clamp(1.35rem, 4vw, 2.125rem)",
+                                    fontWeight: 600,
+                                    fontFamily: "Inter, system-ui, sans-serif",
+                                    letterSpacing: "-0.02em",
+                                    color: "var(--color-foreground, #262626)",
+                                    textAlign: "left",
+                                    lineHeight: 1.25,
+                                }}
                             />
                         </Slate>
                     </div>
-
-                    <div className="w-16 h-0.5 rounded mb-6" style={{ backgroundColor: "rgba(38, 38, 38, 0.15)" }} />
-
-                    <div style={{ position: "relative", flex: 1, minHeight: "350px" }}>
-                        <Slate editor={bodyEditor} initialValue={bodySlateValue} onChange={(v) => { setBodySlateValue(v); setBody(slateToMarkdown(v)) }}>
-                            <div className="flex gap-4">
-                                <div className="flex-1">
-                                    <Editable
-                                        ref={bodyEditorRef}
-                                        readOnly={loading || readOnly}
-                                        placeholder="Tell your story..."
-                                        onKeyDown={handleBodyKeyDown}
-                                        renderLeaf={handleRenderLeaf}
-                                        renderElement={handleRenderElement}
-                                        style={{ outline: "none", minHeight: "350px", fontSize: "1.125rem", lineHeight: "1.8", fontFamily: "Inter, sans-serif", letterSpacing: "-0.01em", color: "#404040", textAlign: "left" }}
-                                    />
-                                </div>
-
-                                {!readOnly && (
-                                    <div
-                                        className="sticky top-0 self-start hidden md:block"
-                                        onMouseEnter={() => setIsToolbarHovered(true)}
-                                        onMouseLeave={() => setIsToolbarHovered(false)}
-                                        style={{ position: "relative", zIndex: 10 }}
-                                    >
-                                        <motion.div ref={toolbarRef} initial={{ x: isFullscreen ? 0 : 30, opacity: isFullscreen ? 1 : 0.4 }}>
-                                            <EditorToolbar onDoodleClick={() => setIsDoodleOpen(true)} onImageUpload={handleImageUpload} />
-                                        </motion.div>
-                                    </div>
-                                )}
-                            </div>
-                        </Slate>
-
-                        <style>{`[data-slate-placeholder] { position: absolute !important; left: 0 !important; top: 0 !important; text-align: left !important; width: 100% !important; opacity: 0.35 !important; }`}</style>
+                    <div className="flex shrink-0 items-center gap-2 pt-0.5">
+                        <button
+                            type="button"
+                            onClick={() => setIsFullscreen(!isFullscreen)}
+                            className="rounded-full p-2.5 text-muted-foreground transition-all hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
+                            title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+                        >
+                            {isFullscreen ? <Minimize2 className="h-4 w-4" strokeWidth={1.5} /> : <Maximize2 className="h-4 w-4" strokeWidth={1.5} />}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleClose}
+                            className="rounded-full p-2.5 text-muted-foreground transition-all hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
+                            aria-label="Close editor"
+                        >
+                            <X className="h-4 w-4" strokeWidth={1.5} />
+                        </button>
                     </div>
+                </header>
+
+                {/* Scrollable editor body */}
+                <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
+                    <Slate editor={bodyEditor} initialValue={bodySlateValue} onChange={(v) => { setBodySlateValue(v); setBody(slateToMarkdown(v)) }}>
+                        <div className="flex gap-5 lg:gap-6">
+                            <div className="min-w-0 flex-1">
+                                <Editable
+                                    ref={bodyEditorRef}
+                                    readOnly={loading || readOnly}
+                                    placeholder="Tell your story..."
+                                    onKeyDown={handleBodyKeyDown}
+                                    renderLeaf={handleRenderLeaf}
+                                    renderElement={handleRenderElement}
+                                    className="inter-tight"
+                                    style={{
+                                        outline: "none",
+                                        minHeight: "min(50vh, 380px)",
+                                        fontSize: "1.0625rem",
+                                        lineHeight: 1.75,
+                                        fontFamily: "Inter, system-ui, sans-serif",
+                                        letterSpacing: "-0.01em",
+                                        color: "var(--color-foreground, #404040)",
+                                        textAlign: "left",
+                                    }}
+                                />
+                            </div>
+
+                            {!readOnly && (
+                                <aside className="sticky top-2 hidden h-fit shrink-0 self-start md:block">
+                                    <EditorToolbar editor={bodyEditor} onDoodleClick={() => setIsDoodleOpen(true)} onImageUpload={handleImageUpload} />
+                                </aside>
+                            )}
+                        </div>
+
+                        {!readOnly && (
+                            <div className="mt-5 border-t border-neutral-800/10 pt-4 md:hidden">
+                                <EditorToolbar editor={bodyEditor} onDoodleClick={() => setIsDoodleOpen(true)} onImageUpload={handleImageUpload} />
+                            </div>
+                        )}
+                    </Slate>
+
+                    <style>{`[data-slate-placeholder]{position:absolute!important;left:0!important;top:0!important;text-align:left!important;width:100%!important;opacity:0.4!important;pointer-events:none!important;}`}</style>
                 </div>
 
                 {!readOnly && (
-                    <div className="flex items-center justify-end px-4 md:px-6 py-3 md:py-4 gap-2 md:gap-3" style={{ borderTop: "1px solid rgba(38, 38, 38, 0.08)", backgroundColor: "rgba(255, 255, 255, 0.3)" }}>
-                        <button onClick={() => handleSubmit(editMode ? null : "draft")} disabled={loading} className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md" style={{ backgroundColor: "rgba(82, 82, 82, 0.08)", color: "#525252", opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}>
-                            {loading ? "..." : editMode ? "Save" : "Draft"}
+                    <footer className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-neutral-800/10 bg-white/35 px-4 py-3.5 backdrop-blur-sm dark:bg-black/20 md:gap-3 md:px-8 md:py-4">
+                        <button
+                            type="button"
+                            onClick={() => handleSubmit(editMode ? null : "draft")}
+                            disabled={loading}
+                            className="rounded-full px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-black/[0.06] disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-white/[0.08]"
+                        >
+                            {loading ? "…" : editMode ? "Save" : "Draft"}
                         </button>
                         {!editMode && (
-                            <button onClick={() => handleSubmit("published")} disabled={loading} className="px-4 md:px-6 py-2 md:py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg" style={{ backgroundColor: "#3d3d3d", color: "#ffffff", opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}>
-                                {loading ? "..." : "Publish"}
+                            <button
+                                type="button"
+                                onClick={() => handleSubmit("published")}
+                                disabled={loading}
+                                className="rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                                style={{ backgroundColor: "#3d3d3d" }}
+                            >
+                                {loading ? "…" : "Publish"}
                             </button>
                         )}
-                    </div>
+                    </footer>
                 )}
             </div>
 
