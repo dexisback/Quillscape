@@ -65,22 +65,41 @@ export default function BlogCard({ blog, calculateReadTime, formatTimeAgo, onOpe
         <div
             onClick={() => onOpenBlog(blog)}
             className="rounded-xl cursor-pointer text-left transition-all duration-300"
-            style={{ backgroundColor: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.08)', padding: '16px' }}
-            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(180,150,90,0.15)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}
+            style={{
+                backgroundColor: "var(--color-card)",
+                border: "1px solid var(--color-border)",
+                padding: "18px",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 12px rgba(139,90,43,0.06)"
+            }}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)"
+                e.currentTarget.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.45), 0 10px 24px rgba(139,90,43,0.14)"
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)"
+                e.currentTarget.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 12px rgba(139,90,43,0.06)"
+            }}
         >
-            <div className="flex items-center gap-2" style={{ marginBottom: '10px' }}>
-                <img src={avatarUrl} alt={authorName} className="w-6 h-6 rounded-full" style={{ backgroundColor: 'var(--color-muted)' }} />
+            <div className="flex items-center gap-2.5" style={{ marginBottom: "12px" }}>
+                <img src={avatarUrl} alt={authorName} className="w-7 h-7 rounded-full" style={{ backgroundColor: "var(--color-muted)" }} />
                 <span className="text-sm font-medium text-foreground">{authorName}</span>
             </div>
 
-            <h3 className="text-xl font-bold text-foreground text-left" style={{ marginBottom: '8px' }}>{blog.title}</h3>
+            <h3 className="text-xl font-bold text-foreground text-left" style={{ marginBottom: "10px" }}>{blog.title}</h3>
 
-            <p className="text-muted-foreground text-sm leading-relaxed text-left" style={{ marginBottom: '16px' }}>{excerpt}</p>
+            <p
+                className="text-muted-foreground text-sm leading-relaxed text-left"
+                style={{ marginBottom: "14px" }}
+            >
+                {excerpt}
+            </p>
 
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span className="rounded px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06]">{readTime} min read</span>
-                <span className="rounded px-2 py-0.5 bg-black/[0.04] dark:bg-white/[0.06]">{timeAgo}</span>
+            <div
+                className="flex items-center justify-between text-xs text-muted-foreground"
+                style={{ paddingTop: "12px", borderTop: "1px solid rgba(139,90,43,0.14)" }}
+            >
+                <span className="rounded px-2.5 py-1 font-medium" style={{ backgroundColor: "var(--color-muted)" }}>{readTime} min read</span>
+                <span className="rounded px-2.5 py-1 font-medium" style={{ backgroundColor: "var(--color-muted)" }}>{timeAgo}</span>
             </div>
         </div>
     )
