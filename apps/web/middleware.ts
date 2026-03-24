@@ -17,7 +17,7 @@ export function middleware(req: NextRequest) {
     }
 
     if (isProtectedPath(pathname) && !hasSession) {
-        return NextResponse.redirect(new URL("/", req.url))
+        return NextResponse.redirect(new URL("/auth", req.url))
     }
 
     return NextResponse.next()
