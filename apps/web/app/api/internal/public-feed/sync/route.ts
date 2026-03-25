@@ -26,7 +26,14 @@ export async function POST(req: NextRequest) {
         }
 
         const payload = createPublicFeedPayload(body.blogs as PublicBlog[])
-        await writePublicFeedReplica(payload)
+        
+        // Non-blocking: log sync errors but don't fail the endpoint
+        writePublicFeedReplica(payload).catch((error) => {
+            console.error("[sync-endpoint] failed to write replica", {
+                reason: body.reason,
+                error: error instanceof Error ? error.message : String(error),
+            })
+        })
 
         return NextResponse.json(
             {
@@ -38,7 +45,8 @@ export async function POST(req: NextRequest) {
             },
             { status: 200 },
         )
-    } catch {
+    } catch (error) {
+        console.error("[sync-endpoint] request processing error", error)
         return NextResponse.json({ message: "Failed to sync public feed replica" }, { status: 500 })
     }
 }

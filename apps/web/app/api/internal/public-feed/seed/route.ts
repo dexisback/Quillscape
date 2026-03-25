@@ -36,7 +36,20 @@ export async function POST(req: NextRequest) {
         const data: unknown = await response.json()
         const blogs = Array.isArray(data) ? (data as PublicBlog[]) : []
         const payload = createPublicFeedPayload(blogs)
-        await writePublicFeedReplica(payload)
+        
+        // Write to Redis and wait for it to complete
+        try {
+            await writePublicFeedReplica(payload)
+        } catch (error) {
+            console.error("[seed-endpoint] failed to write replica", {
+                error: error instanceof Error ? error.message : String(error),
+            })
+            // For seed, we fail if replica write fails since seed should ensure data is persisted
+            return NextResponse.json(
+                { message: "Failed to persist seeded data to Redis replica" },
+                { status: 503 },
+            )
+        }
 
         return NextResponse.json(
             {
@@ -48,6 +61,11 @@ export async function POST(req: NextRequest) {
             },
             { status: 200 },
         )
+    } catch (error) {
+        console.error("[seed-endpoint] request processing error", error)
+        return NextResponse.json({ message: "Failed to seed public feed replica" }, { status: 500 })
+    }
+}
     } catch {
         return NextResponse.json({ message: "Failed to seed public feed replica" }, { status: 500 })
     }

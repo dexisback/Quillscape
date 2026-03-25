@@ -13,7 +13,9 @@ let redisClientPromise: Promise<ReturnType<typeof createClient>> | null = null
 function getRedisUrl(): string {
     const redisUrl = process.env.KV_REDIS_URL
     if (!redisUrl) {
-        throw new Error("KV_REDIS_URL is not configured")
+        const msg = "KV_REDIS_URL is not configured. Vercel Redis must be connected to this project."
+        console.error(`[publicFeedReplica] ${msg}`)
+        throw new Error(msg)
     }
     return redisUrl
 }
@@ -24,16 +26,18 @@ async function getRedisClient(): Promise<ReturnType<typeof createClient>> {
 
     const client = createClient({ url: getRedisUrl() })
     client.on("error", (error) => {
-        console.error("redis client error", error)
+        console.error("[publicFeedReplica] redis client error", error)
     })
 
     redisClientPromise = client.connect()
         .then(() => {
             redisClient = client
+            console.log("[publicFeedReplica] redis client connected")
             return client
         })
         .catch((error) => {
             redisClientPromise = null
+            console.error("[publicFeedReplica] failed to connect redis client", error)
             throw error
         })
 
