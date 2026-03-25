@@ -22,21 +22,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (!auth) return
-        const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
+        const unsubscribe = onIdTokenChanged(auth, (currentUser) => {
             setUser(currentUser)
-            try {
-                if (currentUser) {
-                    const token = await currentUser.getIdToken()
-                    await fetch("/api/auth/session", {
+            setLoading(false)
+
+            if (currentUser) {
+                void currentUser.getIdToken()
+                    .then((token) => fetch("/api/auth/session", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ token }),
-                    })
-                } else {
-                    await fetch("/api/auth/session", { method: "DELETE" })
-                }
-            } catch {}
-            setLoading(false)
+                    }))
+                    .catch(() => {})
+                return
+            }
+
+            void fetch("/api/auth/session", { method: "DELETE" }).catch(() => {})
         })
         return () => unsubscribe()
     }, [])

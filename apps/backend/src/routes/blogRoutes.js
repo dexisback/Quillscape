@@ -13,6 +13,23 @@ import User from "../models/User.js";
 const router= express.Router();
 const NEXT_REVALIDATE_URL = process.env.NEXT_REVALIDATE_URL;
 const NEXT_REVALIDATE_SECRET = process.env.NEXT_REVALIDATE_SECRET;
+const PUBLIC_FEED_SYNC_URL = process.env.PUBLIC_FEED_SYNC_URL;
+const PUBLIC_FEED_SYNC_SECRET = process.env.PUBLIC_FEED_SYNC_SECRET;
+
+async function loadPublishedBlogsWithAuthors() {
+    const blogs = await Blog.find({ status: "published" }).sort({ publishedAt: -1 }).limit(50);
+    const blogsWithAuthors = await Promise.all(
+        blogs.map(async (blog) => {
+            const author = await User.findOne({ firebaseUid: blog.author_uid });
+            return {
+                ...blog.toObject(),
+                author_email: author ? author.email : "Anonymous",
+                author_uid: undefined,
+            };
+        }),
+    );
+    return blogsWithAuthors;
+}
 
 async function revalidatePublicBlogs(reason) {
     if (!NEXT_REVALIDATE_URL || !NEXT_REVALIDATE_SECRET) return;
@@ -34,6 +51,27 @@ async function revalidatePublicBlogs(reason) {
     }
 }
 
+async function syncPublicFeedReplica(reason) {
+    if (!PUBLIC_FEED_SYNC_URL || !PUBLIC_FEED_SYNC_SECRET) return;
+    try {
+        const blogs = await loadPublishedBlogsWithAuthors();
+        await axios.post(
+            PUBLIC_FEED_SYNC_URL,
+            { reason, blogs },
+            {
+                timeout: 5000,
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-feed-sync-secret": PUBLIC_FEED_SYNC_SECRET,
+                },
+            },
+        );
+    } catch (error) {
+        const message = error?.response?.data || error?.message || error;
+        console.error("failed to sync public feed replica", message);
+    }
+}
+
 
 //test:
 router.get("/", (req, res)=>{
@@ -44,20 +82,7 @@ router.get("/", (req, res)=>{
 
 router.get("/public", async (req, res) => {
     try {
-        const blogs = await Blog.find({ status: 'published' }).sort({ publishedAt: -1 }).limit(50);
-        
-        
-        const blogsWithAuthors = await Promise.all(
-            blogs.map(async (blog) => {
-                const author = await User.findOne({ firebaseUid: blog.author_uid });
-                return {
-                    ...blog.toObject(),
-                    author_email: author ? author.email : 'Anonymous',
-                    author_uid: undefined   //no external should have access to author_uid
-                };
-            })
-        );
-        
+        const blogsWithAuthors = await loadPublishedBlogsWithAuthors();
         res.status(200).json(blogsWithAuthors);
     } catch (err) {
         console.error("failed to fetch public blogs", err);
@@ -94,6 +119,7 @@ router.post("/post", verifyAuth, async (req, res)=>{
     })
     await newBlog.save();
     if (blogStatus === "published") {
+        void syncPublicFeedReplica("blog-created-published");
         void revalidatePublicBlogs("blog-created-published");
     }
     res.status(201).json({ msg: `Blog ${blogStatus === 'published' ? 'published' : 'saved as draft'}`, blog: newBlog });
@@ -119,6 +145,7 @@ router.delete("/delete/:id", verifyAuth, async(req, res)=>{
         return res.status(404).send({msg: "couldnt find your blog"})
     }
     if (deletedBlogs.status === "published") {
+        void syncPublicFeedReplica("blog-deleted-published");
         void revalidatePublicBlogs("blog-deleted-published");
     }
     res.status(200).send("blog succesfully yeeted")        
@@ -175,6 +202,7 @@ router.put("/:id", verifyAuth, async(req, res)=>{
         if(!updatedBlog){return res.status(404).send({msg: "sorry the blog doesnt exist"})}
         const affectsPublicFeed = updatedBlog.status === "published" || status === "draft" || status === "published";
         if (affectsPublicFeed) {
+            void syncPublicFeedReplica("blog-updated");
             void revalidatePublicBlogs("blog-updated");
         }
         res.status(200).json({msg: "blog updated successfully", blog: updatedBlog})
@@ -187,7 +215,6 @@ router.put("/:id", verifyAuth, async(req, res)=>{
 
 
 export default router;
-
 
 
 

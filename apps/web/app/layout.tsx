@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/context/ThemeContext"
 import { AuthProvider } from "@/context/AuthContext"
+import PublicFeedWarmup from "@/components/PublicFeedWarmup"
 
 export const metadata: Metadata = {
   title: "Quillscape",
@@ -17,7 +18,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <PublicFeedWarmup />
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

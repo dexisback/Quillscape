@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import { SESSION_COOKIE_NAME } from "@/lib/authSession"
 
-const protectedPaths = ["/home", "/post-blogs", "/user-profile", "/user-settings"]
+const protectedPaths = ["/post-blogs", "/user-profile", "/user-settings"]
 
 function isProtectedPath(pathname: string): boolean {
     return protectedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`))
@@ -24,5 +24,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/auth", "/home/:path*", "/post-blogs/:path*", "/user-profile/:path*", "/user-settings/:path*"],
+    matcher: ["/auth", "/post-blogs/:path*", "/user-profile/:path*", "/user-settings/:path*"],
 }

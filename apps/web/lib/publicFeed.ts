@@ -19,6 +19,7 @@ export type PublicFeedPayload = {
 export const PUBLIC_BLOGS_TAG = "public-blogs"
 export const PUBLIC_BLOGS_REVALIDATE_SECONDS = 60 * 60 * 24
 export const PUBLIC_FEED_SNAPSHOT_KEY = "public_feed_v1"
+export const PUBLIC_FEED_KV_KEY = "public_feed:latest"
 
 function stableBlogSnapshot(blogs: PublicBlog[]): string {
     return JSON.stringify(

@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect, useMemo, useCallback } from "react"
+import { useRouter } from "next/navigation"
 import HomeNavbar from "@/components/home/HomeNavbar"
 import BlogCard from "@/components/home/BlogCard"
 import FloatingActionButton from "@/components/home/FloatingActionButton"
 import BlogEditorOverlay from "@/components/BlogEditorOverlay"
 import { motion } from "framer-motion"
+import { useAuth } from "@/context/AuthContext"
 import {
     formatTimeAgo,
     getReadTimeMinutes,
@@ -22,6 +24,8 @@ type Props = {
 }
 
 export default function HomeFeedClient({ initialFeed }: Props) {
+    const router = useRouter()
+    const { user } = useAuth()
     const persistedSnapshot = useMemo(() => readPublicFeedSnapshot(), [])
     const bootstrapPayload = persistedSnapshot ?? initialFeed
 
@@ -69,6 +73,13 @@ export default function HomeFeedClient({ initialFeed }: Props) {
     }, [bootstrapPayload, fetchPublicBlogs, initialFeed, persistedSnapshot])
 
     const handleBlogCreated = () => fetchPublicBlogs({ showLoading: false })
+    const handleCreateAction = useCallback(() => {
+        if (!user) {
+            router.push("/auth")
+            return
+        }
+        setIsEditorOpen(true)
+    }, [router, user])
 
     const calculateReadTime = (body: string) => getReadTimeMinutes(body)
 
@@ -103,7 +114,7 @@ export default function HomeFeedClient({ initialFeed }: Props) {
                         <div className="text-center" style={{ padding: "64px 0" }}>
                             <p className="text-muted-foreground text-lg">No posts yet. Be the first to write!</p>
                             <button
-                                onClick={() => setIsEditorOpen(true)}
+                                onClick={handleCreateAction}
                                 className="rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300 hover:scale-105"
                                 style={{ backgroundColor: "#3d3d3d", color: "#ffffff", padding: "12px 24px", marginTop: "16px" }}
                             >
@@ -154,7 +165,7 @@ export default function HomeFeedClient({ initialFeed }: Props) {
                 </div>
             </main>
 
-            <FloatingActionButton onClick={() => setIsEditorOpen(true)} />
+            <FloatingActionButton onClick={handleCreateAction} />
 
             <BlogEditorOverlay
                 isOpen={isEditorOpen}

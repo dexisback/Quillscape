@@ -1,16 +1,21 @@
 "use client"
 
 import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
     const router = useRouter()
+    const pathname = usePathname()
+    const isHomePath = pathname === "/home" || pathname.startsWith("/home/")
 
     useEffect(() => {
+        if (isHomePath) return
         if (!loading && !user) router.replace("/auth")
-    }, [user, loading, router])
+    }, [isHomePath, user, loading, router])
+
+    if (isHomePath) return <>{children}</>
 
     if (loading) {
         return (

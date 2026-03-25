@@ -18,6 +18,9 @@
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
 - `REVALIDATE_SECRET` (used by `/api/revalidate/public-blogs`)
+- `PUBLIC_FEED_SYNC_SECRET` (shared secret for `/api/internal/public-feed/sync` and `/api/internal/public-feed/seed`)
+- `KV_REST_API_URL` (from Vercel KV integration)
+- `KV_REST_API_TOKEN` (from Vercel KV integration)
 
 ## Required backend changes
 
@@ -25,7 +28,19 @@
 - Set backend `NEXT_REVALIDATE_URL` to your frontend endpoint:
   `https://<your-domain>/api/revalidate/public-blogs`
 - Set backend `NEXT_REVALIDATE_SECRET` to the same value as frontend `REVALIDATE_SECRET`.
+- Set backend `PUBLIC_FEED_SYNC_URL` to:
+  `https://<your-domain>/api/internal/public-feed/sync`
+- Set backend `PUBLIC_FEED_SYNC_SECRET` to the same value as frontend `PUBLIC_FEED_SYNC_SECRET`.
 - Redeploy backend after updating env.
+
+## One-time public feed seed (after deploy)
+
+Run once after both frontend and backend are deployed:
+
+```bash
+curl -X POST "https://<your-domain>/api/internal/public-feed/seed" \
+  -H "x-feed-sync-secret: <PUBLIC_FEED_SYNC_SECRET>"
+```
 
 ## Firebase setup
 

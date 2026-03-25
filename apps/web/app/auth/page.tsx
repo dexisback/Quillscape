@@ -87,6 +87,10 @@ export default function Auth() {
         }
     }, [])
 
+    useEffect(() => {
+        router.prefetch("/home")
+    }, [router])
+
     const handleLogin = async () => {
         if (!email || !password) { setError("Please enter both email and password"); return }
         if (!auth) return
@@ -94,9 +98,9 @@ export default function Auth() {
         setError("")
         try {
             const result = await signInWithEmailAndPassword(auth, email, password)
-            await persistSessionCookie(result.user)
-            syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
             router.replace("/home")
+            void persistSessionCookie(result.user).catch(() => {})
+            void syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => {})
         } catch (err: unknown) {
             setIsAuthenticating(false)
             const code = firebaseAuthCode(err)
@@ -118,9 +122,9 @@ export default function Auth() {
         setError("")
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password)
-            await persistSessionCookie(res.user)
-            syncUserWithMongoDB({ firebaseUid: res.user.uid, email: res.user.email }).catch(() => { })
             router.replace("/home")
+            void persistSessionCookie(res.user).catch(() => {})
+            void syncUserWithMongoDB({ firebaseUid: res.user.uid, email: res.user.email }).catch(() => {})
         } catch (err: unknown) {
             setIsSigningUp(false)
             const code = firebaseAuthCode(err)
@@ -138,22 +142,20 @@ export default function Auth() {
         try {
             const provider = new GoogleAuthProvider()
             const result = await signInWithPopup(auth, provider)
-            await persistSessionCookie(result.user)
-            syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => { })
-            router.push("/home")
+            router.replace("/home")
+            void persistSessionCookie(result.user).catch(() => {})
+            void syncUserWithMongoDB({ firebaseUid: result.user.uid, email: result.user.email }).catch(() => {})
         } catch {
             setError("Google sign in failed. Try again.")
         }
     }
 
-    if (authLoading || isAuthenticating) {
+    if (authLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="flex flex-col items-center gap-16-fixed">
                     <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-                    <p className="text-sm text-muted-foreground">
-                        {isAuthenticating ? "Signing in..." : "Loading..."}
-                    </p>
+                    <p className="text-sm text-muted-foreground">Loading...</p>
                 </div>
             </div>
         )

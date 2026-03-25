@@ -23,6 +23,9 @@ Required in `.env.local` (and Vercel Project Environment Variables):
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
 - `REVALIDATE_SECRET` — shared secret for on-demand cache invalidation endpoint (`/api/revalidate/public-blogs`).
+- `PUBLIC_FEED_SYNC_SECRET` — shared secret for internal replica endpoints (`/api/internal/public-feed/sync`, `/api/internal/public-feed/seed`).
+- `KV_REST_API_URL` — from Vercel KV integration.
+- `KV_REST_API_TOKEN` — from Vercel KV integration.
 
 ### Local API + CORS
 
@@ -56,3 +59,12 @@ Deploy `apps/web` as the project root.
 - Backend env must include:
   - `NEXT_REVALIDATE_URL=https://<frontend-domain>/api/revalidate/public-blogs`
   - `NEXT_REVALIDATE_SECRET=<same-as-frontend-REVALIDATE_SECRET>`
+  - `PUBLIC_FEED_SYNC_URL=https://<frontend-domain>/api/internal/public-feed/sync`
+  - `PUBLIC_FEED_SYNC_SECRET=<same-as-frontend-PUBLIC_FEED_SYNC_SECRET>`
+
+### One-time feed seed (required after first deploy of replica flow)
+
+```bash
+curl -X POST "https://<frontend-domain>/api/internal/public-feed/seed" \
+  -H "x-feed-sync-secret: <PUBLIC_FEED_SYNC_SECRET>"
+```
