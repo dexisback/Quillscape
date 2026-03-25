@@ -66,7 +66,3 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "Failed to seed public feed replica" }, { status: 500 })
     }
 }
-    } catch {
-        return NextResponse.json({ message: "Failed to seed public feed replica" }, { status: 500 })
-    }
-}
