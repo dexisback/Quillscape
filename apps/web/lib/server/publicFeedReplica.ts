@@ -1,4 +1,5 @@
 import "server-only"
+import { createClient } from "redis"
 
 import {
     PUBLIC_FEED_KV_KEY,
@@ -6,46 +7,43 @@ import {
     type PublicFeedPayload,
 } from "@/lib/publicFeed"
 
-type KvCommandResponse<T> = {
-    result?: T
-    error?: string
-}
+let redisClient: ReturnType<typeof createClient> | null = null
+let redisClientPromise: Promise<ReturnType<typeof createClient>> | null = null
 
-function getKvConfig() {
-    const baseUrl = process.env.KV_REST_API_URL
-    const token = process.env.KV_REST_API_TOKEN
-    if (!baseUrl || !token) {
-        throw new Error("KV_REST_API_URL or KV_REST_API_TOKEN is not configured")
+function getRedisUrl(): string {
+    const redisUrl = process.env.KV_REDIS_URL
+    if (!redisUrl) {
+        throw new Error("KV_REDIS_URL is not configured")
     }
-    return { baseUrl: baseUrl.replace(/\/+$/, ""), token }
+    return redisUrl
 }
 
-async function executeKvCommand<T>(command: Array<string | number>): Promise<T | null> {
-    const { baseUrl, token } = getKvConfig()
-    const response = await fetch(baseUrl, {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-        cache: "no-store",
-        body: JSON.stringify(command),
+async function getRedisClient(): Promise<ReturnType<typeof createClient>> {
+    if (redisClient?.isOpen) return redisClient
+    if (redisClientPromise) return redisClientPromise
+
+    const client = createClient({ url: getRedisUrl() })
+    client.on("error", (error) => {
+        console.error("redis client error", error)
     })
 
-    if (!response.ok) {
-        throw new Error(`KV command failed with status ${response.status}`)
-    }
+    redisClientPromise = client.connect()
+        .then(() => {
+            redisClient = client
+            return client
+        })
+        .catch((error) => {
+            redisClientPromise = null
+            throw error
+        })
 
-    const data = (await response.json()) as KvCommandResponse<T>
-    if (data.error) {
-        throw new Error(`KV command error: ${data.error}`)
-    }
-    return data.result ?? null
+    return redisClientPromise
 }
 
 export async function readPublicFeedReplica(): Promise<PublicFeedPayload | null> {
-    const raw = await executeKvCommand<string>(["GET", PUBLIC_FEED_KV_KEY])
-    if (!raw || typeof raw !== "string") return null
+    const client = await getRedisClient()
+    const raw = await client.get(PUBLIC_FEED_KV_KEY)
+    if (!raw) return null
 
     let parsed: unknown
     try {
@@ -62,5 +60,6 @@ export async function readPublicFeedReplica(): Promise<PublicFeedPayload | null>
 }
 
 export async function writePublicFeedReplica(payload: PublicFeedPayload): Promise<void> {
-    await executeKvCommand<string>(["SET", PUBLIC_FEED_KV_KEY, JSON.stringify(payload)])
+    const client = await getRedisClient()
+    await client.set(PUBLIC_FEED_KV_KEY, JSON.stringify(payload))
 }

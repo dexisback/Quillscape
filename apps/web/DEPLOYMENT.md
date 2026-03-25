@@ -19,8 +19,7 @@
 - `NEXT_PUBLIC_FIREBASE_APP_ID`
 - `REVALIDATE_SECRET` (used by `/api/revalidate/public-blogs`)
 - `PUBLIC_FEED_SYNC_SECRET` (shared secret for `/api/internal/public-feed/sync` and `/api/internal/public-feed/seed`)
-- `KV_REST_API_URL` (from Vercel KV integration)
-- `KV_REST_API_TOKEN` (from Vercel KV integration)
+- `KV_REDIS_URL` (from Vercel Redis/KV integration)
 
 ## Required backend changes
 
